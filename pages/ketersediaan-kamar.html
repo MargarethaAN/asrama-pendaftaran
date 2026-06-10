@@ -163,6 +163,39 @@
             align-items: center;
             gap: 12px;
         }
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: #64748b;
+            background: white;
+            border-radius: 20px;
+        }
+        .alert-fixed {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
+        }
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+        }
     </style>
 </head>
 <body>
@@ -183,9 +216,7 @@
         
         <div class="main-content">
             <div class="page-header-card">
-                <h1>
-                    <span>🛏️</span> Ketersediaan Kamar
-                </h1>
+                <h1><span>🛏️</span> Ketersediaan Kamar</h1>
                 <p>Informasi status kamar asrama secara real-time.</p>
             </div>
             
@@ -238,7 +269,7 @@
             </div>
             
             <div class="room-grid" id="roomGrid">
-                <!-- Data akan di-load via JS langsung -->
+                <div class="loading">⏳ Memuat data kamar...</div>
             </div>
             
             <div class="info-note">
@@ -249,24 +280,45 @@
     </div>
 
     <script>
-        // Data kamar langsung (tanpa loading)
-        const kamarData = [
-            { id: 1, nomor_kamar: '101', lantai: 1, kapasitas: 2, status_kamar: 'tersedia' },
-            { id: 2, nomor_kamar: '102', lantai: 1, kapasitas: 2, status_kamar: 'tersedia' },
-            { id: 3, nomor_kamar: '103', lantai: 1, kapasitas: 2, status_kamar: 'terisi' },
-            { id: 4, nomor_kamar: '104', lantai: 1, kapasitas: 2, status_kamar: 'tersedia' },
-            { id: 5, nomor_kamar: '105', lantai: 1, kapasitas: 2, status_kamar: 'tersedia' },
-            { id: 6, nomor_kamar: '201', lantai: 2, kapasitas: 2, status_kamar: 'tersedia' },
-            { id: 7, nomor_kamar: '202', lantai: 2, kapasitas: 2, status_kamar: 'tersedia' },
-            { id: 8, nomor_kamar: '203', lantai: 2, kapasitas: 2, status_kamar: 'perbaikan' },
-            { id: 9, nomor_kamar: '204', lantai: 2, kapasitas: 2, status_kamar: 'tersedia' },
-            { id: 10, nomor_kamar: '205', lantai: 2, kapasitas: 2, status_kamar: 'terisi' },
-            { id: 11, nomor_kamar: '301', lantai: 3, kapasitas: 2, status_kamar: 'tersedia' },
-            { id: 12, nomor_kamar: '302', lantai: 3, kapasitas: 2, status_kamar: 'tersedia' },
-            { id: 13, nomor_kamar: '303', lantai: 3, kapasitas: 2, status_kamar: 'terisi' },
-            { id: 14, nomor_kamar: '304', lantai: 3, kapasitas: 2, status_kamar: 'tersedia' },
-            { id: 15, nomor_kamar: '305', lantai: 3, kapasitas: 2, status_kamar: 'perbaikan' }
-        ];
+        const BASE_URL = window.location.origin + '/asrama-pendaftaran/backend/api/';
+        let kamarData = [];
+        
+        function showAlertLocal(message, type) {
+            const oldAlert = document.querySelector('.alert-fixed');
+            if (oldAlert) oldAlert.remove();
+            
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert-fixed alert-${type === 'success' ? 'success' : 'error'}`;
+            alertDiv.innerHTML = `${type === 'success' ? '✅' : '❌'} ${message}`;
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.style.opacity = '0';
+                setTimeout(() => alertDiv.remove(), 300);
+            }, 3000);
+        }
+        
+        async function loadKamar() {
+            try {
+                const response = await fetch(BASE_URL + 'get_kamar.php');
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    kamarData = result.data;
+                } else {
+                    kamarData = [];
+                    showAlertLocal('Gagal memuat data kamar', 'error');
+                }
+                updateStats();
+                displayKamar();
+            } catch (error) {
+                console.error('Error loading kamar:', error);
+                kamarData = [];
+                updateStats();
+                displayKamar();
+                showAlertLocal('Gagal terhubung ke server', 'error');
+            }
+        }
         
         function updateStats() {
             const total = kamarData.length;
@@ -321,7 +373,7 @@
                     <div class="room-card ${k.status_kamar}">
                         <div class="room-number">${k.nomor_kamar}</div>
                         <div class="room-lantai">Lantai ${k.lantai}</div>
-                        <div class="room-kapasitas">Kapasitas: ${k.kapasitas} orang</div>
+                        <div class="room-kapasitas">Kapasitas: ${k.kapasitas || 2} orang</div>
                         <div class="room-status ${statusClass}">${statusText}</div>
                     </div>
                 `;
@@ -332,9 +384,8 @@
         document.getElementById('filterStatus').addEventListener('change', displayKamar);
         document.getElementById('searchKamar').addEventListener('input', displayKamar);
         
-        // Langsung tampilkan data tanpa loading
-        updateStats();
-        displayKamar();
+        // Load data dari database
+        loadKamar();
         
         document.getElementById('logoutBtn').addEventListener('click', function(e) {
             e.preventDefault();

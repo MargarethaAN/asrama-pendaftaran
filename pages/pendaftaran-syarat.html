@@ -40,12 +40,38 @@
             justify-content: space-between;
             gap: 12px;
         }
+        .alert-fixed {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
+        }
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+        }
     </style>
 </head>
 <body>
     <div class="sidebar-layout">
         <div class="sidebar">
-            <div class="logo">🏡 Asrama Putri</div>
+            <div class="logo">🏡 St. Teresa Dorm</div>
             <nav>
                 <a href="dashboard.html">📊 Dashboard</a>
                 <a href="pendaftaran-data-diri.html" class="active">📝 Pendaftaran</a>
@@ -102,29 +128,59 @@
     </div>
 
     <script>
-        document.getElementById('submitBtn').addEventListener('click', async function() {
+        const BASE_URL = window.location.origin + '/asrama-pendaftaran/backend/api/';
+        
+        function showAlertLocal(message, type) {
+            const oldAlert = document.querySelector('.alert-fixed');
+            if (oldAlert) oldAlert.remove();
+            
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert-fixed alert-${type === 'success' ? 'success' : 'error'}`;
+            alertDiv.innerHTML = `${type === 'success' ? '✅' : '❌'} ${message}`;
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.style.opacity = '0';
+                setTimeout(() => alertDiv.remove(), 300);
+            }, 3000);
+        }
+        
+        async function submitPendaftaran() {
+            showAlertLocal('Menyimpan data...', 'success');
+            
+            try {
+                const response = await fetch(BASE_URL + 'update_status_pendaftaran.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: 'menunggu_verifikasi' })
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlertLocal('Pendaftaran berhasil dikirim! Menunggu verifikasi admin.', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'status-pendaftaran.html';
+                    }, 2000);
+                } else {
+                    showAlertLocal(result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showAlertLocal('Gagal mengirim pendaftaran', 'error');
+            }
+        }
+        
+        document.getElementById('submitBtn').addEventListener('click', function() {
             if (!document.getElementById('setuju_syarat').checked) {
-                showAlert('Harap setujui syarat dan ketentuan terlebih dahulu', 'error');
+                showAlertLocal('Harap setujui syarat dan ketentuan terlebih dahulu', 'error');
                 return;
             }
-            
-            const dataDiri = JSON.parse(localStorage.getItem('dataDiri') || '{}');
-            const dataKeluarga = JSON.parse(localStorage.getItem('dataKeluarga') || '{}');
-            const allData = { ...dataDiri, ...dataKeluarga };
-            
-            // Simpan ke backend
-            const result = await savePendaftaran(allData);
-            
-            if (result.success) {
-                showAlert('Pendaftaran berhasil dikirim! Menunggu verifikasi admin.', 'success');
-                localStorage.removeItem('dataDiri');
-                localStorage.removeItem('dataKeluarga');
-                setTimeout(() => {
-                    window.location.href = 'status-pendaftaran.html';
-                }, 2000);
-            } else {
-                showAlert(result.message || 'Gagal mengirim pendaftaran', 'error');
-            }
+            submitPendaftaran();
+        });
+        
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = '../index.html';
         });
     </script>
     <script src="../js/main.js"></script>

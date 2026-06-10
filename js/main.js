@@ -97,20 +97,7 @@ async function konfirmasiKeluar(id_pendaftar, keterangan) {
 // ==================== FUNGSI UI ====================
 function showAlert(message, type = 'success') {
     const alertDiv = document.createElement('div');
-    alertDiv.className = `alert alert-${type}`;
-    alertDiv.textContent = message;
     
-    const container = document.querySelector('.form-container') || document.querySelector('.main-content') || document.querySelector('.dashboard');
-    if (container) {
-        container.insertBefore(alertDiv, container.firstChild);
-        setTimeout(() => alertDiv.remove(), 3000);
-    } else {
-        alert(message);
-    }
-    function showAlert(message, type = 'success') {
-    const alertDiv = document.createElement('div');
-    
-    // Warna berdasarkan tipe
     let bgColor = '#d1fae5';
     let textColor = '#065f46';
     let icon = '✅';
@@ -146,7 +133,6 @@ function showAlert(message, type = 'success') {
     } else {
         alert(message);
     }
-}
 }
 
 function formatRupiah(angka) {

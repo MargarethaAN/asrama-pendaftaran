@@ -37,39 +37,7 @@
             display: flex;
             align-items: center;
             gap: 16px;
-        }
-        .file-input-wrapper {
-            position: relative;
-            display: inline-block;
-        }
-        .file-input-wrapper input {
-            position: absolute;
-            opacity: 0;
-            width: 100%;
-            height: 100%;
-            cursor: pointer;
-        }
-        .progress-bar {
-            width: 100%;
-            height: 6px;
-            background: #e2e8f0;
-            border-radius: 10px;
-            margin-top: 24px;
-            overflow: hidden;
-        }
-        .progress-fill {
-            width: 0%;
-            height: 100%;
-            background: #2c7a4d;
-            border-radius: 10px;
-            transition: width 0.3s;
-        }
-        .upload-stats {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 16px;
-            font-size: 13px;
-            color: #64748b;
+            flex-wrap: wrap;
         }
         .btn-upload {
             background: #2c7a4d;
@@ -97,6 +65,30 @@
         .btn-delete:hover {
             background: #fecaca;
         }
+        .btn-edit {
+            background: #e2e8f0;
+            color: #1a2e3a;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-edit:hover {
+            background: #cbd5e1;
+        }
+        .btn-preview {
+            background: #2c7a4d;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-preview:hover {
+            background: #1e5a3a;
+        }
         .status-success {
             color: #10b981;
             font-size: 13px;
@@ -112,12 +104,92 @@
             color: #64748b;
             margin-top: 4px;
         }
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            margin-top: 24px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background: #2c7a4d;
+            border-radius: 10px;
+            transition: width 0.3s;
+        }
+        .upload-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 16px;
+            font-size: 13px;
+            color: #64748b;
+        }
+        .alert-fixed {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
+        }
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+        }
+        .action-group {
+            display: flex;
+            gap: 8px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 24px;
+            padding: 24px;
+            width: 90%;
+            max-width: 500px;
+        }
+        .preview-img {
+            max-width: 100%;
+            border-radius: 12px;
+        }
     </style>
 </head>
 <body>
     <div class="sidebar-layout">
         <div class="sidebar">
-            <div class="logo">🏡 Asrama Putri</div>
+            <div class="logo">🏡 St. Teresa Dorm</div>
             <nav>
                 <a href="dashboard.html">📊 Dashboard</a>
                 <a href="pendaftaran-data-diri.html">📝 Pendaftaran</a>
@@ -138,7 +210,7 @@
                 <h3 style="margin-bottom: 20px;">📎 Daftar Dokumen yang Diperlukan</h3>
                 
                 <div id="uploadList">
-                    <!-- Item upload akan di-load via JS -->
+                    <div class="loading">Memuat data...</div>
                 </div>
                 
                 <div class="progress-bar">
@@ -153,13 +225,24 @@
             </div>
             
             <div style="background: #f0fdf4; border-radius: 16px; padding: 16px; border: 1px solid #bbf7d0;">
-                <p style="font-size: 13px; color: #166534;">📌 <strong>Informasi:</strong> Pastikan dokumen terbaca dengan jelas. File akan diverifikasi oleh admin. Status upload akan berubah menjadi "Terverifikasi" setelah admin memeriksa.</p>
+                <p style="font-size: 13px; color: #166534;">📌 <strong>Informasi:</strong> Pastikan dokumen terbaca dengan jelas. File akan diverifikasi oleh admin.</p>
             </div>
         </div>
     </div>
 
+    <!-- Modal Preview -->
+    <div id="previewModal" class="modal">
+        <div class="modal-content">
+            <h3 id="previewTitle">Preview Dokumen</h3>
+            <div id="previewContent"></div>
+            <button onclick="closePreviewModal()" class="btn-primary" style="margin-top: 16px;">Tutup</button>
+        </div>
+    </div>
+
+    <script src="../js/main.js"></script>
     <script>
-        // Data dokumen yang diperlukan
+        // BASE_URL sudah dari main.js
+        
         const dokumenList = [
             { id: 'ktm', nama: 'Scan KTM', keterangan: 'Kartu Tanda Mahasiswa (scan berwarna)', required: true, icon: '🪪' },
             { id: 'kk', nama: 'Scan Kartu Keluarga', keterangan: 'Kartu Keluarga (halaman yang memuat data diri)', required: true, icon: '📇' },
@@ -168,32 +251,232 @@
             { id: 'transkrip', nama: 'Transkrip Nilai', keterangan: 'Transkrip nilai sementara (jika ada)', required: false, icon: '📊' }
         ];
         
-        // Data upload yang tersimpan
-        let uploadedFiles = JSON.parse(localStorage.getItem('uploadedDocuments') || '{}');
+        let dokumenFromDB = [];
+        
+        function showAlertLocal(message, type) {
+            const oldAlert = document.querySelector('.alert-fixed');
+            if (oldAlert) oldAlert.remove();
+            
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert-fixed alert-${type === 'success' ? 'success' : 'error'}`;
+            alertDiv.innerHTML = `${type === 'success' ? '✅' : '❌'} ${message}`;
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.style.opacity = '0';
+                setTimeout(() => alertDiv.remove(), 300);
+            }, 3000);
+        }
+        
+        function previewFile(filePath, fileName) {
+    // filePath contoh: "uploads/dokumen/1781066700_6a28ebcc53944.png"
+    // Buat URL lengkap
+    const fullUrl = window.location.origin + '/asrama-pendaftaran/' + filePath;
+    const isImage = filePath && filePath.match(/\.(jpg|jpeg|png)$/i);
+    
+    console.log('Preview file:', fullUrl); // Cek di console browser
+    
+    let previewContent = '';
+    
+    if (isImage) {
+        previewContent = `<img src="${fullUrl}" class="preview-img" alt="${fileName}" style="max-width:100%; max-height:400px; border-radius:12px;" onerror="this.src='https://placehold.co/500x300/ccc/white?text=Gambar+tidak+ditemukan'; console.error('Gagal load gambar:', '${fullUrl}')">`;
+    } else {
+        previewContent = `
+            <div style="padding: 30px; background: #f1f5f9; border-radius: 12px; text-align: center;">
+                <div style="font-size: 48px;">📄</div>
+                <p><strong>${fileName}</strong></p>
+                <p>File PDF tidak bisa ditampilkan langsung di sini.</p>
+                <a href="${fullUrl}" target="_blank" style="color: #2c7a4d; text-decoration: none; display: inline-block; margin-top: 10px; padding: 8px 16px; background: #2c7a4d; color: white; border-radius: 8px;">📥 Download / Buka PDF</a>
+            </div>
+        `;
+    }
+    
+    document.getElementById('previewTitle').innerHTML = `Preview: ${fileName}`;
+    document.getElementById('previewContent').innerHTML = previewContent;
+    document.getElementById('previewModal').style.display = 'flex';
+}
+        
+        function closePreviewModal() {
+            document.getElementById('previewModal').style.display = 'none';
+        }
+        
+        async function deleteDocument(docId) {
+            if (!confirm('Apakah Anda yakin ingin menghapus dokumen ini?')) return;
+            
+            try {
+                const response = await fetch(BASE_URL + 'delete_dokumen.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id_dokumen: docId })
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlertLocal('Dokumen berhasil dihapus!', 'success');
+                    await loadDokumenFromServer();
+                } else {
+                    showAlertLocal(result.message, 'error');
+                }
+            } catch (error) {
+                showAlertLocal('Gagal menghapus dokumen', 'error');
+            }
+        }
+        
+        async function editDocument(docId, docType) {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.jpg,.jpeg,.png,.pdf';
+            input.onchange = async function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                if (file.size > 2 * 1024 * 1024) {
+                    showAlertLocal('Ukuran file maksimal 2MB!', 'error');
+                    return;
+                }
+                
+                const formData = new FormData();
+                formData.append('jenis_dokumen', docType);
+                formData.append('file', file);
+                formData.append('id_dokumen', docId);
+                formData.append('replace', 'true');
+                
+                showAlertLocal('Mengganti dokumen...', 'success');
+                
+                try {
+                    const response = await fetch(BASE_URL + 'upload_dokumen.php', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        showAlertLocal('Dokumen berhasil diganti!', 'success');
+                        await loadDokumenFromServer();
+                    } else {
+                        showAlertLocal(result.message, 'error');
+                    }
+                } catch (error) {
+                    showAlertLocal('Gagal mengganti dokumen', 'error');
+                }
+            };
+            input.click();
+        }
+        
+        async function loadDokumenFromServer() {
+            try {
+                const response = await fetch(BASE_URL + 'get_dokumen.php');
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    dokumenFromDB = result.data;
+                } else {
+                    dokumenFromDB = [];
+                }
+                renderUploadList();
+            } catch (error) {
+                console.error('Error loading dokumen:', error);
+                dokumenFromDB = [];
+                renderUploadList();
+                showAlertLocal('Gagal memuat data dokumen', 'error');
+            }
+        }
+        
+        function getDocIdByType(jenisDokumen) {
+            const doc = dokumenFromDB.find(d => d.jenis_dokumen === jenisDokumen);
+            return doc ? doc.id_dokumen : null;
+        }
+        
+        function getDocumentStatus(jenisDokumen) {
+            const doc = dokumenFromDB.find(d => d.jenis_dokumen === jenisDokumen);
+            if (doc) {
+                return { 
+                    uploaded: true, 
+                    status: doc.status_verifikasi, 
+                    file_path: doc.file_path, 
+                    file_name: doc.file_path ? doc.file_path.split('/').pop() : '',
+                    id_dokumen: doc.id_dokumen
+                };
+            }
+            return { uploaded: false, status: null };
+        }
         
         function updateProgress() {
-            const total = dokumenList.length;
+            const total = dokumenList.filter(d => d.required).length;
             let uploaded = 0;
             for (const doc of dokumenList) {
-                if (uploadedFiles[doc.id] && uploadedFiles[doc.id].status !== 'deleted') {
+                if (doc.required && getDocumentStatus(doc.id).uploaded) {
                     uploaded++;
                 }
             }
             const percentage = (uploaded / total) * 100;
-            document.getElementById('progressFill').style.width = percentage + '%';
-            document.getElementById('uploadedCount').innerText = uploaded;
-            document.getElementById('totalCount').innerText = total;
+            const progressFill = document.getElementById('progressFill');
+            if (progressFill) progressFill.style.width = percentage + '%';
+            const uploadedCount = document.getElementById('uploadedCount');
+            if (uploadedCount) uploadedCount.innerText = uploaded;
+            const totalCount = document.getElementById('totalCount');
+            if (totalCount) totalCount.innerText = total;
+        }
+        
+        async function uploadDocument(docId, input) {
+            const file = input.files[0];
+            if (!file) return;
+            
+            if (file.size > 2 * 1024 * 1024) {
+                showAlertLocal('Ukuran file maksimal 2MB!', 'error');
+                input.value = '';
+                return;
+            }
+            
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf'];
+            if (!allowedTypes.includes(file.type)) {
+                showAlertLocal('Format file harus JPG, PNG, atau PDF!', 'error');
+                input.value = '';
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('jenis_dokumen', docId);
+            formData.append('file', file);
+            
+            showAlertLocal('Mengupload file...', 'success');
+            
+            try {
+                const response = await fetch(BASE_URL + 'upload_dokumen.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlertLocal(`Dokumen "${getDocName(docId)}" berhasil diupload!`, 'success');
+                    await loadDokumenFromServer();
+                } else {
+                    showAlertLocal(result.message, 'error');
+                }
+            } catch (error) {
+                showAlertLocal('Gagal upload: ' + error.message, 'error');
+            }
+            input.value = '';
+        }
+        
+        function getDocName(docId) {
+            const doc = dokumenList.find(d => d.id === docId);
+            return doc ? doc.nama : docId;
         }
         
         function renderUploadList() {
             const container = document.getElementById('uploadList');
+            if (!container) return;
             container.innerHTML = '';
             
             for (const doc of dokumenList) {
-                const fileData = uploadedFiles[doc.id];
-                const isUploaded = fileData && fileData.status !== 'deleted';
-                const fileName = fileData?.name || '';
-                const status = fileData?.status || 'pending';
+                const docStatus = getDocumentStatus(doc.id);
+                const isUploaded = docStatus.uploaded;
+                const status = docStatus.status;
+                const fileName = docStatus.file_name || '';
+                const filePath = docStatus.file_path || '';
+                const docIdDb = docStatus.id_dokumen;
                 
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'upload-item';
@@ -205,14 +488,18 @@
                     </div>
                     <div class="upload-status">
                         ${isUploaded ? `
-                            <span class="${status === 'verified' ? 'status-success' : 'status-pending'}">
-                                ${status === 'verified' ? '✓ Terverifikasi' : '⏳ Menunggu Verifikasi'}
+                            <div class="action-group">
+                                <button onclick="previewFile('${filePath}', '${fileName}')" class="btn-preview">👁️ Lihat</button>
+                                <button onclick="editDocument(${docIdDb}, '${doc.id}')" class="btn-edit">✏️ Ganti</button>
+                                <button onclick="deleteDocument(${docIdDb})" class="btn-delete">🗑️ Hapus</button>
+                            </div>
+                            <span class="${status === 'diverifikasi' ? 'status-success' : 'status-pending'}">
+                                ${status === 'diverifikasi' ? '✓ Terverifikasi' : '⏳ Menunggu Verifikasi'}
                             </span>
-                            <button class="btn-delete" onclick="deleteDocument('${doc.id}')">Hapus</button>
                         ` : `
-                            <div class="file-input-wrapper">
-                                <button class="btn-upload" onclick="document.getElementById('fileInput_${doc.id}').click()">📤 Upload</button>
+                            <div>
                                 <input type="file" id="fileInput_${doc.id}" accept=".jpg,.jpeg,.png,.pdf" style="display:none" onchange="uploadDocument('${doc.id}', this)">
+                                <button class="btn-upload" onclick="document.getElementById('fileInput_${doc.id}').click()">📤 Upload</button>
                             </div>
                         `}
                     </div>
@@ -222,91 +509,13 @@
             updateProgress();
         }
         
-        // Ganti fungsi uploadDocument dengan yang ini:
-        async function uploadDocument(docId, input) {
-            const file = input.files[0];
-            if (!file) return;
-            
-            if (file.size > 2 * 1024 * 1024) {
-                showAlert('Ukuran file maksimal 2MB!', 'error');
-                input.value = '';
-                return;
-            }
-            
-            const formData = new FormData();
-            formData.append('jenis_dokumen', docId);
-            formData.append('file', file);
-            
-            try {
-                const response = await fetch(BASE_URL + 'upload_dokumen.php', {
-                    method: 'POST',
-                    body: formData
-                });
-                const result = await response.json();
-                
-                if (result.success) {
-                    showAlert('Dokumen berhasil diupload!', 'success');
-                    // Refresh daftar
-                    location.reload();
-                } else {
-                    showAlert(result.message, 'error');
-                }
-            } catch (error) {
-                showAlert('Gagal upload', 'error');
-            }
-        }
-        function deleteDocument(docId) {
-            if (confirm(`Hapus dokumen "${getDocName(docId)}"?`)) {
-                uploadedFiles[docId].status = 'deleted';
-                delete uploadedFiles[docId];
-                localStorage.setItem('uploadedDocuments', JSON.stringify(uploadedFiles));
-                renderUploadList();
-                showAlert(`Dokumen "${getDocName(docId)}" dihapus.`, 'success');
-            }
-        }
+        // Load data dari server
+        loadDokumenFromServer();
         
-        function getDocName(docId) {
-            const doc = dokumenList.find(d => d.id === docId);
-            return doc ? doc.nama : docId;
-        }
-        
-        // Inisialisasi
-        renderUploadList();
-        
-        // Cek apakah sudah upload semua dokumen wajib
-        function checkAllRequiredUploaded() {
-            const requiredDocs = dokumenList.filter(d => d.required);
-            for (const doc of requiredDocs) {
-                if (!uploadedFiles[doc.id] || uploadedFiles[doc.id].status === 'deleted') {
-                    return false;
-                }
-            }
-            return true;
-        }
-        
-        // Tampilkan notifikasi jika dokumen wajib belum lengkap
-        setInterval(() => {
-            if (!checkAllRequiredUploaded()) {
-                const notif = document.querySelector('.alert');
-                if (!notif) {
-                    const msgDiv = document.createElement('div');
-                    msgDiv.className = 'alert alert-warning';
-                    msgDiv.style.background = '#fef3c7';
-                    msgDiv.style.color = '#92400e';
-                    msgDiv.style.marginBottom = '16px';
-                    msgDiv.innerHTML = '⚠️ Harap upload semua dokumen yang wajib (ditandai *) agar pendaftaran dapat diproses.';
-                    const container = document.querySelector('.upload-section');
-                    if (container && !document.querySelector('.upload-alert')) {
-                        msgDiv.classList.add('upload-alert');
-                        container.insertBefore(msgDiv, container.firstChild);
-                    }
-                }
-            } else {
-                const alertDiv = document.querySelector('.upload-alert');
-                if (alertDiv) alertDiv.remove();
-            }
-        }, 1000);
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = '../index.html';
+        });
     </script>
-    <script src="../js/main.js"></script>
 </body>
 </html>

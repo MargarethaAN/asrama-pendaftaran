@@ -16,37 +16,30 @@ $query = "SELECT
             p.nim,
             p.nama_lengkap,
             p.prodi,
-            p.tanggal_masuk_asrama,
+            p.fakultas,
+            p.no_hp,
+            p.alamat_asal,
+            p.alamat_semarang,
             p.status_keluar,
             p.akun_diblokir,
+            p.tanggal_masuk_asrama,
+            p.tanggal_keluar_asrama,
+            pk.status_pendaftaran,
+            pk.tanggal_daftar,
             k.nomor_kamar,
-            k.lantai,
-            h.status_hunian,
-            h.tanggal_masuk,
-            h.tanggal_keluar
+            h.status_hunian
           FROM pendaftar p
+          LEFT JOIN pendaftaran pk ON p.id_pendaftar = pk.id_pendaftar
           LEFT JOIN hunian h ON p.id_pendaftar = h.id_pendaftar
           LEFT JOIN kamar k ON h.id_kamar = k.id_kamar
-          WHERE p.status_keluar = 'aktif'
-          ORDER BY p.nama_lengkap";
+          ORDER BY pk.tanggal_daftar DESC";
 
 $result = mysqli_query($conn, $query);
 
-$penghuni = [];
+$data = [];
 while ($row = mysqli_fetch_assoc($result)) {
-    // Hitung masa hunian
-    if ($row['tanggal_masuk_asrama']) {
-        $masuk = new DateTime($row['tanggal_masuk_asrama']);
-        $sekarang = new DateTime();
-        $diff = $masuk->diff($sekarang);
-        $row['masa_hunian_tahun'] = $diff->y;
-        $row['bisa_konfirmasi'] = ($diff->y >= 2);
-    } else {
-        $row['masa_hunian_tahun'] = 0;
-        $row['bisa_konfirmasi'] = false;
-    }
-    $penghuni[] = $row;
+    $data[] = $row;
 }
 
-echo json_encode(['success' => true, 'data' => $penghuni]);
+echo json_encode(['success' => true, 'data' => $data]);
 ?>

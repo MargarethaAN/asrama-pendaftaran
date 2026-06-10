@@ -13,15 +13,13 @@ if (!isset($_SESSION['id_pengguna']) || $_SESSION['role'] != 'admin') {
 }
 
 $data = json_decode(file_get_contents('php://input'), true);
+$id_sk = intval($data['id_sk']);
 
-$id_kamar = mysqli_real_escape_string($conn, $data['id_kamar']);
-$status_kamar = mysqli_real_escape_string($conn, $data['status_kamar']);
-
-$query = "UPDATE kamar SET status_kamar = '$status_kamar' WHERE id_kamar = $id_kamar";
+$query = "DELETE FROM syarat_ketentuan WHERE id_sk = $id_sk";
 
 if (mysqli_query($conn, $query)) {
-    echo json_encode(['success' => true, 'message' => 'Status kamar berhasil diupdate']);
+    echo json_encode(['success' => true, 'message' => 'Syarat & ketentuan berhasil dihapus']);
 } else {
-    echo json_encode(['success' => false, 'message' => 'Gagal update: ' . mysqli_error($conn)]);
+    echo json_encode(['success' => false, 'message' => 'Gagal: ' . mysqli_error($conn)]);
 }
 ?>

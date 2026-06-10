@@ -151,17 +151,31 @@
         .data-table td {
             vertical-align: middle;
         }
-        .loading-user {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-top-color: white;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
+        .alert-fixed {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
         }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
+        }
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
         }
     </style>
 </head>
@@ -182,7 +196,6 @@
         </div>
         
         <div class="main-content">
-            <!-- Welcome Card dengan nama dinamis -->
             <div class="welcome-card">
                 <div class="welcome-text">
                     <h2 id="welcomeName">Selamat Datang, <span id="userName">👤</span> 👋</h2>
@@ -202,8 +215,8 @@
                 </div>
                 <div class="stat-card">
                     <h3>🛏️ Ketersediaan Kamar</h3>
-                    <div class="number">45/60</div>
-                    <small>15 kamar tersedia</small>
+                    <div class="number" id="kamarCount">0/0</div>
+                    <small id="kamarStatus">Memuat...</small>
                 </div>
                 <div class="stat-card">
                     <h3>📄 Dokumen Terunggah</h3>
@@ -216,14 +229,10 @@
                 <h3>📋 Yang Perlu Dilakukan</h3>
                 <table class="data-table">
                     <thead>
-                        <tr>
-                            <th>Tahap</th>
-                            <th>Status</th>
-                            <th>Aksi</th>
-                        </tr>
+                        <tr><th>Tahap</th><th>Status</th><th>Aksi</th></tr>
                     </thead>
                     <tbody id="todoTableBody">
-                        <tr><td colspan="3" style="text-align:center;">Memuat data...</td></tr>
+                        <tr><td colspan="3" style="text-align:center;">Memuat数据...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -232,21 +241,35 @@
 
     <script>
         const BASE_URL = window.location.origin + '/asrama-pendaftaran/backend/api/';
+        let userData = null;
+        let pendaftarData = null;
+        let dokumenData = [];
         
-        // Ambil data user dari session
+        function showAlertLocal(message, type) {
+            const oldAlert = document.querySelector('.alert-fixed');
+            if (oldAlert) oldAlert.remove();
+            
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert-fixed alert-${type === 'success' ? 'success' : 'error'}`;
+            alertDiv.innerHTML = `${type === 'success' ? '✅' : '❌'} ${message}`;
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.style.opacity = '0';
+                setTimeout(() => alertDiv.remove(), 300);
+            }, 3000);
+        }
+        
         async function getUserData() {
             try {
-                const response = await fetch(BASE_URL + 'check_session.php', {
-                    method: 'GET',
-                    credentials: 'same-origin'
-                });
+                const response = await fetch(BASE_URL + 'check_session.php');
                 const result = await response.json();
                 
                 if (result.logged_in) {
+                    userData = result;
                     document.getElementById('userName').innerText = result.nama || 'Pengguna';
                     document.getElementById('welcomeName').innerHTML = `Selamat Datang, ${result.nama || 'Pengguna'} 👋`;
                     
-                    // Update status badge
                     const statusMap = {
                         'admin': '👑 Administrator',
                         'pendaftar': '📝 Pendaftar Baru'
@@ -262,26 +285,27 @@
             }
         }
         
-        // Ambil data pendaftar
         async function getPendaftarData() {
             try {
-                const response = await fetch(BASE_URL + 'get_pendaftar.php', {
-                    method: 'GET',
-                    credentials: 'same-origin'
-                });
+                const response = await fetch(BASE_URL + 'get_pendaftar.php');
                 const result = await response.json();
                 
                 if (result.success && result.data) {
-                    const data = result.data;
-                    // Update status berdasarkan data dari database
-                    if (data.status_pendaftaran) {
-                        const statusMap = {
-                            'draf': '⏳ Belum Lengkap',
-                            'menunggu_verifikasi': '⏳ Menunggu Verifikasi',
-                            'diterima': '✅ Diterima',
-                            'ditolak': '❌ Ditolak'
-                        };
-                        document.getElementById('statusText').innerHTML = statusMap[data.status_pendaftaran] || '⏳ Menunggu Verifikasi';
+                    pendaftarData = result.data;
+                    const status = pendaftarData.status_pendaftaran;
+                    const statusMap = {
+                        'draf': '⏳ Belum Lengkap',
+                        'menunggu_verifikasi': '⏳ Menunggu Verifikasi',
+                        'diterima': '✅ Diterima',
+                        'ditolak': '❌ Ditolak'
+                    };
+                    document.getElementById('statusText').innerHTML = statusMap[status] || '⏳ Menunggu Verifikasi';
+                    
+                    // Update warna berdasarkan status
+                    if (status === 'diterima') {
+                        document.getElementById('statusText').style.color = '#10b981';
+                    } else if (status === 'ditolak') {
+                        document.getElementById('statusText').style.color = '#ef4444';
                     }
                 }
                 return result;
@@ -290,18 +314,32 @@
             }
         }
         
-        // Ambil data dokumen
-        async function getDokumenData() {
+        async function getKamarData() {
             try {
-                const response = await fetch(BASE_URL + 'get_dokumen.php', {
-                    method: 'GET',
-                    credentials: 'same-origin'
-                });
+                const response = await fetch(BASE_URL + 'get_kamar.php');
                 const result = await response.json();
                 
                 if (result.success && result.data) {
                     const total = result.data.length;
-                    const required = 5; // Jumlah dokumen yang diperlukan
+                    const tersedia = result.data.filter(k => k.status_kamar === 'tersedia').length;
+                    document.getElementById('kamarCount').innerHTML = `${tersedia}/${total}`;
+                    document.getElementById('kamarStatus').innerHTML = `${tersedia} kamar tersedia`;
+                }
+                return result;
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+        
+        async function getDokumenData() {
+            try {
+                const response = await fetch(BASE_URL + 'get_dokumen.php');
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    dokumenData = result.data;
+                    const total = dokumenData.length;
+                    const required = 5;
                     document.getElementById('dokumenCount').innerHTML = `${total}/${required}`;
                     if (total >= required) {
                         document.getElementById('dokumenStatus').innerHTML = '✓ Lengkap';
@@ -317,16 +355,48 @@
             }
         }
         
-        // Render todo list
         function renderTodoList() {
             const tbody = document.getElementById('todoTableBody');
-            // Data statis untuk demo (bisa diambil dari API nanti)
+            const hasDataDiri = pendaftarData && pendaftarData.nim && pendaftarData.nama_lengkap;
+            const hasDokumen = dokumenData.length > 0;
+            const status = pendaftarData?.status_pendaftaran;
+            
             const todos = [
-                { name: 'Mengisi Formulir Pendaftaran', status: 'success', statusText: '✓ Selesai', link: 'pendaftaran-data-diri.html', actionText: 'Lihat' },
-                { name: 'Mengunggah Dokumen', status: 'success', statusText: '✓ Selesai', link: 'dokumen.html', actionText: 'Lihat' },
-                { name: 'Verifikasi Admin', status: 'warning', statusText: '⏳ Proses', link: null, actionText: null },
-                { name: 'Konfirmasi Booking', status: 'info', statusText: 'Belum', link: 'booking-confirmation.html', actionText: 'Konfirmasi' },
-                { name: 'Upload Bukti Pembayaran', status: 'info', statusText: 'Belum', link: 'pembayaran.html', actionText: 'Bayar' }
+                { 
+                    name: 'Mengisi Formulir Pendaftaran', 
+                    status: hasDataDiri ? 'success' : 'warning', 
+                    statusText: hasDataDiri ? '✓ Selesai' : '⏳ Belum', 
+                    link: 'pendaftaran-data-diri.html', 
+                    actionText: 'Isi Data' 
+                },
+                { 
+                    name: 'Mengunggah Dokumen', 
+                    status: hasDokumen ? 'success' : 'warning', 
+                    statusText: hasDokumen ? '✓ Selesai' : '⏳ Belum', 
+                    link: 'dokumen.html', 
+                    actionText: 'Upload' 
+                },
+                { 
+                    name: 'Verifikasi Admin', 
+                    status: status === 'menunggu_verifikasi' ? 'warning' : (status === 'diterima' ? 'success' : 'info'),
+                    statusText: status === 'menunggu_verifikasi' ? '⏳ Proses' : (status === 'diterima' ? '✓ Diterima' : 'Menunggu'),
+                    link: null, 
+                    actionText: null 
+                },
+                { 
+                    name: 'Konfirmasi Booking', 
+                    status: status === 'diterima' ? 'info' : 'info',
+                    statusText: status === 'diterima' ? 'Belum' : 'Belum Tersedia',
+                    link: status === 'diterima' ? 'booking-confirmation.html' : null, 
+                    actionText: 'Konfirmasi' 
+                },
+                { 
+                    name: 'Upload Bukti Pembayaran', 
+                    status: 'info',
+                    statusText: 'Belum',
+                    link: 'pembayaran.html', 
+                    actionText: 'Bayar' 
+                }
             ];
             
             tbody.innerHTML = todos.map(todo => `
@@ -338,17 +408,16 @@
             `).join('');
         }
         
-        // Inisialisasi
         async function init() {
             await getUserData();
             await getPendaftarData();
+            await getKamarData();
             await getDokumenData();
             renderTodoList();
         }
         
         init();
         
-        // Logout
         document.getElementById('logoutBtn').addEventListener('click', async function(e) {
             e.preventDefault();
             try {

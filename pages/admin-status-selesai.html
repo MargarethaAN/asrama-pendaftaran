@@ -5,11 +5,99 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - Status Selesai (Nonaktif)</title>
     <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .success-card {
+            background: white;
+            border-radius: 24px;
+            padding: 32px;
+            text-align: center;
+            max-width: 500px;
+            margin: 0 auto;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+            border: 1px solid #e2e8f0;
+        }
+        .success-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+        .info-list {
+            text-align: left;
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .info-row {
+            display: flex;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        .info-label {
+            width: 120px;
+            font-weight: 500;
+            color: #64748b;
+        }
+        .info-value {
+            flex: 1;
+            color: #1a2e3a;
+            font-weight: 500;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .status-danger {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        .alert-fixed {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
+        }
+        .btn-primary {
+            background: #2c7a4d;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-primary:hover {
+            background: #1e5a3a;
+        }
+    </style>
 </head>
 <body>
     <div class="sidebar-layout">
         <div class="sidebar">
-            <div class="logo">🏠 Admin Asrama</div>
+            <div class="logo">🏡 Admin Asrama</div>
             <nav>
                 <a href="admin-dashboard.html">📊 Dashboard</a>
                 <a href="admin-verifikasi-pendaftaran.html">📝 Verifikasi Pendaftaran</a>
@@ -27,18 +115,57 @@
         <div class="main-content">
             <h1>Status Penghuni - Selesai (Nonaktif)</h1>
             
-            <div style="background: white; border-radius: 15px; padding: 20px; text-align: center;">
-                <div style="font-size: 60px;">✅</div>
-                <h2 style="color: #22543d;">Konfirmasi Keluar Asrama Berhasil!</h2>
-                <p>Penghuni <strong>Brigitta (23K10001)</strong> telah dikonfirmasi keluar.</p>
-                <p>Status akun: <span class="status-badge status-danger">Nonaktif / Diblokir</span></p>
-                <p>Tanggal keluar: 20 April 2026</p>
-                <hr>
-                <p style="color: #666;">Akun penghuni tidak dapat lagi digunakan untuk login ke sistem.</p>
-                <button onclick="location.href='admin-data-penghuni.html'" class="btn-primary" style="margin-top: 20px;">Kembali ke Data Penghuni</button>
+            <div class="success-card">
+                <div class="success-icon">✅</div>
+                <h2 style="color: #22543d; margin-bottom: 8px;">Konfirmasi Keluar Asrama Berhasil!</h2>
+                
+                <div class="info-list">
+                    <div class="info-row">
+                        <span class="info-label">Nama Lengkap</span>
+                        <span class="info-value" id="infoNama">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">NIM</span>
+                        <span class="info-value" id="infoNim">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Status Akun</span>
+                        <span class="info-value"><span class="status-badge status-danger">Nonaktif / Diblokir</span></span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Tanggal Keluar</span>
+                        <span class="info-value" id="infoTanggal">-</span>
+                    </div>
+                </div>
+                
+                <p style="color: #64748b; margin-bottom: 20px;">Akun penghuni tidak dapat lagi digunakan untuk login ke sistem.</p>
+                
+                <button onclick="location.href='admin-data-penghuni.html'" class="btn-primary">← Kembali ke Data Penghuni</button>
             </div>
         </div>
     </div>
+
+    <script>
+        // Ambil data dari URL parameter atau sessionStorage
+        const urlParams = new URLSearchParams(window.location.search);
+        const nama = urlParams.get('nama') || sessionStorage.getItem('lastKonfirmasiNama') || 'Brigitta';
+        const nim = urlParams.get('nim') || sessionStorage.getItem('lastKonfirmasiNim') || '23K10001';
+        const tanggal = urlParams.get('tanggal') || sessionStorage.getItem('lastKonfirmasiTanggal') || new Date().toLocaleDateString('id-ID');
+        
+        document.getElementById('infoNama').innerText = nama;
+        document.getElementById('infoNim').innerText = nim;
+        document.getElementById('infoTanggal').innerText = tanggal;
+        
+        // Hapus data setelah ditampilkan (opsional)
+        // sessionStorage.removeItem('lastKonfirmasiNama');
+        // sessionStorage.removeItem('lastKonfirmasiNim');
+        // sessionStorage.removeItem('lastKonfirmasiTanggal');
+        
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = '../index.html';
+        });
+    </script>
     <script src="../js/main.js"></script>
 </body>
 </html>

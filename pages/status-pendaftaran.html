@@ -76,21 +76,49 @@
             padding: 20px;
             border: 1px solid #e2e8f0;
         }
-        .info-card h4 {
-            margin-bottom: 16px;
-        }
         .contact-info {
             background: #f8fafc;
             border-radius: 12px;
             padding: 16px;
             margin-top: 16px;
         }
+        .alert-fixed {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
+        }
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+        }
     </style>
 </head>
 <body>
     <div class="sidebar-layout">
         <div class="sidebar">
-            <div class="logo">🏡 Asrama Putri</div>
+            <div class="logo">🏡 St. Teresa Dorm</div>
             <nav>
                 <a href="dashboard.html">📊 Dashboard</a>
                 <a href="pendaftaran-data-diri.html">📝 Pendaftaran</a>
@@ -107,8 +135,8 @@
             <h1>📊 Status Pendaftaran</h1>
             <p>Pantau perkembangan pendaftaran Anda di sini.</p>
             
-            <div class="status-timeline" id="timelineContainer">
-                <!-- Timeline akan di-load via JS -->
+            <div id="timelineContainer" class="status-timeline">
+                <div class="loading">Memuat data...</div>
             </div>
             
             <div class="info-card">
@@ -127,61 +155,133 @@
         </div>
     </div>
 
+    <script src="../js/main.js"></script>
     <script>
-        // Data status dari localStorage / API
-        let pendaftaranStatus = {
-            dataDiri: { status: 'completed', date: '2026-04-15' },
-            dokumen: { status: 'completed', date: '2026-04-15' },
-            verifikasi: { status: 'active', date: null },
-            kamar: { status: 'pending', date: null },
-            pembayaran: { status: 'pending', date: null }
-        };
-        
-        // Cek data dari localStorage
-        const dataDiri = localStorage.getItem('dataDiri');
-        const uploadedDocs = localStorage.getItem('uploadedDocuments');
-        const buktiBayar = localStorage.getItem('buktiPembayaran');
-        
-        if (dataDiri) pendaftaranStatus.dataDiri.status = 'completed';
-        if (uploadedDocs) {
-            const docs = JSON.parse(uploadedDocs);
-            const requiredDocs = ['ktm', 'kk', 'foto', 'rekomendasi'];
-            let allUploaded = true;
-            for (const doc of requiredDocs) {
-                if (!docs[doc] || docs[doc].status === 'deleted') {
-                    allUploaded = false;
-                    break;
-                }
-            }
-            pendaftaranStatus.dokumen.status = allUploaded ? 'completed' : 'pending';
-        }
-        if (buktiBayar) pendaftaranStatus.pembayaran.status = 'active';
-        
-        function renderTimeline() {
-            const timelineData = [
-                { key: 'dataDiri', icon: '📝', title: 'Pengisian Data Diri', desc: 'Formulir data diri dan data keluarga' },
-                { key: 'dokumen', icon: '📄', title: 'Upload Dokumen', desc: 'Unggah berkas persyaratan' },
-                { key: 'verifikasi', icon: '👑', title: 'Verifikasi Admin', desc: 'Pemeriksaan data dan dokumen oleh pengelola' },
-                { key: 'kamar', icon: '🛏️', title: 'Penempatan Kamar', desc: 'Admin menetapkan kamar untuk penghuni' },
-                { key: 'pembayaran', icon: '💳', title: 'Pembayaran', desc: 'Konfirmasi pembayaran dan lunas' }
-            ];
+        function showAlertLocal(message, type) {
+            const oldAlert = document.querySelector('.alert-fixed');
+            if (oldAlert) oldAlert.remove();
             
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert-fixed alert-${type === 'success' ? 'success' : 'error'}`;
+            alertDiv.innerHTML = `${type === 'success' ? '✅' : '❌'} ${message}`;
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.style.opacity = '0';
+                setTimeout(() => alertDiv.remove(), 300);
+            }, 3000);
+        }
+        
+        function formatTanggalIndo(dateString) {
+            if (!dateString || dateString === '0000-00-00') return '-';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+        }
+        
+        async function loadStatusData() {
+            try {
+                const response = await fetch(BASE_URL + 'get_pendaftar.php');
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    const data = result.data;
+                    const statusPendaftaran = data.status_pendaftaran || 'draf';
+                    
+                    // Cek apakah data diri sudah terisi (nim tidak kosong DAN nama_lengkap tidak kosong)
+                    const isDataDiriLengkap = (data.nim && data.nim !== '' && data.nama_lengkap && data.nama_lengkap !== '');
+                    
+                    let tahapan = [
+                        { 
+                            key: 'data_diri', 
+                            icon: '📝', 
+                            title: 'Pengisian Data Diri', 
+                            desc: 'Formulir data diri dan data keluarga',
+                            isComplete: isDataDiriLengkap,
+                            tanggal: data.tanggal_daftar || data.created_at || null
+                        },
+                        { 
+                            key: 'dokumen', 
+                            icon: '📄', 
+                            title: 'Upload Dokumen', 
+                            desc: 'Unggah berkas persyaratan',
+                            isComplete: false,
+                            tanggal: null
+                        },
+                        { 
+                            key: 'verifikasi', 
+                            icon: '👑', 
+                            title: 'Verifikasi Admin', 
+                            desc: 'Pemeriksaan data dan dokumen oleh pengelola',
+                            isComplete: statusPendaftaran === 'diterima',
+                            isActive: statusPendaftaran === 'menunggu_verifikasi',
+                            tanggal: data.verifikasi_pada ? data.verifikasi_pada.split(' ')[0] : null
+                        },
+                        { 
+                            key: 'kamar', 
+                            icon: '🛏️', 
+                            title: 'Penempatan Kamar', 
+                            desc: 'Admin menetapkan kamar untuk penghuni',
+                            isComplete: !!(data.nomor_kamar),
+                            tanggal: data.tanggal_masuk_asrama || null
+                        },
+                        { 
+                            key: 'pembayaran', 
+                            icon: '💳', 
+                            title: 'Pembayaran', 
+                            desc: 'Konfirmasi pembayaran dan lunas',
+                            isComplete: false,
+                            tanggal: null
+                        }
+                    ];
+                    
+                    // Ambil data dokumen
+                    try {
+                        const dokResponse = await fetch(BASE_URL + 'get_dokumen.php');
+                        const dokResult = await dokResponse.json();
+                        if (dokResult.success && dokResult.data) {
+                            const requiredDocs = ['ktm', 'kk', 'foto', 'rekomendasi'];
+                            const uploadedDocs = dokResult.data.filter(d => requiredDocs.includes(d.jenis_dokumen)).length;
+                            tahapan[1].isComplete = uploadedDocs >= 4;
+                            if (tahapan[1].isComplete && dokResult.data[0]?.tanggal_upload) {
+                                tahapan[1].tanggal = dokResult.data[0].tanggal_upload;
+                            }
+                        }
+                    } catch(e) {
+                        console.error('Error loading dokumen:', e);
+                    }
+                    
+                    renderTimeline(tahapan);
+                } else {
+                    document.getElementById('timelineContainer').innerHTML = '<div class="loading">Belum ada data pendaftaran. Silakan isi formulir pendaftaran terlebih dahulu.</div>';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('timelineContainer').innerHTML = '<div class="loading">Gagal memuat数据. Silakan refresh halaman.</div>';
+                showAlertLocal('Gagal memuat数据 pendaftaran', 'error');
+            }
+        }
+        
+        function renderTimeline(tahapan) {
             const container = document.getElementById('timelineContainer');
             container.innerHTML = '<h3 style="margin-bottom: 24px;">📋 Timeline Pendaftaran</h3>';
             
-            for (const item of timelineData) {
-                const status = pendaftaranStatus[item.key];
+            for (const item of tahapan) {
                 let iconClass = 'pending';
                 let iconHtml = item.icon;
+                let dateHtml = '';
                 
-                if (status.status === 'completed') {
+                if (item.isComplete) {
                     iconClass = 'completed';
                     iconHtml = '✓';
-                } else if (status.status === 'active') {
+                    if (item.tanggal) {
+                        dateHtml = `<div class="timeline-date">📅 ${formatTanggalIndo(item.tanggal)}</div>`;
+                    }
+                } else if (item.isActive) {
                     iconClass = 'active';
+                    dateHtml = `<div class="timeline-date">⏳ Sedang diproses</div>`;
+                } else {
+                    dateHtml = `<div class="timeline-date">⏳ Belum dimulai</div>`;
                 }
-                
-                const dateHtml = status.date ? `<div class="timeline-date">📅 ${status.date}</div>` : '';
                 
                 container.innerHTML += `
                     <div class="timeline-item">
@@ -195,8 +295,7 @@
                 `;
             }
             
-            // Status keseluruhan
-            const allCompleted = timelineData.every(item => pendaftaranStatus[item.key]?.status === 'completed');
+            const allCompleted = tahapan.every(item => item.isComplete);
             if (allCompleted) {
                 container.innerHTML += `
                     <div style="margin-top: 24px; padding: 16px; background: #d1fae5; border-radius: 16px; text-align: center;">
@@ -206,8 +305,12 @@
             }
         }
         
-        renderTimeline();
+        loadStatusData();
+        
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = '../index.html';
+        });
     </script>
-    <script src="../js/main.js"></script>
 </body>
 </html>

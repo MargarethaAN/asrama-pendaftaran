@@ -42,12 +42,43 @@
             padding: 16px;
             margin: 20px 0;
         }
+        .alert-fixed {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
+        }
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+        }
     </style>
 </head>
 <body>
     <div class="sidebar-layout">
         <div class="sidebar">
-            <div class="logo">🏡 Asrama Putri</div>
+            <div class="logo">🏡 St. Teresa Dorm</div>
             <nav>
                 <a href="dashboard.html">📊 Dashboard</a>
                 <a href="pendaftaran-data-diri.html">📝 Pendaftaran</a>
@@ -64,37 +95,37 @@
             <h1>✅ Konfirmasi Booking</h1>
             <p>Konfirmasi pemesanan kamar Anda sebelum melanjutkan ke pembayaran.</p>
             
-            <div class="confirmation-card">
-                <div class="success-icon">🎉</div>
-                <h2>Pendaftaran Diterima!</h2>
-                <p style="color: #64748b;">Anda telah dinyatakan lolos verifikasi.</p>
-                
-                <div class="room-info">
-                    <strong>🏠 Kamar yang Ditawarkan:</strong> <span style="font-size: 24px; font-weight: 700; color: #2c7a4d;">Kamar 25</span><br>
-                    <span style="font-size: 14px; color: #64748b;">Lantai 2, Kapasitas 2 orang</span>
-                </div>
-                
-                <div class="timer-box">
-                    <p style="margin-bottom: 8px;">⏰ Sisa waktu konfirmasi:</p>
-                    <div class="timer" id="timer">47:23:45</div>
-                    <p style="font-size: 12px; color: #64748b; margin-top: 8px;">Jika tidak dikonfirmasi dalam 2 hari, booking akan otomatis dibatalkan</p>
-                </div>
-                
-                <div class="action-buttons">
-                    <button onclick="confirmBooking()" class="btn-primary" style="padding: 14px 32px;">✅ Konfirmasi & Lanjut Bayar</button>
-                    <button onclick="cancelBooking()" class="btn-danger" style="padding: 14px 32px;">❌ Batalkan Pendaftaran</button>
-                </div>
+            <div id="contentContainer">
+                <div class="loading">Memuat data...</div>
             </div>
         </div>
     </div>
 
     <script>
-        let timeLeft = 47 * 3600 + 23 * 60 + 45; // 47 jam 23 menit 45 detik dalam detik
+        const BASE_URL = window.location.origin + '/asrama-pendaftaran/backend/api/';
+        let timeLeft = 47 * 3600 + 23 * 60 + 45; // 47 jam 23 menit 45 detik
+        let timerInterval = null;
+        
+        function showAlertLocal(message, type) {
+            const oldAlert = document.querySelector('.alert-fixed');
+            if (oldAlert) oldAlert.remove();
+            
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert-fixed alert-${type === 'success' ? 'success' : 'error'}`;
+            alertDiv.innerHTML = `${type === 'success' ? '✅' : '❌'} ${message}`;
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.style.opacity = '0';
+                setTimeout(() => alertDiv.remove(), 300);
+            }, 3000);
+        }
         
         function updateTimer() {
             if (timeLeft <= 0) {
+                if (timerInterval) clearInterval(timerInterval);
                 document.getElementById('timer').innerHTML = '00:00:00';
-                showAlert('Waktu konfirmasi habis! Booking dibatalkan.', 'error');
+                showAlertLocal('Waktu konfirmasi habis! Booking dibatalkan.', 'error');
                 setTimeout(() => {
                     window.location.href = 'dashboard.html';
                 }, 2000);
@@ -111,10 +142,94 @@
             timeLeft--;
         }
         
-        setInterval(updateTimer, 1000);
+        async function loadData() {
+            try {
+                // Ambil data pendaftar
+                const response = await fetch(BASE_URL + 'get_pendaftar.php');
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    const data = result.data;
+                    const status = data.status_pendaftaran;
+                    
+                    // Cek apakah sudah diterima
+                    if (status !== 'diterima') {
+                        document.getElementById('contentContainer').innerHTML = `
+                            <div class="confirmation-card">
+                                <div class="success-icon">⚠️</div>
+                                <h2 style="color: #f59e0b;">Belum Dapat Dikonfirmasi</h2>
+                                <p style="color: #64748b;">Pendaftaran Anda masih dalam proses verifikasi.</p>
+                                <p style="color: #64748b;">Silakan tunggu admin memverifikasi data Anda.</p>
+                                <div class="action-buttons">
+                                    <button onclick="location.href='status-pendaftaran.html'" class="btn-primary">Lihat Status</button>
+                                </div>
+                            </div>
+                        `;
+                        return;
+                    }
+                    
+                    // Tampilkan halaman konfirmasi
+                    const kamarTawaran = data.nomor_kamar || '25';
+                    const lantai = Math.ceil(parseInt(kamarTawaran) / 10) || 2;
+                    
+                    document.getElementById('contentContainer').innerHTML = `
+                        <div class="confirmation-card">
+                            <div class="success-icon">🎉</div>
+                            <h2>Pendaftaran Diterima!</h2>
+                            <p style="color: #64748b;">Anda telah dinyatakan lolos verifikasi.</p>
+                            
+                            <div class="room-info">
+                                <strong>🏠 Kamar yang Ditawarkan:</strong> 
+                                <span style="font-size: 24px; font-weight: 700; color: #2c7a4d;">Kamar ${kamarTawaran}</span><br>
+                                <span style="font-size: 14px; color: #64748b;">Lantai ${lantai}, Kapasitas 2 orang</span>
+                            </div>
+                            
+                            <div class="timer-box">
+                                <p style="margin-bottom: 8px;">⏰ Sisa waktu konfirmasi:</p>
+                                <div class="timer" id="timer">47:23:45</div>
+                                <p style="font-size: 12px; color: #64748b; margin-top: 8px;">Jika tidak dikonfirmasi dalam 2 hari, booking akan otomatis dibatalkan</p>
+                            </div>
+                            
+                            <div class="action-buttons">
+                                <button onclick="confirmBooking()" class="btn-primary" style="padding: 14px 32px;">✅ Konfirmasi & Lanjut Bayar</button>
+                                <button onclick="cancelBooking()" class="btn-danger" style="padding: 14px 32px;">❌ Batalkan Pendaftaran</button>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Start timer
+                    timeLeft = 47 * 3600 + 23 * 60 + 45;
+                    if (timerInterval) clearInterval(timerInterval);
+                    timerInterval = setInterval(updateTimer, 1000);
+                } else {
+                    document.getElementById('contentContainer').innerHTML = `
+                        <div class="confirmation-card">
+                            <div class="success-icon">📝</div>
+                            <h2>Belum Ada Pendaftaran</h2>
+                            <p style="color: #64748b;">Anda belum mengisi formulir pendaftaran.</p>
+                            <div class="action-buttons">
+                                <button onclick="location.href='pendaftaran-data-diri.html'" class="btn-primary">Mulai Pendaftaran</button>
+                            </div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('contentContainer').innerHTML = `
+                    <div class="confirmation-card">
+                        <div class="success-icon">❌</div>
+                        <h2>Gagal Memuat Data</h2>
+                        <p style="color: #64748b;">Terjadi kesalahan saat memuat data.</p>
+                        <div class="action-buttons">
+                            <button onclick="location.reload()" class="btn-primary">Coba Lagi</button>
+                        </div>
+                    </div>
+                `;
+            }
+        }
         
         function confirmBooking() {
-            showAlert('Booking berhasil dikonfirmasi! Silakan lanjutkan ke pembayaran.', 'success');
+            showAlertLocal('Booking berhasil dikonfirmasi! Silakan lanjutkan ke pembayaran.', 'success');
             setTimeout(() => {
                 window.location.href = 'pembayaran.html';
             }, 1500);
@@ -122,12 +237,19 @@
         
         function cancelBooking() {
             if (confirm('Apakah Anda yakin ingin membatalkan pendaftaran?')) {
-                showAlert('Pendaftaran dibatalkan.', 'error');
+                showAlertLocal('Pendaftaran dibatalkan.', 'error');
                 setTimeout(() => {
                     window.location.href = 'dashboard.html';
                 }, 1500);
             }
         }
+        
+        loadData();
+        
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = '../index.html';
+        });
     </script>
     <script src="../js/main.js"></script>
 </body>

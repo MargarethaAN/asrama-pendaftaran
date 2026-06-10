@@ -14,14 +14,16 @@ if (!isset($_SESSION['id_pengguna']) || $_SESSION['role'] != 'admin') {
 
 $data = json_decode(file_get_contents('php://input'), true);
 
-$id_kamar = mysqli_real_escape_string($conn, $data['id_kamar']);
+$nomor_kamar = mysqli_real_escape_string($conn, $data['nomor_kamar']);
+$lantai = intval($data['lantai']);
+$kapasitas = intval($data['kapasitas']);
 $status_kamar = mysqli_real_escape_string($conn, $data['status_kamar']);
 
-$query = "UPDATE kamar SET status_kamar = '$status_kamar' WHERE id_kamar = $id_kamar";
+$query = "INSERT INTO kamar (nomor_kamar, lantai, kapasitas, status_kamar) VALUES ('$nomor_kamar', $lantai, $kapasitas, '$status_kamar')";
 
 if (mysqli_query($conn, $query)) {
-    echo json_encode(['success' => true, 'message' => 'Status kamar berhasil diupdate']);
+    echo json_encode(['success' => true, 'message' => 'Kamar berhasil ditambahkan']);
 } else {
-    echo json_encode(['success' => false, 'message' => 'Gagal update: ' . mysqli_error($conn)]);
+    echo json_encode(['success' => false, 'message' => 'Gagal: ' . mysqli_error($conn)]);
 }
 ?>

@@ -49,6 +49,32 @@
             padding-top: 8px;
             font-size: 12px;
         }
+        .alert-fixed {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
+        }
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+        }
     </style>
 </head>
 <body>
@@ -73,22 +99,28 @@
             <h1>📄 Laporan & Rekap Administrasi</h1>
             <p>Lihat dan unduh laporan data pendaftaran, penghuni, dan pembayaran.</p>
             
-            <div class="stats-grid">
-                <div class="stat-card"><h3>Total Pendaftar</h3><div class="number">156</div></div>
-                <div class="stat-card"><h3>Diterima</h3><div class="number">84</div></div>
-                <div class="stat-card"><h3>Ditolak</h3><div class="number">12</div></div>
-                <div class="stat-card"><h3>Menunggu</h3><div class="number">60</div></div>
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card"><h3>Total Pendaftar</h3><div class="number" id="totalPendaftar">0</div></div>
+                <div class="stat-card"><h3>Diterima</h3><div class="number" id="totalDiterima">0</div></div>
+                <div class="stat-card"><h3>Ditolak</h3><div class="number" id="totalDitolak">0</div></div>
+                <div class="stat-card"><h3>Menunggu</h3><div class="number" id="totalMenunggu">0</div></div>
             </div>
             
             <div class="chart-container">
                 <h3>📊 Grafik Pendaftar per Bulan</h3>
                 <div class="chart-bars" id="chartBars">
-                    <div class="chart-bar" style="height: 80px;">Jan<br>80</div>
-                    <div class="chart-bar" style="height: 120px;">Feb<br>120</div>
-                    <div class="chart-bar" style="height: 60px;">Mar<br>60</div>
-                    <div class="chart-bar" style="height: 40px;">Apr<br>40</div>
-                    <div class="chart-bar" style="height: 20px;">Mei<br>20</div>
-                    <div class="chart-bar" style="height: 10px;">Jun<br>10</div>
+                    <div class="chart-bar" style="height: 0px;">Jan<br>0</div>
+                    <div class="chart-bar" style="height: 0px;">Feb<br>0</div>
+                    <div class="chart-bar" style="height: 0px;">Mar<br>0</div>
+                    <div class="chart-bar" style="height: 0px;">Apr<br>0</div>
+                    <div class="chart-bar" style="height: 0px;">Mei<br>0</div>
+                    <div class="chart-bar" style="height: 0px;">Jun<br>0</div>
+                    <div class="chart-bar" style="height: 0px;">Jul<br>0</div>
+                    <div class="chart-bar" style="height: 0px;">Agu<br>0</div>
+                    <div class="chart-bar" style="height: 0px;">Sep<br>0</div>
+                    <div class="chart-bar" style="height: 0px;">Okt<br>0</div>
+                    <div class="chart-bar" style="height: 0px;">Nov<br>0</div>
+                    <div class="chart-bar" style="height: 0px;">Des<br>0</div>
                 </div>
             </div>
             
@@ -117,7 +149,7 @@
                 <h3 style="padding: 20px 20px 0;" id="laporanTitle">📋 Data Pendaftaran</h3>
                 <table class="data-table" id="laporanTable">
                     <thead id="laporanHeader"></thead>
-                    <tbody id="laporanBody"></tbody>
+                    <tbody id="laporanBody"><tr><td colspan="5">Memuat data...</td></tr></tbody>
                 </table>
             </div>
             
@@ -129,58 +161,176 @@
     </div>
 
     <script>
-        let laporanData = {
-            pendaftaran: [
-                { nama: 'Maria Angelina', nim: '23K10020', tgl: '15/04/2026', status: 'Diterima', bayar: 'Belum' },
-                { nama: 'Brigitta', nim: '23K10021', tgl: '14/04/2026', status: 'Diterima', bayar: 'Lunas' },
-                { nama: 'Cecilia', nim: '23K10022', tgl: '13/04/2026', status: 'Ditolak', bayar: '-' },
-                { nama: 'Angeline', nim: '23K10023', tgl: '12/04/2026', status: 'Menunggu', bayar: 'Belum' }
-            ],
-            penghuni: [
-                { nama: 'Maria', nim: '23K10020', kamar: '101', tglMasuk: '15/01/2024', status: 'Aktif' },
-                { nama: 'Brigitta', nim: '23K10001', kamar: '103', tglMasuk: '15/01/2024', status: 'Aktif' }
-            ],
-            pembayaran: [
-                { nama: 'Brigitta', nim: '23K10001', jumlah: 'Rp5.500.000', tglBayar: '20/04/2026', status: 'Lunas' }
-            ]
-        };
+        const BASE_URL = window.location.origin + '/asrama-pendaftaran/backend/api/';
+        let allPendaftar = [];
+        let allPenghuni = [];
+        let allPembayaran = [];
         
-        function renderLaporan() {
-            const jenis = document.getElementById('jenisLaporan').value;
-            const data = laporanData[jenis];
-            const title = document.getElementById('laporanTitle');
+        function showAlertLocal(message, type) {
+            const oldAlert = document.querySelector('.alert-fixed');
+            if (oldAlert) oldAlert.remove();
             
-            if (jenis === 'pendaftaran') {
-                title.innerText = '📋 Data Pendaftaran';
-                document.getElementById('laporanHeader').innerHTML = '<tr><th>Nama</th><th>NIM</th><th>Tgl Daftar</th><th>Status</th><th>Pembayaran</th></tr>';
-                document.getElementById('laporanBody').innerHTML = data.map(d => `
-                    <tr><td>${d.nama}</td><td>${d.nim}</td><td>${d.tgl}</td><td>${d.status}</td><td>${d.bayar}</td></tr>
-                `).join('');
-            } else if (jenis === 'penghuni') {
-                title.innerText = '👥 Data Penghuni Aktif';
-                document.getElementById('laporanHeader').innerHTML = '<tr><th>Nama</th><th>NIM</th><th>Kamar</th><th>Tgl Masuk</th><th>Status</th></tr>';
-                document.getElementById('laporanBody').innerHTML = data.map(d => `
-                    <tr><td>${d.nama}</td><td>${d.nim}</td><td>${d.kamar}</td><td>${d.tglMasuk}</td><td>${d.status}</td></tr>
-                `).join('');
-            } else if (jenis === 'pembayaran') {
-                title.innerText = '💰 Data Pembayaran';
-                document.getElementById('laporanHeader').innerHTML = '<tr><th>Nama</th><th>NIM</th><th>Jumlah</th><th>Tgl Bayar</th><th>Status</th></tr>';
-                document.getElementById('laporanBody').innerHTML = data.map(d => `
-                    <tr><td>${d.nama}</td><td>${d.nim}</td><td>${d.jumlah}</td><td>${d.tglBayar}</td><td>${d.status}</td></tr>
-                `).join('');
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert-fixed alert-${type === 'success' ? 'success' : 'error'}`;
+            alertDiv.innerHTML = `${type === 'success' ? '✅' : '❌'} ${message}`;
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.style.opacity = '0';
+                setTimeout(() => alertDiv.remove(), 300);
+            }, 3000);
+        }
+        
+        async function loadAllData() {
+            try {
+                // Load pendaftar
+                const resPendaftar = await fetch(BASE_URL + 'get_all_pendaftar.php');
+                const resultPendaftar = await resPendaftar.json();
+                if (resultPendaftar.success) {
+                    allPendaftar = resultPendaftar.data;
+                    updateStats();
+                    updateChart();
+                }
+                
+                // Load penghuni
+                const resPenghuni = await fetch(BASE_URL + 'get_penghuni.php');
+                const resultPenghuni = await resPenghuni.json();
+                if (resultPenghuni.success) {
+                    allPenghuni = resultPenghuni.data;
+                }
+                
+                // Load pembayaran
+                const resPembayaran = await fetch(BASE_URL + 'get_pembayaran_list.php');
+                const resultPembayaran = await resPembayaran.json();
+                if (resultPembayaran.success) {
+                    allPembayaran = resultPembayaran.data;
+                }
+                
+                renderLaporan();
+            } catch (error) {
+                console.error('Error:', error);
             }
+        }
+        
+        function updateStats() {
+            const total = allPendaftar.length;
+            const diterima = allPendaftar.filter(p => p.status_pendaftaran === 'diterima').length;
+            const ditolak = allPendaftar.filter(p => p.status_pendaftaran === 'ditolak').length;
+            const menunggu = allPendaftar.filter(p => p.status_pendaftaran === 'menunggu_verifikasi').length;
+            
+            document.getElementById('totalPendaftar').innerText = total;
+            document.getElementById('totalDiterima').innerText = diterima;
+            document.getElementById('totalDitolak').innerText = ditolak;
+            document.getElementById('totalMenunggu').innerText = menunggu;
+        }
+        
+        function updateChart() {
+            // Hitung pendaftar per bulan
+            const bulanCount = new Array(12).fill(0);
+            allPendaftar.forEach(p => {
+                if (p.tanggal_daftar) {
+                    const bulan = new Date(p.tanggal_daftar).getMonth();
+                    bulanCount[bulan]++;
+                }
+            });
+            
+            const maxCount = Math.max(...bulanCount, 1);
+            const bulanNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+            const chartBars = document.getElementById('chartBars');
+            
+            chartBars.innerHTML = bulanCount.map((count, i) => {
+                const height = (count / maxCount) * 180;
+                return `<div class="chart-bar" style="height: ${height}px;">${bulanNames[i]}<br>${count}</div>`;
+            }).join('');
         }
         
         function filterLaporan() {
             renderLaporan();
-            showAlert('Laporan diperbarui', 'success');
+            showAlertLocal('Laporan diperbarui', 'success');
+        }
+        
+        function renderLaporan() {
+            const jenis = document.getElementById('jenisLaporan').value;
+            const periode = document.getElementById('periode').value;
+            
+            if (jenis === 'pendaftaran') {
+                let data = [...allPendaftar];
+                if (periode !== 'semua') {
+                    data = data.filter(p => p.tanggal_daftar && p.tanggal_daftar.includes(periode));
+                }
+                
+                document.getElementById('laporanTitle').innerText = '📋 Data Pendaftaran';
+                document.getElementById('laporanHeader').innerHTML = '<tr><th>Nama</th><th>NIM</th><th>Prodi</th><th>Tgl Daftar</th><th>Status</th></tr>';
+                if (data.length === 0) {
+                    document.getElementById('laporanBody').innerHTML = '<tr><td colspan="5">Tidak ada data</td></tr>';
+                } else {
+                    document.getElementById('laporanBody').innerHTML = data.map(d => `
+                        <tr>
+                            <td>${d.nama_lengkap || '-'}</td>
+                            <td>${d.nim || '-'}</td>
+                            <td>${d.prodi || '-'}</td>
+                            <td>${d.tanggal_daftar || '-'}</td>
+                            <td>${d.status_pendaftaran || '-'}</td>
+                        </tr>
+                    `).join('');
+                }
+            } 
+            else if (jenis === 'penghuni') {
+                let data = [...allPenghuni];
+                if (periode !== 'semua') {
+                    data = data.filter(p => p.tanggal_masuk && p.tanggal_masuk.includes(periode));
+                }
+                
+                document.getElementById('laporanTitle').innerText = '👥 Data Penghuni';
+                document.getElementById('laporanHeader').innerHTML = '<tr><th>Nama</th><th>NIM</th><th>Prodi</th><th>Kamar</th><th>Status</th></tr>';
+                if (data.length === 0) {
+                    document.getElementById('laporanBody').innerHTML = '<tr><td colspan="5">Tidak ada data</td></tr>';
+                } else {
+                    document.getElementById('laporanBody').innerHTML = data.map(d => `
+                        <tr>
+                            <td>${d.nama_lengkap || '-'}</td>
+                            <td>${d.nim || '-'}</td>
+                            <td>${d.prodi || '-'}</td>
+                            <td>${d.nomor_kamar || '-'}</td>
+                            <td>${d.status_keluar === 'aktif' ? 'Aktif' : (d.status_keluar === 'keluar' ? 'Keluar' : 'Calon')}</td>
+                        </tr>
+                    `).join('');
+                }
+            }
+            else if (jenis === 'pembayaran') {
+                let data = [...allPembayaran];
+                if (periode !== 'semua') {
+                    data = data.filter(p => p.tanggal_bayar && p.tanggal_bayar.includes(periode));
+                }
+                
+                document.getElementById('laporanTitle').innerText = '💰 Data Pembayaran';
+                document.getElementById('laporanHeader').innerHTML = '<tr><th>Nama</th><th>NIM</th><th>Jumlah</th><th>Tgl Bayar</th><th>Status</th></tr>';
+                if (data.length === 0) {
+                    document.getElementById('laporanBody').innerHTML = '<tr><td colspan="5">Tidak ada data</td></tr>';
+                } else {
+                    document.getElementById('laporanBody').innerHTML = data.map(d => `
+                        <tr>
+                            <td>${d.nama_lengkap || '-'}</td>
+                            <td>${d.nim || '-'}</td>
+                            <td>${d.jumlah_tagihan ? 'Rp' + Number(d.jumlah_tagihan).toLocaleString() : '-'}</td>
+                            <td>${d.tanggal_bayar || '-'}</td>
+                            <td>${d.status_pembayaran || '-'}</td>
+                        </tr>
+                    `).join('');
+                }
+            }
         }
         
         function exportReport(type) {
-            showAlert(`Laporan berhasil diexport sebagai ${type.toUpperCase()}`, 'success');
+            showAlertLocal(`Laporan berhasil diexport sebagai ${type.toUpperCase()} (simulasi)`, 'success');
         }
         
-        renderLaporan();
+        loadAllData();
+        
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = '../index.html';
+        });
     </script>
     <script src="../js/main.js"></script>
 </body>

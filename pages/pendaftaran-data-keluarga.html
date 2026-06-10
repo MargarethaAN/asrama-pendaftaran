@@ -29,12 +29,38 @@
             background: #f8fafc;
             border-radius: 12px;
         }
+        .alert-fixed {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
+        }
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+        }
     </style>
 </head>
 <body>
     <div class="sidebar-layout">
         <div class="sidebar">
-            <div class="logo">🏡 Asrama Putri</div>
+            <div class="logo">🏡 St. Teresa Dorm</div>
             <nav>
                 <a href="dashboard.html">📊 Dashboard</a>
                 <a href="pendaftaran-data-diri.html" class="active">📝 Pendaftaran</a>
@@ -95,24 +121,69 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const savedData = localStorage.getItem('dataKeluarga');
-            if (savedData) {
-                const data = JSON.parse(savedData);
-                for (const [key, value] of Object.entries(data)) {
-                    const field = document.getElementById(key);
-                    if (field) field.value = value;
-                }
-            }
-        });
+        const BASE_URL = window.location.origin + '/asrama-pendaftaran/backend/api/';
         
-        document.getElementById('formKeluarga').addEventListener('submit', function(e) {
-            e.preventDefault();
-            if (!document.getElementById('setuju').checked) {
-                showAlert('Harap centang pernyataan persetujuan data', 'error');
-                return;
+        function showAlertLocal(message, type) {
+            const oldAlert = document.querySelector('.alert-fixed');
+            if (oldAlert) oldAlert.remove();
+            
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert-fixed alert-${type === 'success' ? 'success' : 'error'}`;
+            alertDiv.innerHTML = `${type === 'success' ? '✅' : '❌'} ${message}`;
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.style.opacity = '0';
+                setTimeout(() => alertDiv.remove(), 300);
+            }, 3000);
+        }
+        
+        async function loadExistingData() {
+            try {
+                const response = await fetch(BASE_URL + 'get_pendaftar.php');
+                const result = await response.json();
+                if (result.success && result.data) {
+                    const data = result.data;
+                    if (data.nama_ayah) document.getElementById('nama_ayah').value = data.nama_ayah || '';
+                    if (data.pekerjaan_ayah) document.getElementById('pekerjaan_ayah').value = data.pekerjaan_ayah || '';
+                    if (data.no_hp_ayah) document.getElementById('no_hp_ayah').value = data.no_hp_ayah || '';
+                    if (data.nama_ibu) document.getElementById('nama_ibu').value = data.nama_ibu || '';
+                    if (data.pekerjaan_ibu) document.getElementById('pekerjaan_ibu').value = data.pekerjaan_ibu || '';
+                    if (data.no_hp_ibu) document.getElementById('no_hp_ibu').value = data.no_hp_ibu || '';
+                    if (data.jumlah_saudara) document.getElementById('jumlah_saudara').value = data.jumlah_saudara || 0;
+                }
+            } catch (error) {
+                console.error('Error loading data:', error);
             }
+        }
+        
+        async function saveDataKeluarga() {
+            let existingData = {};
+            try {
+                const response = await fetch(BASE_URL + 'get_pendaftar.php');
+                const result = await response.json();
+                if (result.success && result.data) {
+                    existingData = result.data;
+                }
+            } catch (error) {}
+            
             const formData = {
+                nim: existingData.nim || '',
+                nama_lengkap: existingData.nama_lengkap || '',
+                nama_panggilan: existingData.nama_panggilan || '',
+                prodi: existingData.prodi || '',
+                fakultas: existingData.fakultas || '',
+                no_hp: existingData.no_hp || '',
+                alamat_asal: existingData.alamat_asal || '',
+                alamat_semarang: existingData.alamat_semarang || '',
+                agama: existingData.agama || '',
+                asal_sekolah: existingData.asal_sekolah || '',
+                tempat_lahir: existingData.tempat_lahir || '',
+                tanggal_lahir: existingData.tanggal_lahir || '',
+                sifat_positif: existingData.sifat_positif || '',
+                sifat_negatif: existingData.sifat_negatif || '',
+                bakat: existingData.bakat || '',
+                alasan_masuk: existingData.alasan_masuk_asrama || '',
                 nama_ayah: document.getElementById('nama_ayah').value,
                 pekerjaan_ayah: document.getElementById('pekerjaan_ayah').value,
                 no_hp_ayah: document.getElementById('no_hp_ayah').value,
@@ -121,18 +192,42 @@
                 no_hp_ibu: document.getElementById('no_hp_ibu').value,
                 jumlah_saudara: document.getElementById('jumlah_saudara').value
             };
-            localStorage.setItem('dataKeluarga', JSON.stringify(formData));
             
-            // Gabungkan semua data pendaftaran
-            const dataDiri = JSON.parse(localStorage.getItem('dataDiri') || '{}');
-            const dataKeluarga = formData;
-            const allData = { ...dataDiri, ...dataKeluarga };
-            localStorage.setItem('dataPendaftaran', JSON.stringify(allData));
-            
-            showAlert('Data keluarga berhasil disimpan!', 'success');
-            setTimeout(() => {
-                window.location.href = 'pendaftaran-syarat.html';
-            }, 1000);
+            try {
+                const response = await fetch(BASE_URL + 'save_pendaftaran.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlertLocal('Data keluarga berhasil disimpan!', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'pendaftaran-syarat.html';
+                    }, 1000);
+                } else {
+                    showAlertLocal(result.message, 'error');
+                }
+            } catch (error) {
+                showAlertLocal('Gagal menyimpan data: ' + error.message, 'error');
+            }
+        }
+        
+        document.getElementById('formKeluarga').addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (!document.getElementById('setuju').checked) {
+                showAlertLocal('Harap centang pernyataan persetujuan data', 'error');
+                return;
+            }
+            saveDataKeluarga();
+        });
+        
+        loadExistingData();
+        
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = '../index.html';
         });
     </script>
     <script src="../js/main.js"></script>

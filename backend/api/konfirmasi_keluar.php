@@ -6,6 +6,7 @@ header('Access-Control-Allow-Methods: POST');
 require_once '../config/database.php';
 
 session_start();
+
 if (!isset($_SESSION['id_pengguna']) || $_SESSION['role'] != 'admin') {
     echo json_encode(['success' => false, 'message' => 'Akses ditolak']);
     exit;
@@ -14,8 +15,8 @@ if (!isset($_SESSION['id_pengguna']) || $_SESSION['role'] != 'admin') {
 $data = json_decode(file_get_contents('php://input'), true);
 
 $id_pendaftar = mysqli_real_escape_string($conn, $data['id_pendaftar']);
+$keterangan = mysqli_real_escape_string($conn, $data['keterangan'] ?? '');
 $tanggal_sekarang = date('Y-m-d');
-$keterangan = mysqli_real_escape_string($conn, $data['keterangan']);
 
 // Dapatkan id_admin
 $queryAdmin = "SELECT id_admin FROM admin WHERE id_pengguna = " . $_SESSION['id_pengguna'];
@@ -40,7 +41,8 @@ $updateHunian = "UPDATE hunian SET
                   status_hunian = 'selesai'
                   WHERE id_pendaftar = $id_pendaftar AND status_hunian = 'aktif'";
 
-if (mysqli_query($conn, $updatePendaftar) && mysqli_query($conn, $insertKonfirmasi)) {
+if (mysqli_query($conn, $updatePendaftar)) {
+    mysqli_query($conn, $insertKonfirmasi);
     mysqli_query($conn, $updateHunian);
     echo json_encode(['success' => true, 'message' => 'Konfirmasi keluar asrama berhasil, akun telah diblokir']);
 } else {

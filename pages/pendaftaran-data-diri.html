@@ -22,23 +22,67 @@
             align-items: center;
             gap: 8px;
         }
-        .input-hint {
-            font-size: 11px;
-            color: #94a3b8;
-            margin-top: 4px;
-        }
         .form-actions {
             display: flex;
             justify-content: flex-end;
             gap: 12px;
             margin-top: 24px;
         }
+        .info-card {
+            background: #e6f7ff;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 24px;
+            border-left: 4px solid #2c7a4d;
+        }
+        .readonly-field {
+            background: #f1f5f9;
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+        }
+        .readonly-label {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 4px;
+        }
+        .readonly-value {
+            font-size: 14px;
+            font-weight: 500;
+            color: #1a2e3a;
+        }
+        .alert-fixed {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
+        }
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+        }
     </style>
 </head>
 <body>
     <div class="sidebar-layout">
         <div class="sidebar">
-            <div class="logo">🏡 Asrama Putri</div>
+            <div class="logo">🏡 St. Teresa Dorm</div>
             <nav>
                 <a href="dashboard.html">📊 Dashboard</a>
                 <a href="pendaftaran-data-diri.html" class="active">📝 Pendaftaran</a>
@@ -61,68 +105,173 @@
                 <div class="step"><div class="step-number">3</div><div class="step-label">Syarat & Ketentuan</div></div>
             </div>
             
-            <form id="formDataDiri">
-                <div class="form-section">
-                    <h3>👤 Identitas Diri</h3>
-                    <div class="form-row">
-                        <div class="form-group"><label>NIM *</label><input type="text" id="nim" required placeholder="Contoh: 23K10020"></div>
-                        <div class="form-group"><label>Nama Lengkap *</label><input type="text" id="nama_lengkap" required placeholder="Nama sesuai KTP"></div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group"><label>Nama Panggilan</label><input type="text" id="nama_panggilan" placeholder="Nama sehari-hari"></div>
-                        <div class="form-group"><label>Program Studi *</label><input type="text" id="prodi" required placeholder="Contoh: Teknik Informatika"></div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group"><label>Fakultas *</label><input type="text" id="fakultas" required placeholder="Contoh: Ilmu Komputer"></div>
-                        <div class="form-group"><label>No. Handphone *</label><input type="tel" id="no_hp" required placeholder="08xxxxxxxxxx"></div>
-                    </div>
-                </div>
-                
-                <div class="form-section">
-                    <h3>📍 Alamat</h3>
-                    <div class="form-group"><label>Alamat Asal *</label><textarea id="alamat_asal" rows="2" required placeholder="Alamat lengkap di kota asal"></textarea></div>
-                    <div class="form-group"><label>Alamat di Semarang *</label><textarea id="alamat_semarang" rows="2" required placeholder="Alamat selama kuliah di Semarang"></textarea></div>
-                </div>
-                
-                <div class="form-section">
-                    <h3>📋 Informasi Lainnya</h3>
-                    <div class="form-row">
-                        <div class="form-group"><label>Agama *</label><select id="agama" required><option value="">Pilih</option><option>Katolik</option><option>Kristen</option><option>Islam</option><option>Hindu</option><option>Buddha</option></select></div>
-                        <div class="form-group"><label>Asal Sekolah *</label><input type="text" id="asal_sekolah" required placeholder="Nama SMA/SMK sederajat"></div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group"><label>Tempat Lahir *</label><input type="text" id="tempat_lahir" required></div>
-                        <div class="form-group"><label>Tanggal Lahir *</label><input type="date" id="tanggal_lahir" required></div>
-                    </div>
-                    <div class="form-group"><label>Sifat Positif</label><textarea id="sifat_positif" rows="2" placeholder="Contoh: Jujur, disiplin, bertanggung jawab"></textarea></div>
-                    <div class="form-group"><label>Sifat Negatif</label><textarea id="sifat_negatif" rows="2" placeholder="Contoh: Terkadang pemalu"></textarea></div>
-                    <div class="form-group"><label>Bakat / Hobi</label><input type="text" id="bakat" placeholder="Contoh: Menyanyi, membaca, olahraga"></div>
-                    <div class="form-group"><label>Alasan Masuk Asrama *</label><textarea id="alasan_masuk" rows="3" required placeholder="Jelaskan alasan Anda ingin tinggal di asrama"></textarea></div>
-                </div>
-                
-                <div class="form-actions">
-                    <button type="button" onclick="window.location.href='dashboard.html'" class="btn-secondary">Batal</button>
-                    <button type="submit" class="btn-primary">Selanjutnya →</button>
-                </div>
-            </form>
+            <div id="formContainer"></div>
         </div>
     </div>
 
     <script>
-        // Load data yang sudah tersimpan (jika ada)
-        document.addEventListener('DOMContentLoaded', function() {
-            const savedData = localStorage.getItem('dataDiri');
-            if (savedData) {
-                const data = JSON.parse(savedData);
-                for (const [key, value] of Object.entries(data)) {
-                    const field = document.getElementById(key);
-                    if (field) field.value = value;
-                }
-            }
-        });
+        const BASE_URL = window.location.origin + '/asrama-pendaftaran/backend/api/';
         
-        document.getElementById('formDataDiri').addEventListener('submit', function(e) {
-            e.preventDefault();
+        function showAlertLocal(message, type) {
+            const oldAlert = document.querySelector('.alert-fixed');
+            if (oldAlert) oldAlert.remove();
+            
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert-fixed alert-${type === 'success' ? 'success' : 'error'}`;
+            alertDiv.innerHTML = `${type === 'success' ? '✅' : '❌'} ${message}`;
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.style.opacity = '0';
+                setTimeout(() => alertDiv.remove(), 300);
+            }, 3000);
+        }
+        
+        async function checkExistingData() {
+            try {
+                const response = await fetch(BASE_URL + 'get_pendaftar.php');
+                const result = await response.json();
+                
+                if (result.success && result.data && result.data.nim) {
+                    displayExistingData(result.data);
+                } else {
+                    displayEmptyForm();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                displayEmptyForm();
+            }
+        }
+        
+        function displayExistingData(data) {
+            const container = document.getElementById('formContainer');
+            container.innerHTML = `
+                <div class="info-card">
+                    <strong>✅ Data diri sudah terisi!</strong><br>
+                    <small>Anda sudah mengisi formulir pendaftaran. Silakan lanjutkan ke tahap berikutnya atau edit data jika perlu.</small>
+                </div>
+                
+                <div class="form-section">
+                    <h3>👤 Data Diri (Terisi)</h3>
+                    <div class="readonly-field">
+                        <div class="readonly-label">NIM</div>
+                        <div class="readonly-value">${escapeHtml(data.nim || '-')}</div>
+                    </div>
+                    <div class="readonly-field">
+                        <div class="readonly-label">Nama Lengkap</div>
+                        <div class="readonly-value">${escapeHtml(data.nama_lengkap || '-')}</div>
+                    </div>
+                    <div class="readonly-field">
+                        <div class="readonly-label">Nama Panggilan</div>
+                        <div class="readonly-value">${escapeHtml(data.nama_panggilan || '-')}</div>
+                    </div>
+                    <div class="readonly-field">
+                        <div class="readonly-label">Program Studi</div>
+                        <div class="readonly-value">${escapeHtml(data.prodi || '-')}</div>
+                    </div>
+                    <div class="readonly-field">
+                        <div class="readonly-label">Fakultas</div>
+                        <div class="readonly-value">${escapeHtml(data.fakultas || '-')}</div>
+                    </div>
+                    <div class="readonly-field">
+                        <div class="readonly-label">No. Handphone</div>
+                        <div class="readonly-value">${escapeHtml(data.no_hp || '-')}</div>
+                    </div>
+                    <div class="readonly-field">
+                        <div class="readonly-label">Alamat Asal</div>
+                        <div class="readonly-value">${escapeHtml(data.alamat_asal || '-')}</div>
+                    </div>
+                    <div class="readonly-field">
+                        <div class="readonly-label">Alamat di Semarang</div>
+                        <div class="readonly-value">${escapeHtml(data.alamat_semarang || '-')}</div>
+                    </div>
+                    <div class="readonly-field">
+                        <div class="readonly-label">Agama</div>
+                        <div class="readonly-value">${escapeHtml(data.agama || '-')}</div>
+                    </div>
+                    <div class="readonly-field">
+                        <div class="readonly-label">Asal Sekolah</div>
+                        <div class="readonly-value">${escapeHtml(data.asal_sekolah || '-')}</div>
+                    </div>
+                    <div class="readonly-field">
+                        <div class="readonly-label">Tempat Lahir</div>
+                        <div class="readonly-value">${escapeHtml(data.tempat_lahir || '-')}</div>
+                    </div>
+                    <div class="readonly-field">
+                        <div class="readonly-label">Tanggal Lahir</div>
+                        <div class="readonly-value">${escapeHtml(data.tanggal_lahir || '-')}</div>
+                    </div>
+                    <div class="readonly-field">
+                        <div class="readonly-label">Alasan Masuk Asrama</div>
+                        <div class="readonly-value">${escapeHtml(data.alasan_masuk_asrama || '-')}</div>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button onclick="location.href='pendaftaran-data-keluarga.html'" class="btn-primary">Lanjut ke Data Keluarga →</button>
+                    <button onclick="enableEdit()" class="btn-secondary">Edit Data</button>
+                </div>
+            `;
+            
+            localStorage.setItem('existingPendaftarData', JSON.stringify(data));
+        }
+        
+        function displayEmptyForm() {
+            const container = document.getElementById('formContainer');
+            container.innerHTML = `
+                <form id="formDataDiri">
+                    <div class="form-section">
+                        <h3>👤 Identitas Diri</h3>
+                        <div class="form-row">
+                            <div class="form-group"><label>NIM *</label><input type="text" id="nim" required placeholder="Contoh: 23K10020"></div>
+                            <div class="form-group"><label>Nama Lengkap *</label><input type="text" id="nama_lengkap" required placeholder="Nama sesuai KTP"></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label>Nama Panggilan</label><input type="text" id="nama_panggilan" placeholder="Nama sehari-hari"></div>
+                            <div class="form-group"><label>Program Studi *</label><input type="text" id="prodi" required placeholder="Contoh: Teknik Informatika"></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label>Fakultas *</label><input type="text" id="fakultas" required placeholder="Contoh: Ilmu Komputer"></div>
+                            <div class="form-group"><label>No. Handphone *</label><input type="tel" id="no_hp" required placeholder="08xxxxxxxxxx"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h3>📍 Alamat</h3>
+                        <div class="form-group"><label>Alamat Asal *</label><textarea id="alamat_asal" rows="2" required placeholder="Alamat lengkap di kota asal"></textarea></div>
+                        <div class="form-group"><label>Alamat di Semarang *</label><textarea id="alamat_semarang" rows="2" required placeholder="Alamat selama kuliah di Semarang"></textarea></div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h3>📋 Informasi Lainnya</h3>
+                        <div class="form-row">
+                            <div class="form-group"><label>Agama *</label><select id="agama" required><option value="">Pilih</option><option>Katolik</option><option>Kristen</option><option>Islam</option><option>Hindu</option><option>Buddha</option></select></div>
+                            <div class="form-group"><label>Asal Sekolah *</label><input type="text" id="asal_sekolah" required placeholder="Nama SMA/SMK sederajat"></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label>Tempat Lahir *</label><input type="text" id="tempat_lahir" required></div>
+                            <div class="form-group"><label>Tanggal Lahir *</label><input type="date" id="tanggal_lahir" required></div>
+                        </div>
+                        <div class="form-group"><label>Sifat Positif</label><textarea id="sifat_positif" rows="2" placeholder="Contoh: Jujur, disiplin, bertanggung jawab"></textarea></div>
+                        <div class="form-group"><label>Sifat Negatif</label><textarea id="sifat_negatif" rows="2" placeholder="Contoh: Terkadang pemalu"></textarea></div>
+                        <div class="form-group"><label>Bakat / Hobi</label><input type="text" id="bakat" placeholder="Contoh: Menyanyi, membaca, olahraga"></div>
+                        <div class="form-group"><label>Alasan Masuk Asrama *</label><textarea id="alasan_masuk" rows="3" required placeholder="Jelaskan alasan Anda ingin tinggal di asrama"></textarea></div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" onclick="window.location.href='dashboard.html'" class="btn-secondary">Batal</button>
+                        <button type="submit" class="btn-primary">Selanjutnya →</button>
+                    </div>
+                </form>
+            `;
+            
+            document.getElementById('formDataDiri').addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveDataDiri();
+            });
+        }
+        
+        async function saveDataDiri() {
             const formData = {
                 nim: document.getElementById('nim').value,
                 nama_lengkap: document.getElementById('nama_lengkap').value,
@@ -141,11 +290,57 @@
                 bakat: document.getElementById('bakat').value,
                 alasan_masuk: document.getElementById('alasan_masuk').value
             };
-            localStorage.setItem('dataDiri', JSON.stringify(formData));
-            showAlert('Data diri berhasil disimpan!', 'success');
+            
+            try {
+                const response = await fetch(BASE_URL + 'save_pendaftaran.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlertLocal('Data diri berhasil disimpan!', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'pendaftaran-data-keluarga.html';
+                    }, 1000);
+                } else {
+                    showAlertLocal(result.message || 'Gagal menyimpan data', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showAlertLocal('Gagal menyimpan data: ' + error.message, 'error');
+            }
+        }
+        
+        function enableEdit() {
+            const existingData = JSON.parse(localStorage.getItem('existingPendaftarData') || '{}');
+            displayEmptyForm();
+            
             setTimeout(() => {
-                window.location.href = 'pendaftaran-data-keluarga.html';
-            }, 1000);
+                const fields = ['nim', 'nama_lengkap', 'nama_panggilan', 'prodi', 'fakultas', 'no_hp', 
+                                'alamat_asal', 'alamat_semarang', 'agama', 'asal_sekolah', 'tempat_lahir', 
+                                'tanggal_lahir', 'sifat_positif', 'sifat_negatif', 'bakat', 'alasan_masuk'];
+                fields.forEach(field => {
+                    const el = document.getElementById(field);
+                    if (el && existingData[field]) el.value = existingData[field];
+                });
+            }, 100);
+        }
+        
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // Inisialisasi
+        checkExistingData();
+        
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = '../index.html';
         });
     </script>
     <script src="../js/main.js"></script>

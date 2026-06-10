@@ -67,6 +67,37 @@
             max-height: 80vh;
             overflow-y: auto;
         }
+        .alert-fixed {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
+        }
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+        }
     </style>
 </head>
 <body>
@@ -96,7 +127,7 @@
             </div>
             
             <div id="skList">
-                <!-- SK cards akan di-load via JS -->
+                <div class="loading">Memuat data...</div>
             </div>
         </div>
     </div>
@@ -118,35 +149,76 @@
     </div>
 
     <script>
-        let skData = [
-            { id: 1, judul: 'Syarat dan Ketentuan Pendaftaran Asrama Putri', versi: 'v1.0', tanggal: '2026-01-01', isi: '1. Mahasiswi aktif Universitas Katolik Soegijapranata\n2. Belum menikah\n3. Memiliki IPK minimal 2.75\n4. Melampirkan surat rekomendasi dari orang tua\n5. Bersedia mengikuti peraturan asrama', status: 'aktif' },
-            { id: 2, judul: 'Syarat Penghuni Asrama', versi: 'v2.0', tanggal: '2026-03-01', isi: '1. Wajib mengikuti kegiatan asrama\n2. Menjaga kebersihan dan ketertiban\n3. Tidak membawa tamu tanpa izin\n4. Membayar biaya hunian tepat waktu', status: 'nonaktif' }
-        ];
-        
+        const BASE_URL = window.location.origin + '/asrama-pendaftaran/backend/api/';
+        let skData = [];
         let editingId = null;
+        
+        function showAlertLocal(message, type) {
+            const oldAlert = document.querySelector('.alert-fixed');
+            if (oldAlert) oldAlert.remove();
+            
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert-fixed alert-${type === 'success' ? 'success' : 'error'}`;
+            alertDiv.innerHTML = `${type === 'success' ? '✅' : '❌'} ${message}`;
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.style.opacity = '0';
+                setTimeout(() => alertDiv.remove(), 300);
+            }, 3000);
+        }
+        
+        async function loadSKFromDB() {
+            try {
+                const response = await fetch(BASE_URL + 'get_syarat_ketentuan.php');
+                const result = await response.json();
+                if (result.success && result.data) {
+                    skData = result.data;
+                } else {
+                    skData = [];
+                }
+                renderSKList();
+            } catch (error) {
+                console.error('Error:', error);
+                skData = [];
+                renderSKList();
+            }
+        }
         
         function renderSKList() {
             const container = document.getElementById('skList');
+            if (skData.length === 0) {
+                container.innerHTML = '<div class="loading">Belum ada data syarat & ketentuan</div>';
+                return;
+            }
+            
             container.innerHTML = skData.map(sk => `
                 <div class="sk-card">
                     <div class="sk-header">
-                        <div class="sk-title">📜 ${sk.judul}</div>
+                        <div class="sk-title">📜 ${escapeHtml(sk.judul)}</div>
                         <div>
-                            <button onclick="editSK(${sk.id})" class="btn-secondary" style="padding:6px 12px;">✏️ Edit</button>
-                            <button onclick="toggleStatus(${sk.id})" class="${sk.status === 'aktif' ? 'btn-warning' : 'btn-success'}" style="padding:6px 12px;">
+                            <button onclick="editSK(${sk.id_sk})" class="btn-secondary" style="padding:6px 12px;">✏️ Edit</button>
+                            <button onclick="toggleStatus(${sk.id_sk})" class="${sk.status === 'aktif' ? 'btn-warning' : 'btn-success'}" style="padding:6px 12px;">
                                 ${sk.status === 'aktif' ? 'Nonaktifkan' : 'Aktifkan'}
                             </button>
-                            <button onclick="deleteSK(${sk.id})" class="btn-danger" style="padding:6px 12px;">🗑️ Hapus</button>
+                            <button onclick="deleteSK(${sk.id_sk})" class="btn-danger" style="padding:6px 12px;">🗑️ Hapus</button>
                         </div>
                     </div>
                     <div class="sk-meta">
-                        <span>📌 Versi: ${sk.versi}</span>
-                        <span>📅 Berlaku: ${sk.tanggal}</span>
+                        <span>📌 Versi: ${escapeHtml(sk.versi || '-')}</span>
+                        <span>📅 Berlaku: ${sk.tanggal_berlaku || '-'}</span>
                         <span>${sk.status === 'aktif' ? '<span class="status-badge status-success">Aktif</span>' : '<span class="status-badge status-danger">Nonaktif</span>'}</span>
                     </div>
-                    <div class="sk-content">${sk.isi.replace(/\n/g, '<br>')}</div>
+                    <div class="sk-content">${escapeHtml(sk.isi || '').replace(/\n/g, '<br>')}</div>
                 </div>
             `).join('');
+        }
+        
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
         
         function openTambahModal() {
@@ -162,62 +234,97 @@
         
         function editSK(id) {
             editingId = id;
-            const sk = skData.find(s => s.id === id);
+            const sk = skData.find(s => s.id_sk === id);
+            if (!sk) return;
             document.getElementById('modalTitle').innerText = 'Edit Syarat & Ketentuan';
-            document.getElementById('skJudul').value = sk.judul;
-            document.getElementById('skVersi').value = sk.versi;
-            document.getElementById('skTanggal').value = sk.tanggal;
-            document.getElementById('skIsi').value = sk.isi;
-            document.getElementById('skStatus').value = sk.status;
+            document.getElementById('skJudul').value = sk.judul || '';
+            document.getElementById('skVersi').value = sk.versi || '';
+            document.getElementById('skTanggal').value = sk.tanggal_berlaku || '';
+            document.getElementById('skIsi').value = sk.isi || '';
+            document.getElementById('skStatus').value = sk.status || 'aktif';
             document.getElementById('skModal').style.display = 'flex';
         }
         
-        function saveSK() {
-            const judul = document.getElementById('skJudul').value;
-            const versi = document.getElementById('skVersi').value;
+        function closeModal() {
+            document.getElementById('skModal').style.display = 'none';
+            editingId = null;
+        }
+        
+        async function saveSK() {
+            const judul = document.getElementById('skJudul').value.trim();
+            const versi = document.getElementById('skVersi').value.trim();
             const tanggal = document.getElementById('skTanggal').value;
             const isi = document.getElementById('skIsi').value;
             const status = document.getElementById('skStatus').value;
             
             if (!judul || !isi) {
-                showAlert('Judul dan isi harus diisi!', 'error');
+                showAlertLocal('Judul dan isi harus diisi!', 'error');
                 return;
             }
             
-            if (editingId) {
-                const index = skData.findIndex(s => s.id === editingId);
-                skData[index] = { ...skData[index], judul, versi, tanggal, isi, status };
-                showAlert('Syarat & ketentuan berhasil diupdate!', 'success');
-            } else {
-                const newId = Math.max(...skData.map(s => s.id), 0) + 1;
-                skData.push({ id: newId, judul, versi, tanggal, isi, status });
-                showAlert('Syarat & ketentuan berhasil ditambahkan!', 'success');
-            }
+            const url = editingId ? BASE_URL + 'update_syarat_ketentuan.php' : BASE_URL + 'tambah_syarat_ketentuan.php';
+            const body = editingId ? { id_sk: editingId, judul, versi, tanggal_berlaku: tanggal, isi, status } : { judul, versi, tanggal_berlaku: tanggal, isi, status };
             
-            renderSKList();
-            closeModal();
-        }
-        
-        function toggleStatus(id) {
-            const sk = skData.find(s => s.id === id);
-            sk.status = sk.status === 'aktif' ? 'nonaktif' : 'aktif';
-            renderSKList();
-            showAlert(`Status "${sk.judul}" diubah menjadi ${sk.status}`, 'success');
-        }
-        
-        function deleteSK(id) {
-            if (confirm('Hapus syarat & ketentuan ini?')) {
-                skData = skData.filter(s => s.id !== id);
-                renderSKList();
-                showAlert('Syarat & ketentuan dihapus', 'success');
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+                const result = await response.json();
+                showAlertLocal(result.message, result.success ? 'success' : 'error');
+                if (result.success) {
+                    loadSKFromDB();
+                    closeModal();
+                }
+            } catch (error) {
+                showAlertLocal('Gagal menyimpan data', 'error');
             }
         }
         
-        function closeModal() {
-            document.getElementById('skModal').style.display = 'none';
+        async function toggleStatus(id) {
+            try {
+                const response = await fetch(BASE_URL + 'update_syarat_ketentuan.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id_sk: id, status: null }) // Akan di-handle di API
+                });
+                const result = await response.json();
+                showAlertLocal(result.message, result.success ? 'success' : 'error');
+                if (result.success) {
+                    loadSKFromDB();
+                }
+            } catch (error) {
+                showAlertLocal('Gagal mengubah status', 'error');
+            }
         }
         
-        renderSKList();
+        async function deleteSK(id) {
+            if (!confirm('Hapus syarat & ketentuan ini?')) return;
+            
+            try {
+                const response = await fetch(BASE_URL + 'delete_syarat_ketentuan.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id_sk: id })
+                });
+                const result = await response.json();
+                showAlertLocal(result.message, result.success ? 'success' : 'error');
+                if (result.success) {
+                    loadSKFromDB();
+                }
+            } catch (error) {
+                showAlertLocal('Gagal menghapus data', 'error');
+            }
+        }
+        
+        // Load data dari database
+        loadSKFromDB();
+        
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = '../index.html';
+        });
     </script>
     <script src="../js/main.js"></script>
 </body>

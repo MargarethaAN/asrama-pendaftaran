@@ -42,6 +42,32 @@
             width: 90%;
             max-width: 450px;
         }
+        .alert-fixed {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
+        }
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+        }
     </style>
 </head>
 <body>
@@ -100,31 +126,84 @@
     </div>
 
     <script>
-        let penghuniData = [
-            { id: 1, nama: 'Brigitta', nim: '23K10001', tglMasuk: '2024-01-15', masaHunian: '2 tahun 3 bulan', bisaKeluar: true, status: 'aktif' },
-            { id: 2, nama: 'Cecilia', nim: '23K10002', tglMasuk: '2024-08-20', masaHunian: '1 tahun 8 bulan', bisaKeluar: false, status: 'aktif' },
-            { id: 3, nama: 'Dominique', nim: '23K10003', tglMasuk: '2023-12-10', masaHunian: '2 tahun 4 bulan', bisaKeluar: true, status: 'aktif' },
-            { id: 4, nama: 'Angelina', nim: '23K10004', tglMasuk: '2025-01-15', masaHunian: '1 tahun 3 bulan', bisaKeluar: false, status: 'aktif' }
-        ];
-        
+        const BASE_URL = window.location.origin + '/asrama-pendaftaran/backend/api/';
+        let penghuniData = [];
         let currentPenghuniId = null;
+        
+        function showAlertLocal(message, type) {
+            const oldAlert = document.querySelector('.alert-fixed');
+            if (oldAlert) oldAlert.remove();
+            
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert-fixed alert-${type === 'success' ? 'success' : 'error'}`;
+            alertDiv.innerHTML = `${type === 'success' ? '✅' : '❌'} ${message}`;
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.style.opacity = '0';
+                setTimeout(() => alertDiv.remove(), 300);
+            }, 3000);
+        }
+        
+        function hitungMasaHunian(tglMasuk) {
+            if (!tglMasuk) return { tahun: 0, bulan: 0, teks: 'Belum ada data', bisaKeluar: false };
+            const masuk = new Date(tglMasuk);
+            const sekarang = new Date();
+            let tahun = sekarang.getFullYear() - masuk.getFullYear();
+            let bulan = sekarang.getMonth() - masuk.getMonth();
+            if (bulan < 0) {
+                tahun--;
+                bulan += 12;
+            }
+            const bisaKeluar = tahun >= 2;
+            let teks = '';
+            if (tahun > 0) teks += `${tahun} tahun `;
+            if (bulan > 0) teks += `${bulan} bulan`;
+            if (tahun === 0 && bulan === 0) teks = 'Kurang dari 1 bulan';
+            return { tahun, bulan, teks, bisaKeluar };
+        }
+        
+        async function loadPenghuniFromDB() {
+            try {
+                const response = await fetch(BASE_URL + 'get_penghuni.php');
+                const result = await response.json();
+                if (result.success && result.data) {
+                    penghuniData = result.data.filter(p => p.status_keluar === 'aktif');
+                } else {
+                    penghuniData = [];
+                }
+                renderPenghuniList();
+            } catch (error) {
+                console.error('Error:', error);
+                penghuniData = [];
+                renderPenghuniList();
+            }
+        }
         
         function renderPenghuniList() {
             const tbody = document.getElementById('penghuniList');
+            if (penghuniData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Tidak ada penghuni aktif</td></tr>';
+                return;
+            }
+            
             tbody.innerHTML = penghuniData.map(p => {
-                const statusBadge = p.status === 'aktif' ? '<span class="status-badge status-success">Aktif</span>' : '<span class="status-badge status-danger">Nonaktif</span>';
-                const actionBtn = p.bisaKeluar && p.status === 'aktif' 
-                    ? `<button onclick="openConfirmModal(${p.id}, '${p.nama}')" class="btn-warning" style="padding:5px 12px;">Konfirmasi Keluar</button>`
+                const masa = hitungMasaHunian(p.tanggal_masuk_asrama || p.tanggal_masuk);
+                const statusBadge = '<span class="status-badge status-success">Aktif</span>';
+                const actionBtn = masa.bisaKeluar 
+                    ? `<button onclick="openConfirmModal(${p.id_pendaftar}, '${p.nama_lengkap}')" class="btn-warning" style="padding:5px 12px;">Konfirmasi Keluar</button>`
                     : '<button class="btn-secondary" disabled style="opacity:0.5;">Belum 2 tahun</button>';
                 
-                return `<tr>
-                    <td>${p.nama}</td>
-                    <td>${p.nim}</td>
-                    <td>${p.tglMasuk}</td>
-                    <td>${p.masaHunian} <span class="warning-badge">${p.bisaKeluar ? '✓ Bisa keluar' : 'Belum 2 tahun'}</span></td>
-                    <td>${statusBadge}</td>
-                    <td>${actionBtn}</td>
-                </tr>`;
+                return `
+                    <tr>
+                        <td>${p.nama_lengkap || '-'}</td>
+                        <td>${p.nim || '-'}</td>
+                        <td>${p.tanggal_masuk_asrama || p.tanggal_masuk || '-'}</td>
+                        <td>${masa.teks} ${masa.bisaKeluar ? '<span class="warning-badge">✓ Bisa keluar</span>' : '<span class="warning-badge">Belum 2 tahun</span>'}</td>
+                        <td>${statusBadge}</td>
+                        <td>${actionBtn}</td>
+                    </tr>
+                `;
             }).join('');
         }
         
@@ -140,20 +219,35 @@
             document.getElementById('keteranganKeluar').value = '';
         }
         
-        function submitKonfirmasi() {
+        async function submitKonfirmasi() {
             const keterangan = document.getElementById('keteranganKeluar').value;
-            const penghuni = penghuniData.find(p => p.id === currentPenghuniId);
             
-            if (penghuni) {
-                penghuni.status = 'nonaktif';
-                penghuni.bisaKeluar = false;
-                showAlert(`Konfirmasi keluar asrama untuk ${penghuni.nama} berhasil! Akun telah diblokir. ${keterangan ? 'Catatan: ' + keterangan : ''}`, 'success');
-                renderPenghuniList();
+            try {
+                const response = await fetch(BASE_URL + 'konfirmasi_keluar.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        id_pendaftar: currentPenghuniId, 
+                        keterangan: keterangan 
+                    })
+                });
+                const result = await response.json();
+                showAlertLocal(result.message, result.success ? 'success' : 'error');
+                if (result.success) {
+                    loadPenghuniFromDB();
+                    closeConfirmModal();
+                }
+            } catch (error) {
+                showAlertLocal('Gagal konfirmasi keluar', 'error');
             }
-            closeConfirmModal();
         }
         
-        renderPenghuniList();
+        loadPenghuniFromDB();
+        
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = '../index.html';
+        });
     </script>
     <script src="../js/main.js"></script>
 </body>

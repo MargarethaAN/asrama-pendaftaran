@@ -5,23 +5,36 @@ header('Access-Control-Allow-Origin: *');
 require_once '../config/database.php';
 
 session_start();
+
 if (!isset($_SESSION['id_pengguna']) || $_SESSION['role'] != 'admin') {
     echo json_encode(['success' => false, 'message' => 'Akses ditolak']);
     exit;
 }
 
-$query = "SELECT pk.id_pendaftaran, p.nim, p.nama_lengkap, p.prodi, p.no_hp, pk.tanggal_daftar, pk.status_pendaftaran, pk.catatan_revisi
+$query = "SELECT 
+            pk.id_pendaftaran,
+            pf.id_pendaftar,
+            pf.nim,
+            pf.nama_lengkap,
+            pf.prodi,
+            pk.tanggal_daftar,
+            pk.status_pendaftaran
           FROM pendaftaran pk
-          JOIN pendaftar p ON pk.id_pendaftar = p.id_pendaftar
-          WHERE pk.status_pendaftaran IN ('menunggu_verifikasi', 'diterima', 'ditolak')
+          JOIN pendaftar pf ON pk.id_pendaftar = pf.id_pendaftar
+          WHERE pk.status_pendaftaran = 'menunggu_verifikasi'
           ORDER BY pk.tanggal_daftar DESC";
 
 $result = mysqli_query($conn, $query);
 
-$pendaftaran = [];
-while ($row = mysqli_fetch_assoc($result)) {
-    $pendaftaran[] = $row;
+if (!$result) {
+    echo json_encode(['success' => false, 'message' => 'Error: ' . mysqli_error($conn)]);
+    exit;
 }
 
-echo json_encode(['success' => true, 'data' => $pendaftaran]);
+$data = [];
+while ($row = mysqli_fetch_assoc($result)) {
+    $data[] = $row;
+}
+
+echo json_encode(['success' => true, 'data' => $data]);
 ?>

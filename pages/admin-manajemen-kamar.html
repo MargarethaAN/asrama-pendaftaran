@@ -78,14 +78,8 @@
             box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
         }
         @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
         .alert-success {
             background: #d1fae5;
@@ -97,17 +91,10 @@
             color: #991b1b;
             border-left: 4px solid #ef4444;
         }
-        .btn-small {
-            padding: 4px 8px;
-            font-size: 11px;
-            margin-left: 8px;
-        }
-        .status-manual-badge {
-            font-size: 10px;
-            background: #e2e8f0;
-            padding: 2px 6px;
-            border-radius: 20px;
-            margin-left: 5px;
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
         }
     </style>
 </head>
@@ -142,10 +129,12 @@
             
             <div class="add-room-btn">
                 <button onclick="openTambahKamar()" class="btn-primary">+ Tambah Kamar</button>
-                <button onclick="resetAllData()" class="btn-secondary" style="background:#64748b;">Reset Data Demo</button>
+                <button onclick="refreshData()" class="btn-secondary" style="background:#64748b;">🔄 Refresh</button>
             </div>
             
-            <div class="room-grid" id="roomGridAdmin"></div>
+            <div class="room-grid" id="roomGridAdmin">
+                <div class="loading">Memuat data kamar...</div>
+            </div>
         </div>
     </div>
 
@@ -180,23 +169,9 @@
     </div>
 
     <script>
-        // Data kamar dengan array penghuni (maks 2 orang)
-        // Status bisa diubah manual oleh admin, tidak akan ditimpa otomatis
-        let kamarData = [
-            { id: 1, nomor: '101', lantai: 1, kapasitas: 2, status: 'tersedia', penghuni: [] },
-            { id: 2, nomor: '102', lantai: 1, kapasitas: 2, status: 'tersedia', penghuni: [] },
-            { id: 3, nomor: '103', lantai: 1, kapasitas: 2, status: 'terisi', penghuni: ['Maria Angelina'] },
-            { id: 4, nomor: '201', lantai: 2, kapasitas: 2, status: 'tersedia', penghuni: [] },
-            { id: 5, nomor: '202', lantai: 2, kapasitas: 2, status: 'tersedia', penghuni: [] },
-            { id: 6, nomor: '203', lantai: 2, kapasitas: 2, status: 'perbaikan', penghuni: [] },
-            { id: 7, nomor: '301', lantai: 3, kapasitas: 2, status: 'tersedia', penghuni: [] }
-        ];
-        
-        // Data calon penghuni yang bisa ditempatkan
-        let calonPenghuni = [
-            'Brigitta', 'Cecilia', 'Dominique', 'Angeline', 'Veronica', 'Stefanie', 'Natasha', 'Jessica'
-        ];
-        
+        const BASE_URL = window.location.origin + '/asrama-pendaftaran/backend/api/';
+        let kamarData = [];
+        let daftarPenghuni = [];
         let currentKamarId = null;
         
         function showAlertLocal(message, type) {
@@ -214,11 +189,46 @@
             }, 3000);
         }
         
+        async function loadKamar() {
+            try {
+                const response = await fetch(BASE_URL + 'get_kamar.php');
+                const result = await response.json();
+                if (result.success && result.data) {
+                    kamarData = result.data;
+                    // Tambahkan properti penghuni (akan diisi dari database nanti)
+                    kamarData.forEach(k => { k.penghuni = k.penghuni_list ? JSON.parse(k.penghuni_list) : []; });
+                } else {
+                    kamarData = [];
+                }
+                renderRooms();
+                updateStats();
+            } catch (error) {
+                console.error('Error:', error);
+                kamarData = [];
+                renderRooms();
+                updateStats();
+            }
+        }
+        
+        async function loadDaftarPenghuni() {
+            try {
+                const response = await fetch(BASE_URL + 'get_all_pendaftar.php');
+                const result = await response.json();
+                if (result.success && result.data) {
+                    // Filter penghuni yang aktif dan belum punya kamar
+                    daftarPenghuni = result.data.filter(p => p.status_keluar === 'aktif' && !p.nomor_kamar);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                daftarPenghuni = [];
+            }
+        }
+        
         function updateStats() {
             const total = kamarData.length;
-            const tersedia = kamarData.filter(k => k.status === 'tersedia').length;
-            const terisi = kamarData.filter(k => k.status === 'terisi').length;
-            const perbaikan = kamarData.filter(k => k.status === 'perbaikan').length;
+            const tersedia = kamarData.filter(k => k.status_kamar === 'tersedia').length;
+            const terisi = kamarData.filter(k => k.status_kamar === 'terisi').length;
+            const perbaikan = kamarData.filter(k => k.status_kamar === 'perbaikan').length;
             document.getElementById('totalKamar').innerText = total;
             document.getElementById('totalTersedia').innerText = tersedia;
             document.getElementById('totalTerisi').innerText = terisi;
@@ -227,18 +237,23 @@
         
         function renderRooms() {
             const grid = document.getElementById('roomGridAdmin');
+            if (kamarData.length === 0) {
+                grid.innerHTML = '<div class="loading">Belum ada data kamar</div>';
+                return;
+            }
+            
             grid.innerHTML = kamarData.map(k => {
-                // Render daftar penghuni
+                // Render daftar penghuni (sementara masih simulasi, nanti dari database)
                 let penghuniHtml = '<div class="penghuni-list">';
-                if (k.penghuni.length === 0) {
+                if (!k.penghuni || k.penghuni.length === 0) {
                     penghuniHtml += '<div class="slot-kosong">📭 Kosong</div>';
                 } else {
-                    for (let i = 0; i < k.kapasitas; i++) {
+                    for (let i = 0; i < (k.kapasitas || 2); i++) {
                         if (k.penghuni[i]) {
                             penghuniHtml += `
                                 <div class="penghuni-item">
                                     <span>👤 ${k.penghuni[i]}</span>
-                                    <button onclick="hapusPenghuni(${k.id}, '${k.penghuni[i]}')" class="remove-penghuni" title="Hapus penghuni">✖</button>
+                                    <button onclick="hapusPenghuni(${k.id_kamar}, '${k.penghuni[i]}')" class="remove-penghuni" title="Hapus penghuni">✖</button>
                                 </div>
                             `;
                         } else {
@@ -248,29 +263,27 @@
                 }
                 penghuniHtml += '</div>';
                 
-                // Tentukan tombol tempatkan (disabled jika sudah penuh)
-                const isFull = k.penghuni.length >= k.kapasitas;
+                const isFull = (k.penghuni?.length || 0) >= (k.kapasitas || 2);
                 const tempatkanBtn = isFull 
                     ? '<button class="btn-secondary" style="margin-top:8px; width:100%; opacity:0.5;" disabled>⚠️ Kamar Penuh</button>'
-                    : `<button onclick="openTempatkanModal(${k.id}, '${k.nomor}')" class="btn-primary" style="margin-top:8px; width:100%;">+ Tempatkan Penghuni</button>`;
+                    : `<button onclick="openTempatkanModal(${k.id_kamar}, '${k.nomor_kamar}')" class="btn-primary" style="margin-top:8px; width:100%;">+ Tempatkan Penghuni</button>`;
                 
-                // Status badge
                 let statusText = '';
-                if (k.status === 'tersedia') statusText = 'Tersedia';
-                else if (k.status === 'terisi') statusText = 'Terisi';
+                if (k.status_kamar === 'tersedia') statusText = 'Tersedia';
+                else if (k.status_kamar === 'terisi') statusText = 'Terisi';
                 else statusText = 'Perbaikan';
                 
                 return `
-                    <div class="room-card ${k.status}">
-                        <div class="room-number">${k.nomor}</div>
+                    <div class="room-card ${k.status_kamar}">
+                        <div class="room-number">${k.nomor_kamar}</div>
                         <div>Lantai ${k.lantai}</div>
-                        <div>Kapasitas: ${k.penghuni.length}/${k.kapasitas}</div>
+                        <div>Kapasitas: ${k.penghuni?.length || 0}/${k.kapasitas || 2}</div>
                         ${penghuniHtml}
-                        <div style="margin-top:8px; font-size:12px; color:#64748b;">Status saat ini: <strong>${statusText}</strong></div>
-                        <select onchange="updateStatus(${k.id}, this.value)" style="margin-top:8px; padding:6px; border-radius:8px; width:100%;">
-                            <option value="tersedia" ${k.status === 'tersedia' ? 'selected' : ''}>🟢 Tersedia</option>
-                            <option value="terisi" ${k.status === 'terisi' ? 'selected' : ''}>🟠 Terisi</option>
-                            <option value="perbaikan" ${k.status === 'perbaikan' ? 'selected' : ''}>🔴 Perbaikan</option>
+                        <div style="margin-top:8px; font-size:12px; color:#64748b;">Status: <strong>${statusText}</strong></div>
+                        <select onchange="updateStatus(${k.id_kamar}, this.value)" style="margin-top:8px; padding:6px; border-radius:8px; width:100%;">
+                            <option value="tersedia" ${k.status_kamar === 'tersedia' ? 'selected' : ''}>🟢 Tersedia</option>
+                            <option value="terisi" ${k.status_kamar === 'terisi' ? 'selected' : ''}>🟠 Terisi</option>
+                            <option value="perbaikan" ${k.status_kamar === 'perbaikan' ? 'selected' : ''}>🔴 Perbaikan</option>
                         </select>
                         ${tempatkanBtn}
                     </div>
@@ -279,46 +292,57 @@
             updateStats();
         }
         
-        function updateStatus(id, newStatus) {
-            const kamar = kamarData.find(k => k.id === id);
-            if (kamar) {
-                const oldStatus = kamar.status;
-                kamar.status = newStatus;
-                renderRooms();
-                showAlertLocal(`Status kamar ${kamar.nomor} berubah dari ${oldStatus} menjadi ${newStatus}`, 'success');
+        async function updateStatus(id, newStatus) {
+            try {
+                const response = await fetch(BASE_URL + 'update_kamar.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id_kamar: id, status_kamar: newStatus })
+                });
+                const result = await response.json();
+                showAlertLocal(result.message, result.success ? 'success' : 'error');
+                if (result.success) {
+                    loadKamar();
+                }
+            } catch (error) {
+                showAlertLocal('Gagal update status', 'error');
             }
         }
         
-        function hapusPenghuni(id, namaPenghuni) {
-            const kamar = kamarData.find(k => k.id === id);
-            if (kamar) {
-                const index = kamar.penghuni.indexOf(namaPenghuni);
-                if (index !== -1) {
-                    kamar.penghuni.splice(index, 1);
-                    renderRooms();
-                    showAlertLocal(`Penghuni ${namaPenghuni} dihapus dari kamar ${kamar.nomor}`, 'success');
+        async function hapusPenghuni(idKamar, namaPenghuni) {
+            if (!confirm(`Hapus ${namaPenghuni} dari kamar ini?`)) return;
+            
+            try {
+                const response = await fetch(BASE_URL + 'hapus_penghuni_kamar.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id_kamar: idKamar, nama_penghuni: namaPenghuni })
+                });
+                const result = await response.json();
+                showAlertLocal(result.message, result.success ? 'success' : 'error');
+                if (result.success) {
+                    loadKamar();
+                    loadDaftarPenghuni();
                 }
+            } catch (error) {
+                showAlertLocal('Gagal hapus penghuni', 'error');
             }
         }
         
         function openTempatkanModal(id, nomorKamar) {
             currentKamarId = id;
-            const kamar = kamarData.find(k => k.id === id);
-            const sisaSlot = kamar.kapasitas - kamar.penghuni.length;
+            const kamar = kamarData.find(k => k.id_kamar === id);
+            const sisaSlot = (kamar.kapasitas || 2) - (kamar.penghuni?.length || 0);
             
             document.getElementById('kamarInfo').innerHTML = `Kamar ${nomorKamar} - Sisa slot: ${sisaSlot}`;
             
-            // Filter penghuni yang belum ada di kamar manapun
-            const semuaPenghuniTerkunci = kamarData.flatMap(k => k.penghuni);
-            const penghuniTersedia = calonPenghuni.filter(p => !semuaPenghuniTerkunci.includes(p));
-            
             const select = document.getElementById('penghuniSelect');
             select.innerHTML = '<option value="">-- Pilih Penghuni --</option>';
-            penghuniTersedia.forEach(p => {
-                select.innerHTML += `<option value="${p}">${p}</option>`;
+            daftarPenghuni.forEach(p => {
+                select.innerHTML += `<option value="${p.id_pendaftar}|${p.nama_lengkap}">${p.nama_lengkap} (${p.nim})</option>`;
             });
             
-            if (penghuniTersedia.length === 0) {
+            if (daftarPenghuni.length === 0) {
                 select.innerHTML = '<option value="">-- Semua penghuni sudah ditempatkan --</option>';
                 select.disabled = true;
             } else {
@@ -333,32 +357,33 @@
             currentKamarId = null;
         }
         
-        function tempatkanPenghuniSubmit() {
+        async function tempatkanPenghuniSubmit() {
             const select = document.getElementById('penghuniSelect');
-            const namaPenghuni = select.value;
+            const selectedValue = select.value;
             
-            if (!namaPenghuni) {
+            if (!selectedValue) {
                 showAlertLocal('Pilih penghuni terlebih dahulu!', 'error');
                 return;
             }
             
-            const kamar = kamarData.find(k => k.id === currentKamarId);
-            if (kamar.penghuni.length >= kamar.kapasitas) {
-                showAlertLocal(`Kamar ${kamar.nomor} sudah penuh!`, 'error');
-                closeTempatkanModal();
-                return;
+            const [idPendaftar, namaPenghuni] = selectedValue.split('|');
+            
+            try {
+                const response = await fetch(BASE_URL + 'tempatkan_penghuni.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id_kamar: currentKamarId, id_pendaftar: idPendaftar })
+                });
+                const result = await response.json();
+                showAlertLocal(result.message, result.success ? 'success' : 'error');
+                if (result.success) {
+                    loadKamar();
+                    loadDaftarPenghuni();
+                    closeTempatkanModal();
+                }
+            } catch (error) {
+                showAlertLocal('Gagal tempatkan penghuni', 'error');
             }
-            
-            kamar.penghuni.push(namaPenghuni);
-            
-            // OPTIONAL: Jika ingin status otomatis berubah jadi terisi saat kamar penuh, hapus komentar di bawah
-            // if (kamar.penghuni.length >= kamar.kapasitas) {
-            //     kamar.status = 'terisi';
-            // }
-            
-            renderRooms();
-            closeTempatkanModal();
-            showAlertLocal(`Penghuni ${namaPenghuni} ditempatkan di kamar ${kamar.nomor}`, 'success');
         }
         
         function openTambahKamar() {
@@ -369,7 +394,7 @@
             document.getElementById('tambahModal').style.display = 'none';
         }
         
-        function tambahKamar() {
+        async function tambahKamar() {
             const nomor = document.getElementById('newNomor').value.trim();
             const lantai = document.getElementById('newLantai').value;
             const kapasitas = document.getElementById('newKapasitas').value;
@@ -380,50 +405,44 @@
                 return;
             }
             
-            // Cek duplikasi nomor kamar
-            if (kamarData.some(k => k.nomor === nomor)) {
-                showAlertLocal(`Kamar ${nomor} sudah ada!`, 'error');
-                return;
+            try {
+                const response = await fetch(BASE_URL + 'tambah_kamar.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        nomor_kamar: nomor, 
+                        lantai: parseInt(lantai), 
+                        kapasitas: parseInt(kapasitas), 
+                        status_kamar: status 
+                    })
+                });
+                const result = await response.json();
+                showAlertLocal(result.message, result.success ? 'success' : 'error');
+                if (result.success) {
+                    loadKamar();
+                    closeTambahModal();
+                    document.getElementById('newNomor').value = '';
+                    document.getElementById('newLantai').value = '';
+                }
+            } catch (error) {
+                showAlertLocal('Gagal tambah kamar', 'error');
             }
-            
-            const newId = Math.max(...kamarData.map(k => k.id), 0) + 1;
-            kamarData.push({
-                id: newId,
-                nomor: nomor,
-                lantai: parseInt(lantai),
-                kapasitas: parseInt(kapasitas),
-                status: status,
-                penghuni: []
-            });
-            renderRooms();
-            closeTambahModal();
-            showAlertLocal(`Kamar ${nomor} berhasil ditambahkan!`, 'success');
-            
-            document.getElementById('newNomor').value = '';
-            document.getElementById('newLantai').value = '';
         }
         
-        function resetAllData() {
-            kamarData = [
-                { id: 1, nomor: '101', lantai: 1, kapasitas: 2, status: 'tersedia', penghuni: [] },
-                { id: 2, nomor: '102', lantai: 1, kapasitas: 2, status: 'tersedia', penghuni: [] },
-                { id: 3, nomor: '103', lantai: 1, kapasitas: 2, status: 'terisi', penghuni: ['Maria Angelina'] },
-                { id: 4, nomor: '201', lantai: 2, kapasitas: 2, status: 'tersedia', penghuni: [] },
-                { id: 5, nomor: '202', lantai: 2, kapasitas: 2, status: 'tersedia', penghuni: [] },
-                { id: 6, nomor: '203', lantai: 2, kapasitas: 2, status: 'perbaikan', penghuni: [] },
-                { id: 7, nomor: '301', lantai: 3, kapasitas: 2, status: 'tersedia', penghuni: [] }
-            ];
-            renderRooms();
-            showAlertLocal('Data kamar telah direset!', 'success');
+        function refreshData() {
+            loadKamar();
+            loadDaftarPenghuni();
+            showAlertLocal('Data berhasil direfresh', 'success');
         }
         
-        // Event listener untuk logout
+        // Load data awal
+        loadKamar();
+        loadDaftarPenghuni();
+        
         document.getElementById('logoutBtn').addEventListener('click', function(e) {
             e.preventDefault();
             window.location.href = '../index.html';
         });
-        
-        renderRooms();
     </script>
 </body>
 </html>
