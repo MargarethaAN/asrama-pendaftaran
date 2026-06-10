@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manajemen Kamar - Admin</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .add-room-btn {
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 24px;
+            padding: 32px;
+            width: 90%;
+            max-width: 400px;
+        }
+        .room-card {
+            position: relative;
+        }
+        .penghuni-list {
+            margin: 10px 0;
+            text-align: left;
+            font-size: 13px;
+        }
+        .penghuni-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4px 0;
+            border-bottom: 1px dashed #e2e8f0;
+        }
+        .penghuni-item:last-child {
+            border-bottom: none;
+        }
+        .remove-penghuni {
+            color: #ef4444;
+            cursor: pointer;
+            font-size: 12px;
+            background: none;
+            border: none;
+        }
+        .remove-penghuni:hover {
+            color: #dc2626;
+        }
+        .slot-kosong {
+            color: #94a3b8;
+            font-style: italic;
+            font-size: 12px;
+        }
+        .alert-fixed {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
+        }
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+        }
+        .btn-small {
+            padding: 4px 8px;
+            font-size: 11px;
+            margin-left: 8px;
+        }
+        .status-manual-badge {
+            font-size: 10px;
+            background: #e2e8f0;
+            padding: 2px 6px;
+            border-radius: 20px;
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar-layout">
+        <div class="sidebar">
+            <div class="logo">🏡 Admin Asrama</div>
+            <nav>
+                <a href="admin-dashboard.html">📊 Dashboard</a>
+                <a href="admin-verifikasi-pendaftaran.html">📝 Verifikasi Pendaftaran</a>
+                <a href="admin-verifikasi-pembayaran.html">💰 Verifikasi Pembayaran</a>
+                <a href="admin-manajemen-kamar.html" class="active">🛏️ Manajemen Kamar</a>
+                <a href="admin-data-penghuni.html">👥 Data Penghuni</a>
+                <a href="admin-konfirmasi-keluar.html">🚪 Konfirmasi Keluar</a>
+                <a href="admin-laporan.html">📄 Laporan & Rekap</a>
+                <a href="admin-syarat-ketentuan.html">📜 Syarat & Ketentuan</a>
+                <a href="admin-pencarian.html">🔍 Pencarian Data</a>
+                <a href="#" id="logoutBtn">🚪 Keluar</a>
+            </nav>
+        </div>
+        
+        <div class="main-content">
+            <h1>🛏️ Manajemen Kamar</h1>
+            <p>Kelola data kamar, status, dan penghuni (maksimal 2 orang per kamar).</p>
+            
+            <div class="stats-grid" id="roomStats">
+                <div class="stat-card"><h3>Total Kamar</h3><div class="number" id="totalKamar">0</div></div>
+                <div class="stat-card"><h3>Kamar Tersedia</h3><div class="number" id="totalTersedia">0</div></div>
+                <div class="stat-card"><h3>Kamar Terisi</h3><div class="number" id="totalTerisi">0</div></div>
+                <div class="stat-card"><h3>Kamar Perbaikan</h3><div class="number" id="totalPerbaikan">0</div></div>
+            </div>
+            
+            <div class="add-room-btn">
+                <button onclick="openTambahKamar()" class="btn-primary">+ Tambah Kamar</button>
+                <button onclick="resetAllData()" class="btn-secondary" style="background:#64748b;">Reset Data Demo</button>
+            </div>
+            
+            <div class="room-grid" id="roomGridAdmin"></div>
+        </div>
+    </div>
+
+    <!-- Modal Tambah Kamar -->
+    <div id="tambahModal" class="modal">
+        <div class="modal-content">
+            <h3>Tambah Kamar Baru</h3>
+            <div class="form-group"><label>Nomor Kamar</label><input type="text" id="newNomor" placeholder="Contoh: 401"></div>
+            <div class="form-group"><label>Lantai</label><input type="number" id="newLantai" placeholder="Contoh: 4"></div>
+            <div class="form-group"><label>Kapasitas</label><input type="number" id="newKapasitas" value="2" readonly style="background:#f1f5f9;"></div>
+            <div class="form-group"><label>Status Awal</label><select id="newStatus"><option value="tersedia">Tersedia</option><option value="terisi">Terisi</option><option value="perbaikan">Perbaikan</option></select></div>
+            <div style="display:flex; gap:12px; margin-top:20px;"><button onclick="tambahKamar()" class="btn-primary">Simpan</button><button onclick="closeTambahModal()" class="btn-secondary">Batal</button></div>
+        </div>
+    </div>
+
+    <!-- Modal Tempatkan Penghuni -->
+    <div id="tempatkanModal" class="modal">
+        <div class="modal-content">
+            <h3>Tempatkan Penghuni</h3>
+            <p id="kamarInfo"></p>
+            <div class="form-group">
+                <label>Pilih Penghuni</label>
+                <select id="penghuniSelect" style="width:100%; padding:10px; border-radius:10px;">
+                    <option value="">-- Pilih Penghuni --</option>
+                </select>
+            </div>
+            <div style="display:flex; gap:12px; margin-top:20px;">
+                <button onclick="tempatkanPenghuniSubmit()" class="btn-primary">Tempatkan</button>
+                <button onclick="closeTempatkanModal()" class="btn-secondary">Batal</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data kamar dengan array penghuni (maks 2 orang)
+        // Status bisa diubah manual oleh admin, tidak akan ditimpa otomatis
+        let kamarData = [
+            { id: 1, nomor: '101', lantai: 1, kapasitas: 2, status: 'tersedia', penghuni: [] },
+            { id: 2, nomor: '102', lantai: 1, kapasitas: 2, status: 'tersedia', penghuni: [] },
+            { id: 3, nomor: '103', lantai: 1, kapasitas: 2, status: 'terisi', penghuni: ['Maria Angelina'] },
+            { id: 4, nomor: '201', lantai: 2, kapasitas: 2, status: 'tersedia', penghuni: [] },
+            { id: 5, nomor: '202', lantai: 2, kapasitas: 2, status: 'tersedia', penghuni: [] },
+            { id: 6, nomor: '203', lantai: 2, kapasitas: 2, status: 'perbaikan', penghuni: [] },
+            { id: 7, nomor: '301', lantai: 3, kapasitas: 2, status: 'tersedia', penghuni: [] }
+        ];
+        
+        // Data calon penghuni yang bisa ditempatkan
+        let calonPenghuni = [
+            'Brigitta', 'Cecilia', 'Dominique', 'Angeline', 'Veronica', 'Stefanie', 'Natasha', 'Jessica'
+        ];
+        
+        let currentKamarId = null;
+        
+        function showAlertLocal(message, type) {
+            const oldAlert = document.querySelector('.alert-fixed');
+            if (oldAlert) oldAlert.remove();
+            
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert-fixed alert-${type === 'success' ? 'success' : 'error'}`;
+            alertDiv.innerHTML = `${type === 'success' ? '✅' : '❌'} ${message}`;
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.style.opacity = '0';
+                setTimeout(() => alertDiv.remove(), 300);
+            }, 3000);
+        }
+        
+        function updateStats() {
+            const total = kamarData.length;
+            const tersedia = kamarData.filter(k => k.status === 'tersedia').length;
+            const terisi = kamarData.filter(k => k.status === 'terisi').length;
+            const perbaikan = kamarData.filter(k => k.status === 'perbaikan').length;
+            document.getElementById('totalKamar').innerText = total;
+            document.getElementById('totalTersedia').innerText = tersedia;
+            document.getElementById('totalTerisi').innerText = terisi;
+            document.getElementById('totalPerbaikan').innerText = perbaikan;
+        }
+        
+        function renderRooms() {
+            const grid = document.getElementById('roomGridAdmin');
+            grid.innerHTML = kamarData.map(k => {
+                // Render daftar penghuni
+                let penghuniHtml = '<div class="penghuni-list">';
+                if (k.penghuni.length === 0) {
+                    penghuniHtml += '<div class="slot-kosong">📭 Kosong</div>';
+                } else {
+                    for (let i = 0; i < k.kapasitas; i++) {
+                        if (k.penghuni[i]) {
+                            penghuniHtml += `
+                                <div class="penghuni-item">
+                                    <span>👤 ${k.penghuni[i]}</span>
+                                    <button onclick="hapusPenghuni(${k.id}, '${k.penghuni[i]}')" class="remove-penghuni" title="Hapus penghuni">✖</button>
+                                </div>
+                            `;
+                        } else {
+                            penghuniHtml += `<div class="slot-kosong">⚪ Slot ${i+1} kosong</div>`;
+                        }
+                    }
+                }
+                penghuniHtml += '</div>';
+                
+                // Tentukan tombol tempatkan (disabled jika sudah penuh)
+                const isFull = k.penghuni.length >= k.kapasitas;
+                const tempatkanBtn = isFull 
+                    ? '<button class="btn-secondary" style="margin-top:8px; width:100%; opacity:0.5;" disabled>⚠️ Kamar Penuh</button>'
+                    : `<button onclick="openTempatkanModal(${k.id}, '${k.nomor}')" class="btn-primary" style="margin-top:8px; width:100%;">+ Tempatkan Penghuni</button>`;
+                
+                // Status badge
+                let statusText = '';
+                if (k.status === 'tersedia') statusText = 'Tersedia';
+                else if (k.status === 'terisi') statusText = 'Terisi';
+                else statusText = 'Perbaikan';
+                
+                return `
+                    <div class="room-card ${k.status}">
+                        <div class="room-number">${k.nomor}</div>
+                        <div>Lantai ${k.lantai}</div>
+                        <div>Kapasitas: ${k.penghuni.length}/${k.kapasitas}</div>
+                        ${penghuniHtml}
+                        <div style="margin-top:8px; font-size:12px; color:#64748b;">Status saat ini: <strong>${statusText}</strong></div>
+                        <select onchange="updateStatus(${k.id}, this.value)" style="margin-top:8px; padding:6px; border-radius:8px; width:100%;">
+                            <option value="tersedia" ${k.status === 'tersedia' ? 'selected' : ''}>🟢 Tersedia</option>
+                            <option value="terisi" ${k.status === 'terisi' ? 'selected' : ''}>🟠 Terisi</option>
+                            <option value="perbaikan" ${k.status === 'perbaikan' ? 'selected' : ''}>🔴 Perbaikan</option>
+                        </select>
+                        ${tempatkanBtn}
+                    </div>
+                `;
+            }).join('');
+            updateStats();
+        }
+        
+        function updateStatus(id, newStatus) {
+            const kamar = kamarData.find(k => k.id === id);
+            if (kamar) {
+                const oldStatus = kamar.status;
+                kamar.status = newStatus;
+                renderRooms();
+                showAlertLocal(`Status kamar ${kamar.nomor} berubah dari ${oldStatus} menjadi ${newStatus}`, 'success');
+            }
+        }
+        
+        function hapusPenghuni(id, namaPenghuni) {
+            const kamar = kamarData.find(k => k.id === id);
+            if (kamar) {
+                const index = kamar.penghuni.indexOf(namaPenghuni);
+                if (index !== -1) {
+                    kamar.penghuni.splice(index, 1);
+                    renderRooms();
+                    showAlertLocal(`Penghuni ${namaPenghuni} dihapus dari kamar ${kamar.nomor}`, 'success');
+                }
+            }
+        }
+        
+        function openTempatkanModal(id, nomorKamar) {
+            currentKamarId = id;
+            const kamar = kamarData.find(k => k.id === id);
+            const sisaSlot = kamar.kapasitas - kamar.penghuni.length;
+            
+            document.getElementById('kamarInfo').innerHTML = `Kamar ${nomorKamar} - Sisa slot: ${sisaSlot}`;
+            
+            // Filter penghuni yang belum ada di kamar manapun
+            const semuaPenghuniTerkunci = kamarData.flatMap(k => k.penghuni);
+            const penghuniTersedia = calonPenghuni.filter(p => !semuaPenghuniTerkunci.includes(p));
+            
+            const select = document.getElementById('penghuniSelect');
+            select.innerHTML = '<option value="">-- Pilih Penghuni --</option>';
+            penghuniTersedia.forEach(p => {
+                select.innerHTML += `<option value="${p}">${p}</option>`;
+            });
+            
+            if (penghuniTersedia.length === 0) {
+                select.innerHTML = '<option value="">-- Semua penghuni sudah ditempatkan --</option>';
+                select.disabled = true;
+            } else {
+                select.disabled = false;
+            }
+            
+            document.getElementById('tempatkanModal').style.display = 'flex';
+        }
+        
+        function closeTempatkanModal() {
+            document.getElementById('tempatkanModal').style.display = 'none';
+            currentKamarId = null;
+        }
+        
+        function tempatkanPenghuniSubmit() {
+            const select = document.getElementById('penghuniSelect');
+            const namaPenghuni = select.value;
+            
+            if (!namaPenghuni) {
+                showAlertLocal('Pilih penghuni terlebih dahulu!', 'error');
+                return;
+            }
+            
+            const kamar = kamarData.find(k => k.id === currentKamarId);
+            if (kamar.penghuni.length >= kamar.kapasitas) {
+                showAlertLocal(`Kamar ${kamar.nomor} sudah penuh!`, 'error');
+                closeTempatkanModal();
+                return;
+            }
+            
+            kamar.penghuni.push(namaPenghuni);
+            
+            // OPTIONAL: Jika ingin status otomatis berubah jadi terisi saat kamar penuh, hapus komentar di bawah
+            // if (kamar.penghuni.length >= kamar.kapasitas) {
+            //     kamar.status = 'terisi';
+            // }
+            
+            renderRooms();
+            closeTempatkanModal();
+            showAlertLocal(`Penghuni ${namaPenghuni} ditempatkan di kamar ${kamar.nomor}`, 'success');
+        }
+        
+        function openTambahKamar() {
+            document.getElementById('tambahModal').style.display = 'flex';
+        }
+        
+        function closeTambahModal() {
+            document.getElementById('tambahModal').style.display = 'none';
+        }
+        
+        function tambahKamar() {
+            const nomor = document.getElementById('newNomor').value.trim();
+            const lantai = document.getElementById('newLantai').value;
+            const kapasitas = document.getElementById('newKapasitas').value;
+            const status = document.getElementById('newStatus').value;
+            
+            if (!nomor || !lantai) {
+                showAlertLocal('Nomor kamar dan lantai harus diisi!', 'error');
+                return;
+            }
+            
+            // Cek duplikasi nomor kamar
+            if (kamarData.some(k => k.nomor === nomor)) {
+                showAlertLocal(`Kamar ${nomor} sudah ada!`, 'error');
+                return;
+            }
+            
+            const newId = Math.max(...kamarData.map(k => k.id), 0) + 1;
+            kamarData.push({
+                id: newId,
+                nomor: nomor,
+                lantai: parseInt(lantai),
+                kapasitas: parseInt(kapasitas),
+                status: status,
+                penghuni: []
+            });
+            renderRooms();
+            closeTambahModal();
+            showAlertLocal(`Kamar ${nomor} berhasil ditambahkan!`, 'success');
+            
+            document.getElementById('newNomor').value = '';
+            document.getElementById('newLantai').value = '';
+        }
+        
+        function resetAllData() {
+            kamarData = [
+                { id: 1, nomor: '101', lantai: 1, kapasitas: 2, status: 'tersedia', penghuni: [] },
+                { id: 2, nomor: '102', lantai: 1, kapasitas: 2, status: 'tersedia', penghuni: [] },
+                { id: 3, nomor: '103', lantai: 1, kapasitas: 2, status: 'terisi', penghuni: ['Maria Angelina'] },
+                { id: 4, nomor: '201', lantai: 2, kapasitas: 2, status: 'tersedia', penghuni: [] },
+                { id: 5, nomor: '202', lantai: 2, kapasitas: 2, status: 'tersedia', penghuni: [] },
+                { id: 6, nomor: '203', lantai: 2, kapasitas: 2, status: 'perbaikan', penghuni: [] },
+                { id: 7, nomor: '301', lantai: 3, kapasitas: 2, status: 'tersedia', penghuni: [] }
+            ];
+            renderRooms();
+            showAlertLocal('Data kamar telah direset!', 'success');
+        }
+        
+        // Event listener untuk logout
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = '../index.html';
+        });
+        
+        renderRooms();
+    </script>
+</body>
+</html>

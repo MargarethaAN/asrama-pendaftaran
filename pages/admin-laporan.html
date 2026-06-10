@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laporan & Rekap - Admin</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .filter-section {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+        .export-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+        .chart-container {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 24px;
+            border: 1px solid #e2e8f0;
+        }
+        .chart-bars {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            align-items: flex-end;
+            height: 200px;
+            margin-top: 20px;
+        }
+        .chart-bar {
+            flex: 1;
+            background: #2c7a4d;
+            border-radius: 8px 8px 0 0;
+            transition: height 0.3s;
+            text-align: center;
+            color: white;
+            padding-top: 8px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar-layout">
+        <div class="sidebar">
+            <div class="logo">🏡 Admin Asrama</div>
+            <nav>
+                <a href="admin-dashboard.html">📊 Dashboard</a>
+                <a href="admin-verifikasi-pendaftaran.html">📝 Verifikasi Pendaftaran</a>
+                <a href="admin-verifikasi-pembayaran.html">💰 Verifikasi Pembayaran</a>
+                <a href="admin-manajemen-kamar.html">🛏️ Manajemen Kamar</a>
+                <a href="admin-data-penghuni.html">👥 Data Penghuni</a>
+                <a href="admin-konfirmasi-keluar.html">🚪 Konfirmasi Keluar</a>
+                <a href="admin-laporan.html" class="active">📄 Laporan & Rekap</a>
+                <a href="admin-syarat-ketentuan.html">📜 Syarat & Ketentuan</a>
+                <a href="admin-pencarian.html">🔍 Pencarian Data</a>
+                <a href="#" id="logoutBtn">🚪 Keluar</a>
+            </nav>
+        </div>
+        
+        <div class="main-content">
+            <h1>📄 Laporan & Rekap Administrasi</h1>
+            <p>Lihat dan unduh laporan data pendaftaran, penghuni, dan pembayaran.</p>
+            
+            <div class="stats-grid">
+                <div class="stat-card"><h3>Total Pendaftar</h3><div class="number">156</div></div>
+                <div class="stat-card"><h3>Diterima</h3><div class="number">84</div></div>
+                <div class="stat-card"><h3>Ditolak</h3><div class="number">12</div></div>
+                <div class="stat-card"><h3>Menunggu</h3><div class="number">60</div></div>
+            </div>
+            
+            <div class="chart-container">
+                <h3>📊 Grafik Pendaftar per Bulan</h3>
+                <div class="chart-bars" id="chartBars">
+                    <div class="chart-bar" style="height: 80px;">Jan<br>80</div>
+                    <div class="chart-bar" style="height: 120px;">Feb<br>120</div>
+                    <div class="chart-bar" style="height: 60px;">Mar<br>60</div>
+                    <div class="chart-bar" style="height: 40px;">Apr<br>40</div>
+                    <div class="chart-bar" style="height: 20px;">Mei<br>20</div>
+                    <div class="chart-bar" style="height: 10px;">Jun<br>10</div>
+                </div>
+            </div>
+            
+            <div class="filter-section">
+                <div class="form-group" style="margin-bottom:0;">
+                    <label>Jenis Laporan</label>
+                    <select id="jenisLaporan">
+                        <option value="pendaftaran">Laporan Pendaftaran</option>
+                        <option value="penghuni">Laporan Penghuni</option>
+                        <option value="pembayaran">Laporan Pembayaran</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label>Periode</label>
+                    <select id="periode">
+                        <option value="semua">Semua Periode</option>
+                        <option value="2026">Tahun 2026</option>
+                        <option value="2025">Tahun 2025</option>
+                        <option value="2024">Tahun 2024</option>
+                    </select>
+                </div>
+                <button onclick="filterLaporan()" class="btn-primary">Filter</button>
+            </div>
+            
+            <div class="table-container">
+                <h3 style="padding: 20px 20px 0;" id="laporanTitle">📋 Data Pendaftaran</h3>
+                <table class="data-table" id="laporanTable">
+                    <thead id="laporanHeader"></thead>
+                    <tbody id="laporanBody"></tbody>
+                </table>
+            </div>
+            
+            <div class="export-buttons">
+                <button onclick="exportReport('pdf')" class="btn-primary">📄 Export PDF</button>
+                <button onclick="exportReport('excel')" class="btn-secondary">📊 Export Excel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let laporanData = {
+            pendaftaran: [
+                { nama: 'Maria Angelina', nim: '23K10020', tgl: '15/04/2026', status: 'Diterima', bayar: 'Belum' },
+                { nama: 'Brigitta', nim: '23K10021', tgl: '14/04/2026', status: 'Diterima', bayar: 'Lunas' },
+                { nama: 'Cecilia', nim: '23K10022', tgl: '13/04/2026', status: 'Ditolak', bayar: '-' },
+                { nama: 'Angeline', nim: '23K10023', tgl: '12/04/2026', status: 'Menunggu', bayar: 'Belum' }
+            ],
+            penghuni: [
+                { nama: 'Maria', nim: '23K10020', kamar: '101', tglMasuk: '15/01/2024', status: 'Aktif' },
+                { nama: 'Brigitta', nim: '23K10001', kamar: '103', tglMasuk: '15/01/2024', status: 'Aktif' }
+            ],
+            pembayaran: [
+                { nama: 'Brigitta', nim: '23K10001', jumlah: 'Rp5.500.000', tglBayar: '20/04/2026', status: 'Lunas' }
+            ]
+        };
+        
+        function renderLaporan() {
+            const jenis = document.getElementById('jenisLaporan').value;
+            const data = laporanData[jenis];
+            const title = document.getElementById('laporanTitle');
+            
+            if (jenis === 'pendaftaran') {
+                title.innerText = '📋 Data Pendaftaran';
+                document.getElementById('laporanHeader').innerHTML = '<tr><th>Nama</th><th>NIM</th><th>Tgl Daftar</th><th>Status</th><th>Pembayaran</th></tr>';
+                document.getElementById('laporanBody').innerHTML = data.map(d => `
+                    <tr><td>${d.nama}</td><td>${d.nim}</td><td>${d.tgl}</td><td>${d.status}</td><td>${d.bayar}</td></tr>
+                `).join('');
+            } else if (jenis === 'penghuni') {
+                title.innerText = '👥 Data Penghuni Aktif';
+                document.getElementById('laporanHeader').innerHTML = '<tr><th>Nama</th><th>NIM</th><th>Kamar</th><th>Tgl Masuk</th><th>Status</th></tr>';
+                document.getElementById('laporanBody').innerHTML = data.map(d => `
+                    <tr><td>${d.nama}</td><td>${d.nim}</td><td>${d.kamar}</td><td>${d.tglMasuk}</td><td>${d.status}</td></tr>
+                `).join('');
+            } else if (jenis === 'pembayaran') {
+                title.innerText = '💰 Data Pembayaran';
+                document.getElementById('laporanHeader').innerHTML = '<tr><th>Nama</th><th>NIM</th><th>Jumlah</th><th>Tgl Bayar</th><th>Status</th></tr>';
+                document.getElementById('laporanBody').innerHTML = data.map(d => `
+                    <tr><td>${d.nama}</td><td>${d.nim}</td><td>${d.jumlah}</td><td>${d.tglBayar}</td><td>${d.status}</td></tr>
+                `).join('');
+            }
+        }
+        
+        function filterLaporan() {
+            renderLaporan();
+            showAlert('Laporan diperbarui', 'success');
+        }
+        
+        function exportReport(type) {
+            showAlert(`Laporan berhasil diexport sebagai ${type.toUpperCase()}`, 'success');
+        }
+        
+        renderLaporan();
+    </script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

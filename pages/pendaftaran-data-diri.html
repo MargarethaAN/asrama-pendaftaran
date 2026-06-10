@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pendaftaran - Data Diri</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .form-section {
+            background: white;
+            border-radius: 24px;
+            padding: 28px;
+            margin-bottom: 24px;
+            border: 1px solid #e2e8f0;
+        }
+        .form-section h3 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #1a2e3a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .input-hint {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar-layout">
+        <div class="sidebar">
+            <div class="logo">🏡 Asrama Putri</div>
+            <nav>
+                <a href="dashboard.html">📊 Dashboard</a>
+                <a href="pendaftaran-data-diri.html" class="active">📝 Pendaftaran</a>
+                <a href="ketersediaan-kamar.html">🛏️ Ketersediaan Kamar</a>
+                <a href="dokumen.html">📄 Dokumen</a>
+                <a href="pembayaran.html">💳 Pembayaran</a>
+                <a href="status-pendaftaran.html">📌 Status</a>
+                <a href="booking-confirmation.html">✅ Konfirmasi</a>
+                <a href="#" id="logoutBtn">🚪 Keluar</a>
+            </nav>
+        </div>
+        
+        <div class="main-content">
+            <h1>📝 Formulir Pendaftaran</h1>
+            <p>Isi data diri Anda dengan lengkap dan benar.</p>
+            
+            <div class="progress-steps">
+                <div class="step active"><div class="step-number">1</div><div class="step-label">Data Diri</div></div>
+                <div class="step"><div class="step-number">2</div><div class="step-label">Data Keluarga</div></div>
+                <div class="step"><div class="step-number">3</div><div class="step-label">Syarat & Ketentuan</div></div>
+            </div>
+            
+            <form id="formDataDiri">
+                <div class="form-section">
+                    <h3>👤 Identitas Diri</h3>
+                    <div class="form-row">
+                        <div class="form-group"><label>NIM *</label><input type="text" id="nim" required placeholder="Contoh: 23K10020"></div>
+                        <div class="form-group"><label>Nama Lengkap *</label><input type="text" id="nama_lengkap" required placeholder="Nama sesuai KTP"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Nama Panggilan</label><input type="text" id="nama_panggilan" placeholder="Nama sehari-hari"></div>
+                        <div class="form-group"><label>Program Studi *</label><input type="text" id="prodi" required placeholder="Contoh: Teknik Informatika"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Fakultas *</label><input type="text" id="fakultas" required placeholder="Contoh: Ilmu Komputer"></div>
+                        <div class="form-group"><label>No. Handphone *</label><input type="tel" id="no_hp" required placeholder="08xxxxxxxxxx"></div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3>📍 Alamat</h3>
+                    <div class="form-group"><label>Alamat Asal *</label><textarea id="alamat_asal" rows="2" required placeholder="Alamat lengkap di kota asal"></textarea></div>
+                    <div class="form-group"><label>Alamat di Semarang *</label><textarea id="alamat_semarang" rows="2" required placeholder="Alamat selama kuliah di Semarang"></textarea></div>
+                </div>
+                
+                <div class="form-section">
+                    <h3>📋 Informasi Lainnya</h3>
+                    <div class="form-row">
+                        <div class="form-group"><label>Agama *</label><select id="agama" required><option value="">Pilih</option><option>Katolik</option><option>Kristen</option><option>Islam</option><option>Hindu</option><option>Buddha</option></select></div>
+                        <div class="form-group"><label>Asal Sekolah *</label><input type="text" id="asal_sekolah" required placeholder="Nama SMA/SMK sederajat"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Tempat Lahir *</label><input type="text" id="tempat_lahir" required></div>
+                        <div class="form-group"><label>Tanggal Lahir *</label><input type="date" id="tanggal_lahir" required></div>
+                    </div>
+                    <div class="form-group"><label>Sifat Positif</label><textarea id="sifat_positif" rows="2" placeholder="Contoh: Jujur, disiplin, bertanggung jawab"></textarea></div>
+                    <div class="form-group"><label>Sifat Negatif</label><textarea id="sifat_negatif" rows="2" placeholder="Contoh: Terkadang pemalu"></textarea></div>
+                    <div class="form-group"><label>Bakat / Hobi</label><input type="text" id="bakat" placeholder="Contoh: Menyanyi, membaca, olahraga"></div>
+                    <div class="form-group"><label>Alasan Masuk Asrama *</label><textarea id="alasan_masuk" rows="3" required placeholder="Jelaskan alasan Anda ingin tinggal di asrama"></textarea></div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" onclick="window.location.href='dashboard.html'" class="btn-secondary">Batal</button>
+                    <button type="submit" class="btn-primary">Selanjutnya →</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Load data yang sudah tersimpan (jika ada)
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedData = localStorage.getItem('dataDiri');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                for (const [key, value] of Object.entries(data)) {
+                    const field = document.getElementById(key);
+                    if (field) field.value = value;
+                }
+            }
+        });
+        
+        document.getElementById('formDataDiri').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = {
+                nim: document.getElementById('nim').value,
+                nama_lengkap: document.getElementById('nama_lengkap').value,
+                nama_panggilan: document.getElementById('nama_panggilan').value,
+                prodi: document.getElementById('prodi').value,
+                fakultas: document.getElementById('fakultas').value,
+                no_hp: document.getElementById('no_hp').value,
+                alamat_asal: document.getElementById('alamat_asal').value,
+                alamat_semarang: document.getElementById('alamat_semarang').value,
+                agama: document.getElementById('agama').value,
+                asal_sekolah: document.getElementById('asal_sekolah').value,
+                tempat_lahir: document.getElementById('tempat_lahir').value,
+                tanggal_lahir: document.getElementById('tanggal_lahir').value,
+                sifat_positif: document.getElementById('sifat_positif').value,
+                sifat_negatif: document.getElementById('sifat_negatif').value,
+                bakat: document.getElementById('bakat').value,
+                alasan_masuk: document.getElementById('alasan_masuk').value
+            };
+            localStorage.setItem('dataDiri', JSON.stringify(formData));
+            showAlert('Data diri berhasil disimpan!', 'success');
+            setTimeout(() => {
+                window.location.href = 'pendaftaran-data-keluarga.html';
+            }, 1000);
+        });
+    </script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

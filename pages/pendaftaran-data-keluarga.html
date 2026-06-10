@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pendaftaran - Data Keluarga</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .form-section {
+            background: white;
+            border-radius: 24px;
+            padding: 28px;
+            margin-bottom: 24px;
+            border: 1px solid #e2e8f0;
+        }
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 24px;
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 20px 0;
+            padding: 16px;
+            background: #f8fafc;
+            border-radius: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar-layout">
+        <div class="sidebar">
+            <div class="logo">🏡 Asrama Putri</div>
+            <nav>
+                <a href="dashboard.html">📊 Dashboard</a>
+                <a href="pendaftaran-data-diri.html" class="active">📝 Pendaftaran</a>
+                <a href="ketersediaan-kamar.html">🛏️ Ketersediaan Kamar</a>
+                <a href="dokumen.html">📄 Dokumen</a>
+                <a href="pembayaran.html">💳 Pembayaran</a>
+                <a href="status-pendaftaran.html">📌 Status</a>
+                <a href="booking-confirmation.html">✅ Konfirmasi</a>
+                <a href="#" id="logoutBtn">🚪 Keluar</a>
+            </nav>
+        </div>
+        
+        <div class="main-content">
+            <h1>👨‍👩‍👧 Data Keluarga</h1>
+            <p>Informasi orang tua dan saudara kandung.</p>
+            
+            <div class="progress-steps">
+                <div class="step completed"><div class="step-number">✓</div><div class="step-label">Data Diri</div></div>
+                <div class="step active"><div class="step-number">2</div><div class="step-label">Data Keluarga</div></div>
+                <div class="step"><div class="step-number">3</div><div class="step-label">Syarat & Ketentuan</div></div>
+            </div>
+            
+            <form id="formKeluarga">
+                <div class="form-section">
+                    <h3>👨 Ayah</h3>
+                    <div class="form-row">
+                        <div class="form-group"><label>Nama Ayah</label><input type="text" id="nama_ayah" placeholder="Nama lengkap ayah"></div>
+                        <div class="form-group"><label>Pekerjaan Ayah</label><input type="text" id="pekerjaan_ayah" placeholder="Pekerjaan ayah"></div>
+                    </div>
+                    <div class="form-group"><label>No. HP Ayah</label><input type="tel" id="no_hp_ayah" placeholder="Nomor telepon ayah"></div>
+                </div>
+                
+                <div class="form-section">
+                    <h3>👩 Ibu</h3>
+                    <div class="form-row">
+                        <div class="form-group"><label>Nama Ibu</label><input type="text" id="nama_ibu" placeholder="Nama lengkap ibu"></div>
+                        <div class="form-group"><label>Pekerjaan Ibu</label><input type="text" id="pekerjaan_ibu" placeholder="Pekerjaan ibu"></div>
+                    </div>
+                    <div class="form-group"><label>No. HP Ibu</label><input type="tel" id="no_hp_ibu" placeholder="Nomor telepon ibu"></div>
+                </div>
+                
+                <div class="form-section">
+                    <h3>👥 Saudara Kandung</h3>
+                    <div class="form-group"><label>Jumlah Saudara Kandung</label><input type="number" id="jumlah_saudara" min="0" value="0"></div>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="setuju" required>
+                    <label style="margin:0; font-weight:normal;">Saya menyatakan bahwa data yang diisi adalah benar dan dapat dipertanggungjawabkan.</label>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" onclick="window.location.href='pendaftaran-data-diri.html'" class="btn-secondary">← Kembali</button>
+                    <button type="submit" class="btn-primary">Lanjutkan →</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedData = localStorage.getItem('dataKeluarga');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                for (const [key, value] of Object.entries(data)) {
+                    const field = document.getElementById(key);
+                    if (field) field.value = value;
+                }
+            }
+        });
+        
+        document.getElementById('formKeluarga').addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (!document.getElementById('setuju').checked) {
+                showAlert('Harap centang pernyataan persetujuan data', 'error');
+                return;
+            }
+            const formData = {
+                nama_ayah: document.getElementById('nama_ayah').value,
+                pekerjaan_ayah: document.getElementById('pekerjaan_ayah').value,
+                no_hp_ayah: document.getElementById('no_hp_ayah').value,
+                nama_ibu: document.getElementById('nama_ibu').value,
+                pekerjaan_ibu: document.getElementById('pekerjaan_ibu').value,
+                no_hp_ibu: document.getElementById('no_hp_ibu').value,
+                jumlah_saudara: document.getElementById('jumlah_saudara').value
+            };
+            localStorage.setItem('dataKeluarga', JSON.stringify(formData));
+            
+            // Gabungkan semua data pendaftaran
+            const dataDiri = JSON.parse(localStorage.getItem('dataDiri') || '{}');
+            const dataKeluarga = formData;
+            const allData = { ...dataDiri, ...dataKeluarga };
+            localStorage.setItem('dataPendaftaran', JSON.stringify(allData));
+            
+            showAlert('Data keluarga berhasil disimpan!', 'success');
+            setTimeout(() => {
+                window.location.href = 'pendaftaran-syarat.html';
+            }, 1000);
+        });
+    </script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

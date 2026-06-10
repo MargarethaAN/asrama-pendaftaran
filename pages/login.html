@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, height=device-height">
+    <title>Login - Sistem Pendaftaran Asrama</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Reset untuk halaman login - tidak ada scrolling */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a5d3a 0%, #2c7a4d 50%, #3a9b6a 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+        }
+        
+        .login-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+        }
+        
+        .login-card {
+            background: white;
+            border-radius: 32px;
+            padding: 40px 48px;
+            width: 100%;
+            max-width: 460px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .login-card h1 {
+            font-size: 28px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #1a5d3a, #2c7a4d);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .login-card .subtitle {
+            text-align: center;
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 32px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #1a2e3a;
+            font-size: 14px;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 14px;
+            transition: all 0.2s;
+            background: #f8fafc;
+            font-family: inherit;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #2c7a4d;
+            box-shadow: 0 0 0 3px rgba(44, 122, 77, 0.1);
+            background: white;
+        }
+        
+        .btn-login {
+            background: #2c7a4d;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.2s;
+            font-family: inherit;
+            margin-top: 8px;
+        }
+        
+        .btn-login:hover {
+            background: #1e5a3a;
+            transform: translateY(-1px);
+        }
+        
+        .demo-section {
+            margin-top: 28px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        .demo-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #94a3b8;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .demo-accounts {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+        
+        .demo-item {
+            background: #f1f5f9;
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-size: 11px;
+            color: #334155;
+            text-align: center;
+        }
+        
+        .demo-item strong {
+            color: #2c7a4d;
+            display: block;
+            margin-bottom: 4px;
+        }
+        
+        hr {
+            margin: 0;
+            border: none;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        /* No scroll - height fixed */
+        .login-card {
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        /* Tapi kita buat scroll hanya jika konten kelebihan (jarang terjadi) */
+        .login-card::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        .login-card::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+        
+        .login-card::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-wrapper">
+        <div class="login-card">
+            <h1>🏡 Asrama Putri</h1>
+            <div class="subtitle">Sistem Pendaftaran Mahasiswi</div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="email" required placeholder="email@student.unika.ac.id" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="password" required placeholder="Masukkan password">
+                </div>
+                <div class="form-group">
+                    <label>Login sebagai</label>
+                    <select id="role" required>
+                        <option value="pendaftar">📝 Pendaftar (Mahasiswa Baru)</option>
+                        <option value="admin">👑 Admin (Pengelola Asrama)</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-login">→ Masuk ke Dashboard</button>
+
+                <div style="text-align: center; margin-top: 20px;">
+                    Belum punya akun? <a href="register.html" style="color: #2c7a4d;">Daftar di sini</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="../js/main.js"></script>
+</body>
+</html>

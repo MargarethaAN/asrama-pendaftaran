@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Konfirmasi Keluar Asrama - Admin</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .warning-badge {
+            background: #fef3c7;
+            color: #92400e;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .success-badge {
+            background: #d1fae5;
+            color: #065f46;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 24px;
+            padding: 32px;
+            width: 90%;
+            max-width: 450px;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar-layout">
+        <div class="sidebar">
+            <div class="logo">🏡 Admin Asrama</div>
+            <nav>
+                <a href="admin-dashboard.html">📊 Dashboard</a>
+                <a href="admin-verifikasi-pendaftaran.html">📝 Verifikasi Pendaftaran</a>
+                <a href="admin-verifikasi-pembayaran.html">💰 Verifikasi Pembayaran</a>
+                <a href="admin-manajemen-kamar.html">🛏️ Manajemen Kamar</a>
+                <a href="admin-data-penghuni.html">👥 Data Penghuni</a>
+                <a href="admin-konfirmasi-keluar.html" class="active">🚪 Konfirmasi Keluar</a>
+                <a href="admin-laporan.html">📄 Laporan & Rekap</a>
+                <a href="admin-syarat-ketentuan.html">📜 Syarat & Ketentuan</a>
+                <a href="admin-pencarian.html">🔍 Pencarian Data</a>
+                <a href="#" id="logoutBtn">🚪 Keluar</a>
+            </nav>
+        </div>
+        
+        <div class="main-content">
+            <h1>🚪 Konfirmasi Keluar Asrama</h1>
+            <p>Berikut adalah daftar penghuni yang telah tinggal minimal 2 tahun dan dapat dikonfirmasi keluar.</p>
+            
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr><th>Nama</th><th>NIM</th><th>Tanggal Masuk</th><th>Masa Hunian</th><th>Status</th><th>Aksi</th></tr>
+                    </thead>
+                    <tbody id="penghuniList">
+                        <tr><td colspan="6" style="text-align:center;">Memuat data...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div style="margin-top: 24px; padding: 16px; background: #fef3c7; border-radius: 16px;">
+                <p style="font-size: 13px; color: #92400e;">⚠️ <strong>Informasi:</strong> Setelah dikonfirmasi keluar, akun penghuni akan otomatis diblokir dan tidak dapat login kembali ke sistem.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Konfirmasi -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content">
+            <h3>Konfirmasi Keluar Asrama</h3>
+            <p id="confirmNama"></p>
+            <div class="form-group">
+                <label>Keterangan (opsional)</label>
+                <textarea id="keteranganKeluar" rows="3" placeholder="Alasan keluar (jika ada)" style="width:100%; padding:10px; border-radius:10px;"></textarea>
+            </div>
+            <div style="display: flex; gap: 12px; margin-top: 20px;">
+                <button onclick="submitKonfirmasi()" class="btn-danger">Konfirmasi Keluar</button>
+                <button onclick="closeConfirmModal()" class="btn-secondary">Batal</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let penghuniData = [
+            { id: 1, nama: 'Brigitta', nim: '23K10001', tglMasuk: '2024-01-15', masaHunian: '2 tahun 3 bulan', bisaKeluar: true, status: 'aktif' },
+            { id: 2, nama: 'Cecilia', nim: '23K10002', tglMasuk: '2024-08-20', masaHunian: '1 tahun 8 bulan', bisaKeluar: false, status: 'aktif' },
+            { id: 3, nama: 'Dominique', nim: '23K10003', tglMasuk: '2023-12-10', masaHunian: '2 tahun 4 bulan', bisaKeluar: true, status: 'aktif' },
+            { id: 4, nama: 'Angelina', nim: '23K10004', tglMasuk: '2025-01-15', masaHunian: '1 tahun 3 bulan', bisaKeluar: false, status: 'aktif' }
+        ];
+        
+        let currentPenghuniId = null;
+        
+        function renderPenghuniList() {
+            const tbody = document.getElementById('penghuniList');
+            tbody.innerHTML = penghuniData.map(p => {
+                const statusBadge = p.status === 'aktif' ? '<span class="status-badge status-success">Aktif</span>' : '<span class="status-badge status-danger">Nonaktif</span>';
+                const actionBtn = p.bisaKeluar && p.status === 'aktif' 
+                    ? `<button onclick="openConfirmModal(${p.id}, '${p.nama}')" class="btn-warning" style="padding:5px 12px;">Konfirmasi Keluar</button>`
+                    : '<button class="btn-secondary" disabled style="opacity:0.5;">Belum 2 tahun</button>';
+                
+                return `<tr>
+                    <td>${p.nama}</td>
+                    <td>${p.nim}</td>
+                    <td>${p.tglMasuk}</td>
+                    <td>${p.masaHunian} <span class="warning-badge">${p.bisaKeluar ? '✓ Bisa keluar' : 'Belum 2 tahun'}</span></td>
+                    <td>${statusBadge}</td>
+                    <td>${actionBtn}</td>
+                </tr>`;
+            }).join('');
+        }
+        
+        function openConfirmModal(id, nama) {
+            currentPenghuniId = id;
+            document.getElementById('confirmNama').innerHTML = `Apakah Anda yakin ingin mengkonfirmasi keluar asrama untuk <strong>${nama}</strong>?`;
+            document.getElementById('confirmModal').style.display = 'flex';
+        }
+        
+        function closeConfirmModal() {
+            document.getElementById('confirmModal').style.display = 'none';
+            currentPenghuniId = null;
+            document.getElementById('keteranganKeluar').value = '';
+        }
+        
+        function submitKonfirmasi() {
+            const keterangan = document.getElementById('keteranganKeluar').value;
+            const penghuni = penghuniData.find(p => p.id === currentPenghuniId);
+            
+            if (penghuni) {
+                penghuni.status = 'nonaktif';
+                penghuni.bisaKeluar = false;
+                showAlert(`Konfirmasi keluar asrama untuk ${penghuni.nama} berhasil! Akun telah diblokir. ${keterangan ? 'Catatan: ' + keterangan : ''}`, 'success');
+                renderPenghuniList();
+            }
+            closeConfirmModal();
+        }
+        
+        renderPenghuniList();
+    </script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

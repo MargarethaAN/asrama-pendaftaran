@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelengkapan Berkas - Pendaftaran Asrama</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .upload-section {
+            background: white;
+            border-radius: 24px;
+            padding: 28px;
+            margin-bottom: 24px;
+            border: 1px solid #e2e8f0;
+        }
+        .upload-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .upload-item:last-child {
+            border-bottom: none;
+        }
+        .upload-info h4 {
+            font-size: 16px;
+            margin-bottom: 4px;
+            color: #1a2e3a;
+        }
+        .upload-info p {
+            font-size: 12px;
+            color: #64748b;
+        }
+        .upload-status {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+        .file-input-wrapper input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            margin-top: 24px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background: #2c7a4d;
+            border-radius: 10px;
+            transition: width 0.3s;
+        }
+        .upload-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 16px;
+            font-size: 13px;
+            color: #64748b;
+        }
+        .btn-upload {
+            background: #2c7a4d;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-upload:hover {
+            background: #1e5a3a;
+        }
+        .btn-delete {
+            background: #fee2e2;
+            color: #dc2626;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-delete:hover {
+            background: #fecaca;
+        }
+        .status-success {
+            color: #10b981;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .status-pending {
+            color: #f59e0b;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .file-name {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar-layout">
+        <div class="sidebar">
+            <div class="logo">🏡 Asrama Putri</div>
+            <nav>
+                <a href="dashboard.html">📊 Dashboard</a>
+                <a href="pendaftaran-data-diri.html">📝 Pendaftaran</a>
+                <a href="ketersediaan-kamar.html">🛏️ Ketersediaan Kamar</a>
+                <a href="dokumen.html" class="active">📄 Dokumen</a>
+                <a href="pembayaran.html">💳 Pembayaran</a>
+                <a href="status-pendaftaran.html">📌 Status</a>
+                <a href="booking-confirmation.html">✅ Konfirmasi</a>
+                <a href="#" id="logoutBtn">🚪 Keluar</a>
+            </nav>
+        </div>
+        
+        <div class="main-content">
+            <h1>📄 Kelengkapan Berkas</h1>
+            <p>Upload dokumen persyaratan pendaftaran. Maksimal 2MB per file (PDF/JPG/PNG).</p>
+            
+            <div class="upload-section">
+                <h3 style="margin-bottom: 20px;">📎 Daftar Dokumen yang Diperlukan</h3>
+                
+                <div id="uploadList">
+                    <!-- Item upload akan di-load via JS -->
+                </div>
+                
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="upload-stats">
+                    <span id="uploadedCount">0</span>
+                    <span>dari</span>
+                    <span id="totalCount">5</span>
+                    <span>dokumen terupload</span>
+                </div>
+            </div>
+            
+            <div style="background: #f0fdf4; border-radius: 16px; padding: 16px; border: 1px solid #bbf7d0;">
+                <p style="font-size: 13px; color: #166534;">📌 <strong>Informasi:</strong> Pastikan dokumen terbaca dengan jelas. File akan diverifikasi oleh admin. Status upload akan berubah menjadi "Terverifikasi" setelah admin memeriksa.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data dokumen yang diperlukan
+        const dokumenList = [
+            { id: 'ktm', nama: 'Scan KTM', keterangan: 'Kartu Tanda Mahasiswa (scan berwarna)', required: true, icon: '🪪' },
+            { id: 'kk', nama: 'Scan Kartu Keluarga', keterangan: 'Kartu Keluarga (halaman yang memuat data diri)', required: true, icon: '📇' },
+            { id: 'foto', nama: 'Pas Foto Terbaru', keterangan: 'Ukuran 3x4, background merah/putih', required: true, icon: '📸' },
+            { id: 'rekomendasi', nama: 'Surat Rekomendasi Orang Tua', keterangan: 'Surat pernyataan dari orang tua/wali', required: true, icon: '📝' },
+            { id: 'transkrip', nama: 'Transkrip Nilai', keterangan: 'Transkrip nilai sementara (jika ada)', required: false, icon: '📊' }
+        ];
+        
+        // Data upload yang tersimpan
+        let uploadedFiles = JSON.parse(localStorage.getItem('uploadedDocuments') || '{}');
+        
+        function updateProgress() {
+            const total = dokumenList.length;
+            let uploaded = 0;
+            for (const doc of dokumenList) {
+                if (uploadedFiles[doc.id] && uploadedFiles[doc.id].status !== 'deleted') {
+                    uploaded++;
+                }
+            }
+            const percentage = (uploaded / total) * 100;
+            document.getElementById('progressFill').style.width = percentage + '%';
+            document.getElementById('uploadedCount').innerText = uploaded;
+            document.getElementById('totalCount').innerText = total;
+        }
+        
+        function renderUploadList() {
+            const container = document.getElementById('uploadList');
+            container.innerHTML = '';
+            
+            for (const doc of dokumenList) {
+                const fileData = uploadedFiles[doc.id];
+                const isUploaded = fileData && fileData.status !== 'deleted';
+                const fileName = fileData?.name || '';
+                const status = fileData?.status || 'pending';
+                
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'upload-item';
+                itemDiv.innerHTML = `
+                    <div class="upload-info">
+                        <h4>${doc.icon} ${doc.nama} ${doc.required ? '<span style="color:#ef4444;">*</span>' : '<span style="color:#94a3b8;">(opsional)</span>'}</h4>
+                        <p>${doc.keterangan}</p>
+                        ${fileName ? `<div class="file-name">📎 ${fileName}</div>` : ''}
+                    </div>
+                    <div class="upload-status">
+                        ${isUploaded ? `
+                            <span class="${status === 'verified' ? 'status-success' : 'status-pending'}">
+                                ${status === 'verified' ? '✓ Terverifikasi' : '⏳ Menunggu Verifikasi'}
+                            </span>
+                            <button class="btn-delete" onclick="deleteDocument('${doc.id}')">Hapus</button>
+                        ` : `
+                            <div class="file-input-wrapper">
+                                <button class="btn-upload" onclick="document.getElementById('fileInput_${doc.id}').click()">📤 Upload</button>
+                                <input type="file" id="fileInput_${doc.id}" accept=".jpg,.jpeg,.png,.pdf" style="display:none" onchange="uploadDocument('${doc.id}', this)">
+                            </div>
+                        `}
+                    </div>
+                `;
+                container.appendChild(itemDiv);
+            }
+            updateProgress();
+        }
+        
+        // Ganti fungsi uploadDocument dengan yang ini:
+        async function uploadDocument(docId, input) {
+            const file = input.files[0];
+            if (!file) return;
+            
+            if (file.size > 2 * 1024 * 1024) {
+                showAlert('Ukuran file maksimal 2MB!', 'error');
+                input.value = '';
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('jenis_dokumen', docId);
+            formData.append('file', file);
+            
+            try {
+                const response = await fetch(BASE_URL + 'upload_dokumen.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert('Dokumen berhasil diupload!', 'success');
+                    // Refresh daftar
+                    location.reload();
+                } else {
+                    showAlert(result.message, 'error');
+                }
+            } catch (error) {
+                showAlert('Gagal upload', 'error');
+            }
+        }
+        function deleteDocument(docId) {
+            if (confirm(`Hapus dokumen "${getDocName(docId)}"?`)) {
+                uploadedFiles[docId].status = 'deleted';
+                delete uploadedFiles[docId];
+                localStorage.setItem('uploadedDocuments', JSON.stringify(uploadedFiles));
+                renderUploadList();
+                showAlert(`Dokumen "${getDocName(docId)}" dihapus.`, 'success');
+            }
+        }
+        
+        function getDocName(docId) {
+            const doc = dokumenList.find(d => d.id === docId);
+            return doc ? doc.nama : docId;
+        }
+        
+        // Inisialisasi
+        renderUploadList();
+        
+        // Cek apakah sudah upload semua dokumen wajib
+        function checkAllRequiredUploaded() {
+            const requiredDocs = dokumenList.filter(d => d.required);
+            for (const doc of requiredDocs) {
+                if (!uploadedFiles[doc.id] || uploadedFiles[doc.id].status === 'deleted') {
+                    return false;
+                }
+            }
+            return true;
+        }
+        
+        // Tampilkan notifikasi jika dokumen wajib belum lengkap
+        setInterval(() => {
+            if (!checkAllRequiredUploaded()) {
+                const notif = document.querySelector('.alert');
+                if (!notif) {
+                    const msgDiv = document.createElement('div');
+                    msgDiv.className = 'alert alert-warning';
+                    msgDiv.style.background = '#fef3c7';
+                    msgDiv.style.color = '#92400e';
+                    msgDiv.style.marginBottom = '16px';
+                    msgDiv.innerHTML = '⚠️ Harap upload semua dokumen yang wajib (ditandai *) agar pendaftaran dapat diproses.';
+                    const container = document.querySelector('.upload-section');
+                    if (container && !document.querySelector('.upload-alert')) {
+                        msgDiv.classList.add('upload-alert');
+                        container.insertBefore(msgDiv, container.firstChild);
+                    }
+                }
+            } else {
+                const alertDiv = document.querySelector('.upload-alert');
+                if (alertDiv) alertDiv.remove();
+            }
+        }, 1000);
+    </script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

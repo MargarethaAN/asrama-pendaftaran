@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Syarat & Ketentuan - Admin</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .sk-card {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 20px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s;
+        }
+        .sk-card:hover {
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
+        }
+        .sk-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .sk-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a2e3a;
+        }
+        .sk-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 16px;
+        }
+        .sk-content {
+            color: #334155;
+            line-height: 1.6;
+            font-size: 14px;
+            margin-bottom: 16px;
+            max-height: 100px;
+            overflow-y: auto;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 24px;
+            padding: 32px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar-layout">
+        <div class="sidebar">
+            <div class="logo">🏡 Admin Asrama</div>
+            <nav>
+                <a href="admin-dashboard.html">📊 Dashboard</a>
+                <a href="admin-verifikasi-pendaftaran.html">📝 Verifikasi Pendaftaran</a>
+                <a href="admin-verifikasi-pembayaran.html">💰 Verifikasi Pembayaran</a>
+                <a href="admin-manajemen-kamar.html">🛏️ Manajemen Kamar</a>
+                <a href="admin-data-penghuni.html">👥 Data Penghuni</a>
+                <a href="admin-konfirmasi-keluar.html">🚪 Konfirmasi Keluar</a>
+                <a href="admin-laporan.html">📄 Laporan & Rekap</a>
+                <a href="admin-syarat-ketentuan.html" class="active">📜 Syarat & Ketentuan</a>
+                <a href="admin-pencarian.html">🔍 Pencarian Data</a>
+                <a href="#" id="logoutBtn">🚪 Keluar</a>
+            </nav>
+        </div>
+        
+        <div class="main-content">
+            <h1>📜 Kelola Syarat & Ketentuan</h1>
+            <p>Buat, edit, dan kelola syarat & ketentuan yang berlaku untuk pendaftaran.</p>
+            
+            <div style="margin-bottom: 24px; display: flex; justify-content: flex-end;">
+                <button onclick="openTambahModal()" class="btn-primary">+ Tambah Syarat & Ketentuan</button>
+            </div>
+            
+            <div id="skList">
+                <!-- SK cards akan di-load via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Tambah/Edit -->
+    <div id="skModal" class="modal">
+        <div class="modal-content">
+            <h3 id="modalTitle">Tambah Syarat & Ketentuan</h3>
+            <div class="form-group"><label>Judul</label><input type="text" id="skJudul" placeholder="Contoh: Syarat Pendaftaran Asrama Putri"></div>
+            <div class="form-group"><label>Versi</label><input type="text" id="skVersi" placeholder="v1.0"></div>
+            <div class="form-group"><label>Tanggal Berlaku</label><input type="date" id="skTanggal"></div>
+            <div class="form-group"><label>Isi / Konten</label><textarea id="skIsi" rows="8" placeholder="Tulis syarat dan ketentuan di sini...&#10;1. ...&#10;2. ..."></textarea></div>
+            <div class="form-group"><label>Status</label><select id="skStatus"><option value="aktif">Aktif</option><option value="nonaktif">Nonaktif</option></select></div>
+            <div style="display: flex; gap: 12px; margin-top: 20px;">
+                <button onclick="saveSK()" class="btn-primary">Simpan</button>
+                <button onclick="closeModal()" class="btn-secondary">Batal</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let skData = [
+            { id: 1, judul: 'Syarat dan Ketentuan Pendaftaran Asrama Putri', versi: 'v1.0', tanggal: '2026-01-01', isi: '1. Mahasiswi aktif Universitas Katolik Soegijapranata\n2. Belum menikah\n3. Memiliki IPK minimal 2.75\n4. Melampirkan surat rekomendasi dari orang tua\n5. Bersedia mengikuti peraturan asrama', status: 'aktif' },
+            { id: 2, judul: 'Syarat Penghuni Asrama', versi: 'v2.0', tanggal: '2026-03-01', isi: '1. Wajib mengikuti kegiatan asrama\n2. Menjaga kebersihan dan ketertiban\n3. Tidak membawa tamu tanpa izin\n4. Membayar biaya hunian tepat waktu', status: 'nonaktif' }
+        ];
+        
+        let editingId = null;
+        
+        function renderSKList() {
+            const container = document.getElementById('skList');
+            container.innerHTML = skData.map(sk => `
+                <div class="sk-card">
+                    <div class="sk-header">
+                        <div class="sk-title">📜 ${sk.judul}</div>
+                        <div>
+                            <button onclick="editSK(${sk.id})" class="btn-secondary" style="padding:6px 12px;">✏️ Edit</button>
+                            <button onclick="toggleStatus(${sk.id})" class="${sk.status === 'aktif' ? 'btn-warning' : 'btn-success'}" style="padding:6px 12px;">
+                                ${sk.status === 'aktif' ? 'Nonaktifkan' : 'Aktifkan'}
+                            </button>
+                            <button onclick="deleteSK(${sk.id})" class="btn-danger" style="padding:6px 12px;">🗑️ Hapus</button>
+                        </div>
+                    </div>
+                    <div class="sk-meta">
+                        <span>📌 Versi: ${sk.versi}</span>
+                        <span>📅 Berlaku: ${sk.tanggal}</span>
+                        <span>${sk.status === 'aktif' ? '<span class="status-badge status-success">Aktif</span>' : '<span class="status-badge status-danger">Nonaktif</span>'}</span>
+                    </div>
+                    <div class="sk-content">${sk.isi.replace(/\n/g, '<br>')}</div>
+                </div>
+            `).join('');
+        }
+        
+        function openTambahModal() {
+            editingId = null;
+            document.getElementById('modalTitle').innerText = 'Tambah Syarat & Ketentuan';
+            document.getElementById('skJudul').value = '';
+            document.getElementById('skVersi').value = '';
+            document.getElementById('skTanggal').value = '';
+            document.getElementById('skIsi').value = '';
+            document.getElementById('skStatus').value = 'aktif';
+            document.getElementById('skModal').style.display = 'flex';
+        }
+        
+        function editSK(id) {
+            editingId = id;
+            const sk = skData.find(s => s.id === id);
+            document.getElementById('modalTitle').innerText = 'Edit Syarat & Ketentuan';
+            document.getElementById('skJudul').value = sk.judul;
+            document.getElementById('skVersi').value = sk.versi;
+            document.getElementById('skTanggal').value = sk.tanggal;
+            document.getElementById('skIsi').value = sk.isi;
+            document.getElementById('skStatus').value = sk.status;
+            document.getElementById('skModal').style.display = 'flex';
+        }
+        
+        function saveSK() {
+            const judul = document.getElementById('skJudul').value;
+            const versi = document.getElementById('skVersi').value;
+            const tanggal = document.getElementById('skTanggal').value;
+            const isi = document.getElementById('skIsi').value;
+            const status = document.getElementById('skStatus').value;
+            
+            if (!judul || !isi) {
+                showAlert('Judul dan isi harus diisi!', 'error');
+                return;
+            }
+            
+            if (editingId) {
+                const index = skData.findIndex(s => s.id === editingId);
+                skData[index] = { ...skData[index], judul, versi, tanggal, isi, status };
+                showAlert('Syarat & ketentuan berhasil diupdate!', 'success');
+            } else {
+                const newId = Math.max(...skData.map(s => s.id), 0) + 1;
+                skData.push({ id: newId, judul, versi, tanggal, isi, status });
+                showAlert('Syarat & ketentuan berhasil ditambahkan!', 'success');
+            }
+            
+            renderSKList();
+            closeModal();
+        }
+        
+        function toggleStatus(id) {
+            const sk = skData.find(s => s.id === id);
+            sk.status = sk.status === 'aktif' ? 'nonaktif' : 'aktif';
+            renderSKList();
+            showAlert(`Status "${sk.judul}" diubah menjadi ${sk.status}`, 'success');
+        }
+        
+        function deleteSK(id) {
+            if (confirm('Hapus syarat & ketentuan ini?')) {
+                skData = skData.filter(s => s.id !== id);
+                renderSKList();
+                showAlert('Syarat & ketentuan dihapus', 'success');
+            }
+        }
+        
+        function closeModal() {
+            document.getElementById('skModal').style.display = 'none';
+        }
+        
+        renderSKList();
+    </script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

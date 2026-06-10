@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Asrama Putri</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .welcome-card {
+            background: linear-gradient(135deg, #1a5d3a 0%, #2c7a4d 100%);
+            border-radius: 24px;
+            padding: 28px;
+            color: white;
+            margin-bottom: 24px;
+        }
+        .welcome-card h1 {
+            color: white;
+            margin-bottom: 8px;
+            font-size: 24px;
+        }
+        .welcome-card p {
+            color: rgba(255,255,255,0.85);
+            font-size: 14px;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s;
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+        }
+        .stat-card h3 {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+        .stat-card .number {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a2e3a;
+        }
+        .stat-card .number-warning {
+            color: #f59e0b;
+        }
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+        .quick-action-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid #e2e8f0;
+        }
+        .quick-action-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+            border-color: #2c7a4d;
+        }
+        .quick-action-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+        .quick-action-card strong {
+            font-size: 14px;
+            color: #1a2e3a;
+        }
+        .quick-action-card p {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 8px;
+        }
+        .recent-table {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+        .recent-table h3 {
+            padding: 20px 20px 0;
+            font-size: 16px;
+            color: #1a2e3a;
+        }
+        .btn-table {
+            padding: 5px 12px;
+            font-size: 12px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-primary-table {
+            background: #2c7a4d;
+            color: white;
+        }
+        .btn-primary-table:hover {
+            background: #1e5a3a;
+        }
+        .btn-secondary-table {
+            background: #e2e8f0;
+            color: #1a2e3a;
+        }
+        .btn-secondary-table:hover {
+            background: #cbd5e1;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 30px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+        .status-warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        .status-success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar-layout">
+        <div class="sidebar">
+            <div class="logo">🏡 DormyAdmin</div>
+            <nav>
+                <a href="admin-dashboard.html" class="active">📊 Dashboard</a>
+                <a href="admin-verifikasi-pendaftaran.html">📝 Verifikasi Pendaftaran</a>
+                <a href="admin-verifikasi-pembayaran.html">💰 Verifikasi Pembayaran</a>
+                <a href="admin-manajemen-kamar.html">🛏️ Manajemen Kamar</a>
+                <a href="admin-data-penghuni.html">👥 Data Penghuni</a>
+                <a href="admin-konfirmasi-keluar.html">🚪 Konfirmasi Keluar</a>
+                <a href="admin-laporan.html">📄 Laporan & Rekap</a>
+                <a href="admin-syarat-ketentuan.html">📜 Syarat & Ketentuan</a>
+                <a href="admin-pencarian.html">🔍 Pencarian Data</a>
+                <a href="#" id="logoutBtn">🚪 Keluar</a>
+            </nav>
+        </div>
+        
+        <div class="main-content">
+            <div class="welcome-card">
+                <h1>Selamat datang, Suster Asisten 👋</h1>
+                <p>Kelola pendaftaran, verifikasi data, dan pantau penghuni asrama.</p>
+            </div>
+            
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card">
+                    <h3>📋 Total Pendaftar</h3>
+                    <div class="number" id="totalPendaftar">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>⏳ Menunggu Verifikasi</h3>
+                    <div class="number number-warning" id="menungguVerifikasi">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>💰 Menunggu Pembayaran</h3>
+                    <div class="number number-warning" id="menungguPembayaran">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>👥 Penghuni Aktif</h3>
+                    <div class="number" id="penghuniAktif">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>🛏️ Kamar Tersedia</h3>
+                    <div class="number" id="kamarTersedia">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>🏠 Kamar Terisi</h3>
+                    <div class="number" id="kamarTerisi">0</div>
+                </div>
+            </div>
+            
+            <div class="quick-actions">
+                <div class="quick-action-card" onclick="location.href='admin-verifikasi-pendaftaran.html'">
+                    <div class="quick-action-icon">📝</div>
+                    <strong>Verifikasi Pendaftaran</strong>
+                    <p>Periksa data pendaftar baru</p>
+                </div>
+                <div class="quick-action-card" onclick="location.href='admin-verifikasi-pembayaran.html'">
+                    <div class="quick-action-icon">💰</div>
+                    <strong>Verifikasi Pembayaran</strong>
+                    <p>Cek bukti transfer</p>
+                </div>
+                <div class="quick-action-card" onclick="location.href='admin-manajemen-kamar.html'">
+                    <div class="quick-action-icon">🛏️</div>
+                    <strong>Kelola Kamar</strong>
+                    <p>Update status kamar</p>
+                </div>
+                <div class="quick-action-card" onclick="location.href='admin-konfirmasi-keluar.html'">
+                    <div class="quick-action-icon">🚪</div>
+                    <strong>Konfirmasi Keluar</strong>
+                    <p>Penghuni ≥ 2 tahun</p>
+                </div>
+            </div>
+            
+            <div class="recent-table">
+                <h3>📋 Pendaftar Terbaru</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr><th>Nama</th><th>NIM</th><th>Tanggal Daftar</th><th>Status</th><th>Aksi</th></tr>
+                    </thead>
+                    <tbody id="recentTableBody">
+                        <tr><td colspan="5" style="text-align:center;">Memuat data...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data demo untuk statistik
+        let statsData = {
+            totalPendaftar: 156,
+            menungguVerifikasi: 12,
+            menungguPembayaran: 8,
+            penghuniAktif: 89,
+            kamarTersedia: 15,
+            kamarTerisi: 45
+        };
+        
+        // Data pendaftar terbaru
+        let recentPendaftar = [
+            { nama: 'Maria Angelina', nim: '23K10020', tgl: '15 Apr 2026', status: 'verifikasi' },
+            { nama: 'Brigitta', nim: '23K10021', tgl: '14 Apr 2026', status: 'pembayaran' },
+            { nama: 'Cecilia', nim: '23K10022', tgl: '13 Apr 2026', status: 'aktif' },
+            { nama: 'Dominique', nim: '23K10023', tgl: '12 Apr 2026', status: 'verifikasi' },
+            { nama: 'Angeline', nim: '23K10024', tgl: '11 Apr 2026', status: 'pembayaran' },
+            { nama: 'Veronica', nim: '23K10025', tgl: '10 Apr 2026', status: 'verifikasi' },
+            { nama: 'Stefanie', nim: '23K10026', tgl: '09 Apr 2026', status: 'aktif' }
+        ];
+        
+        function updateStats() {
+            document.getElementById('totalPendaftar').innerText = statsData.totalPendaftar;
+            document.getElementById('menungguVerifikasi').innerText = statsData.menungguVerifikasi;
+            document.getElementById('menungguPembayaran').innerText = statsData.menungguPembayaran;
+            document.getElementById('penghuniAktif').innerText = statsData.penghuniAktif;
+            document.getElementById('kamarTersedia').innerText = statsData.kamarTersedia;
+            document.getElementById('kamarTerisi').innerText = statsData.kamarTerisi;
+        }
+        
+        function renderRecentTable() {
+            const tbody = document.getElementById('recentTableBody');
+            tbody.innerHTML = recentPendaftar.map(p => {
+                let statusBadge = '';
+                let actionLink = '';
+                
+                if (p.status === 'verifikasi') {
+                    statusBadge = '<span class="status-badge status-warning">⏳ Verifikasi</span>';
+                    actionLink = '<a href="admin-verifikasi-pendaftaran.html" class="btn-table btn-primary-table">Proses</a>';
+                } else if (p.status === 'pembayaran') {
+                    statusBadge = '<span class="status-badge status-warning">💰 Menunggu Bayar</span>';
+                    actionLink = '<a href="admin-verifikasi-pembayaran.html" class="btn-table btn-primary-table">Cek</a>';
+                } else {
+                    statusBadge = '<span class="status-badge status-success">✓ Aktif</span>';
+                    actionLink = '<a href="admin-data-penghuni.html" class="btn-table btn-secondary-table">Lihat</a>';
+                }
+                
+                return `<tr>
+                    <td style="font-weight:500;">${p.nama}</td>
+                    <td>${p.nim}</td>
+                    <td>${p.tgl}</td>
+                    <td>${statusBadge}</td>
+                    <td>${actionLink}</td>
+                </tr>`;
+            }).join('');
+        }
+        
+        // Inisialisasi
+        updateStats();
+        renderRecentTable();
+        
+        // Event logout
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = '../index.html';
+        });
+    </script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

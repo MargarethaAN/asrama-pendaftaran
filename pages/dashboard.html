@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Pendaftar</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .welcome-card {
+            background: linear-gradient(135deg, #1a5d3a 0%, #2c7a4d 100%);
+            border-radius: 24px;
+            padding: 28px 32px;
+            margin-bottom: 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .welcome-text h2 {
+            color: white;
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        .welcome-text p {
+            color: rgba(255,255,255,0.85);
+            font-size: 14px;
+        }
+        .welcome-badge {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 10px 20px;
+            border-radius: 40px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .welcome-badge span {
+            font-size: 14px;
+            color: white;
+            font-weight: 500;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+        .stat-card {
+            background: white;
+            padding: 24px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s;
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+        }
+        .stat-card h3 {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+        .stat-card .number {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a2e3a;
+        }
+        .stat-card .status-text {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .stat-card small {
+            font-size: 12px;
+            display: block;
+            margin-top: 8px;
+        }
+        .table-container {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+        .table-container h3 {
+            padding: 20px 20px 0;
+            font-size: 16px;
+            color: #1a2e3a;
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #cbd5e1;
+            padding: 5px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #1a2e3a;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.2s;
+        }
+        .btn-outline:hover {
+            background: #f1f5f9;
+            border-color: #2c7a4d;
+        }
+        .btn-primary {
+            background: #2c7a4d;
+            color: white;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-primary:hover {
+            background: #1e5a3a;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 30px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+        .status-success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        .status-warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        .status-info {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        .data-table th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: #1a2e3a;
+        }
+        .data-table td {
+            vertical-align: middle;
+        }
+        .loading-user {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar-layout">
+        <div class="sidebar">
+            <div class="logo">🏡 St. Teresa Dorm</div>
+            <nav>
+                <a href="dashboard.html" class="active">📊 Dashboard</a>
+                <a href="pendaftaran-data-diri.html">📝 Pendaftaran</a>
+                <a href="ketersediaan-kamar.html">🛏️ Ketersediaan Kamar</a>
+                <a href="dokumen.html">📄 Dokumen</a>
+                <a href="pembayaran.html">💳 Pembayaran</a>
+                <a href="status-pendaftaran.html">📌 Status</a>
+                <a href="booking-confirmation.html">✅ Konfirmasi</a>
+                <a href="#" id="logoutBtn">🚪 Keluar</a>
+            </nav>
+        </div>
+        
+        <div class="main-content">
+            <!-- Welcome Card dengan nama dinamis -->
+            <div class="welcome-card">
+                <div class="welcome-text">
+                    <h2 id="welcomeName">Selamat Datang, <span id="userName">👤</span> 👋</h2>
+                    <p>Semoga harimu menyenangkan. Pantau progress pendaftaran asrama di sini.</p>
+                </div>
+                <div class="welcome-badge">
+                    <span>📋</span>
+                    <span id="userStatus">Status: Memuat...</span>
+                </div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>📋 Status Pendaftaran</h3>
+                    <div class="status-text" style="color: #f59e0b;" id="statusText">⏳ Menunggu Verifikasi</div>
+                    <small>Admin akan memverifikasi data Anda</small>
+                </div>
+                <div class="stat-card">
+                    <h3>🛏️ Ketersediaan Kamar</h3>
+                    <div class="number">45/60</div>
+                    <small>15 kamar tersedia</small>
+                </div>
+                <div class="stat-card">
+                    <h3>📄 Dokumen Terunggah</h3>
+                    <div class="number" id="dokumenCount">0/0</div>
+                    <small id="dokumenStatus">Memuat...</small>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <h3>📋 Yang Perlu Dilakukan</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Tahap</th>
+                            <th>Status</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="todoTableBody">
+                        <tr><td colspan="3" style="text-align:center;">Memuat data...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const BASE_URL = window.location.origin + '/asrama-pendaftaran/backend/api/';
+        
+        // Ambil data user dari session
+        async function getUserData() {
+            try {
+                const response = await fetch(BASE_URL + 'check_session.php', {
+                    method: 'GET',
+                    credentials: 'same-origin'
+                });
+                const result = await response.json();
+                
+                if (result.logged_in) {
+                    document.getElementById('userName').innerText = result.nama || 'Pengguna';
+                    document.getElementById('welcomeName').innerHTML = `Selamat Datang, ${result.nama || 'Pengguna'} 👋`;
+                    
+                    // Update status badge
+                    const statusMap = {
+                        'admin': '👑 Administrator',
+                        'pendaftar': '📝 Pendaftar Baru'
+                    };
+                    document.getElementById('userStatus').innerHTML = `Status: ${statusMap[result.role] || result.role}`;
+                } else {
+                    window.location.href = 'login.html';
+                }
+                return result;
+            } catch (error) {
+                console.error('Error:', error);
+                window.location.href = 'login.html';
+            }
+        }
+        
+        // Ambil data pendaftar
+        async function getPendaftarData() {
+            try {
+                const response = await fetch(BASE_URL + 'get_pendaftar.php', {
+                    method: 'GET',
+                    credentials: 'same-origin'
+                });
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    const data = result.data;
+                    // Update status berdasarkan data dari database
+                    if (data.status_pendaftaran) {
+                        const statusMap = {
+                            'draf': '⏳ Belum Lengkap',
+                            'menunggu_verifikasi': '⏳ Menunggu Verifikasi',
+                            'diterima': '✅ Diterima',
+                            'ditolak': '❌ Ditolak'
+                        };
+                        document.getElementById('statusText').innerHTML = statusMap[data.status_pendaftaran] || '⏳ Menunggu Verifikasi';
+                    }
+                }
+                return result;
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+        
+        // Ambil data dokumen
+        async function getDokumenData() {
+            try {
+                const response = await fetch(BASE_URL + 'get_dokumen.php', {
+                    method: 'GET',
+                    credentials: 'same-origin'
+                });
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    const total = result.data.length;
+                    const required = 5; // Jumlah dokumen yang diperlukan
+                    document.getElementById('dokumenCount').innerHTML = `${total}/${required}`;
+                    if (total >= required) {
+                        document.getElementById('dokumenStatus').innerHTML = '✓ Lengkap';
+                        document.getElementById('dokumenStatus').style.color = '#10b981';
+                    } else {
+                        document.getElementById('dokumenStatus').innerHTML = `${required - total} dokumen lagi`;
+                        document.getElementById('dokumenStatus').style.color = '#f59e0b';
+                    }
+                }
+                return result;
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+        
+        // Render todo list
+        function renderTodoList() {
+            const tbody = document.getElementById('todoTableBody');
+            // Data statis untuk demo (bisa diambil dari API nanti)
+            const todos = [
+                { name: 'Mengisi Formulir Pendaftaran', status: 'success', statusText: '✓ Selesai', link: 'pendaftaran-data-diri.html', actionText: 'Lihat' },
+                { name: 'Mengunggah Dokumen', status: 'success', statusText: '✓ Selesai', link: 'dokumen.html', actionText: 'Lihat' },
+                { name: 'Verifikasi Admin', status: 'warning', statusText: '⏳ Proses', link: null, actionText: null },
+                { name: 'Konfirmasi Booking', status: 'info', statusText: 'Belum', link: 'booking-confirmation.html', actionText: 'Konfirmasi' },
+                { name: 'Upload Bukti Pembayaran', status: 'info', statusText: 'Belum', link: 'pembayaran.html', actionText: 'Bayar' }
+            ];
+            
+            tbody.innerHTML = todos.map(todo => `
+                <tr>
+                    <td>${todo.name}</td>
+                    <td><span class="status-badge status-${todo.status}">${todo.statusText}</span></td>
+                    <td>${todo.link ? `<a href="${todo.link}" class="btn-outline">${todo.actionText}</a>` : '-'}</td>
+                </tr>
+            `).join('');
+        }
+        
+        // Inisialisasi
+        async function init() {
+            await getUserData();
+            await getPendaftarData();
+            await getDokumenData();
+            renderTodoList();
+        }
+        
+        init();
+        
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', async function(e) {
+            e.preventDefault();
+            try {
+                await fetch(BASE_URL + 'logout.php', { method: 'POST' });
+                window.location.href = '../index.html';
+            } catch (error) {
+                window.location.href = '../index.html';
+            }
+        });
+    </script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

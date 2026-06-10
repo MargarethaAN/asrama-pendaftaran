@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Konfirmasi Booking - Asrama Putri</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .confirmation-card {
+            background: white;
+            border-radius: 24px;
+            padding: 32px;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+        }
+        .success-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+        .timer-box {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 20px;
+            margin: 24px 0;
+        }
+        .timer {
+            font-size: 48px;
+            font-weight: 700;
+            font-family: monospace;
+            color: #1a2e3a;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-top: 24px;
+        }
+        .room-info {
+            background: #f0fdf4;
+            border-radius: 16px;
+            padding: 16px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar-layout">
+        <div class="sidebar">
+            <div class="logo">🏡 Asrama Putri</div>
+            <nav>
+                <a href="dashboard.html">📊 Dashboard</a>
+                <a href="pendaftaran-data-diri.html">📝 Pendaftaran</a>
+                <a href="ketersediaan-kamar.html">🛏️ Ketersediaan Kamar</a>
+                <a href="dokumen.html">📄 Dokumen</a>
+                <a href="pembayaran.html">💳 Pembayaran</a>
+                <a href="status-pendaftaran.html">📌 Status</a>
+                <a href="booking-confirmation.html" class="active">✅ Konfirmasi</a>
+                <a href="#" id="logoutBtn">🚪 Keluar</a>
+            </nav>
+        </div>
+        
+        <div class="main-content">
+            <h1>✅ Konfirmasi Booking</h1>
+            <p>Konfirmasi pemesanan kamar Anda sebelum melanjutkan ke pembayaran.</p>
+            
+            <div class="confirmation-card">
+                <div class="success-icon">🎉</div>
+                <h2>Pendaftaran Diterima!</h2>
+                <p style="color: #64748b;">Anda telah dinyatakan lolos verifikasi.</p>
+                
+                <div class="room-info">
+                    <strong>🏠 Kamar yang Ditawarkan:</strong> <span style="font-size: 24px; font-weight: 700; color: #2c7a4d;">Kamar 25</span><br>
+                    <span style="font-size: 14px; color: #64748b;">Lantai 2, Kapasitas 2 orang</span>
+                </div>
+                
+                <div class="timer-box">
+                    <p style="margin-bottom: 8px;">⏰ Sisa waktu konfirmasi:</p>
+                    <div class="timer" id="timer">47:23:45</div>
+                    <p style="font-size: 12px; color: #64748b; margin-top: 8px;">Jika tidak dikonfirmasi dalam 2 hari, booking akan otomatis dibatalkan</p>
+                </div>
+                
+                <div class="action-buttons">
+                    <button onclick="confirmBooking()" class="btn-primary" style="padding: 14px 32px;">✅ Konfirmasi & Lanjut Bayar</button>
+                    <button onclick="cancelBooking()" class="btn-danger" style="padding: 14px 32px;">❌ Batalkan Pendaftaran</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let timeLeft = 47 * 3600 + 23 * 60 + 45; // 47 jam 23 menit 45 detik dalam detik
+        
+        function updateTimer() {
+            if (timeLeft <= 0) {
+                document.getElementById('timer').innerHTML = '00:00:00';
+                showAlert('Waktu konfirmasi habis! Booking dibatalkan.', 'error');
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 2000);
+                return;
+            }
+            
+            const hours = Math.floor(timeLeft / 3600);
+            const minutes = Math.floor((timeLeft % 3600) / 60);
+            const seconds = timeLeft % 60;
+            
+            document.getElementById('timer').innerHTML = 
+                `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            
+            timeLeft--;
+        }
+        
+        setInterval(updateTimer, 1000);
+        
+        function confirmBooking() {
+            showAlert('Booking berhasil dikonfirmasi! Silakan lanjutkan ke pembayaran.', 'success');
+            setTimeout(() => {
+                window.location.href = 'pembayaran.html';
+            }, 1500);
+        }
+        
+        function cancelBooking() {
+            if (confirm('Apakah Anda yakin ingin membatalkan pendaftaran?')) {
+                showAlert('Pendaftaran dibatalkan.', 'error');
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1500);
+            }
+        }
+    </script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

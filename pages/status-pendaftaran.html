@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Status Pendaftaran - Asrama Putri</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .status-timeline {
+            background: white;
+            border-radius: 24px;
+            padding: 32px;
+            margin-bottom: 24px;
+            border: 1px solid #e2e8f0;
+        }
+        .timeline-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 24px;
+            position: relative;
+        }
+        .timeline-item:not(:last-child)::before {
+            content: '';
+            position: absolute;
+            left: 22px;
+            top: 40px;
+            width: 2px;
+            height: calc(100% - 20px);
+            background: #e2e8f0;
+        }
+        .timeline-icon {
+            width: 44px;
+            height: 44px;
+            background: #f1f5f9;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            z-index: 1;
+            position: relative;
+        }
+        .timeline-icon.completed {
+            background: #d1fae5;
+            color: #10b981;
+        }
+        .timeline-icon.active {
+            background: #2c7a4d;
+            color: white;
+        }
+        .timeline-icon.pending {
+            background: #f1f5f9;
+            color: #94a3b8;
+        }
+        .timeline-content {
+            flex: 1;
+        }
+        .timeline-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .timeline-desc {
+            font-size: 13px;
+            color: #64748b;
+        }
+        .timeline-date {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+        .info-card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid #e2e8f0;
+        }
+        .info-card h4 {
+            margin-bottom: 16px;
+        }
+        .contact-info {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar-layout">
+        <div class="sidebar">
+            <div class="logo">🏡 Asrama Putri</div>
+            <nav>
+                <a href="dashboard.html">📊 Dashboard</a>
+                <a href="pendaftaran-data-diri.html">📝 Pendaftaran</a>
+                <a href="ketersediaan-kamar.html">🛏️ Ketersediaan Kamar</a>
+                <a href="dokumen.html">📄 Dokumen</a>
+                <a href="pembayaran.html">💳 Pembayaran</a>
+                <a href="status-pendaftaran.html" class="active">📌 Status</a>
+                <a href="booking-confirmation.html">✅ Konfirmasi</a>
+                <a href="#" id="logoutBtn">🚪 Keluar</a>
+            </nav>
+        </div>
+        
+        <div class="main-content">
+            <h1>📊 Status Pendaftaran</h1>
+            <p>Pantau perkembangan pendaftaran Anda di sini.</p>
+            
+            <div class="status-timeline" id="timelineContainer">
+                <!-- Timeline akan di-load via JS -->
+            </div>
+            
+            <div class="info-card">
+                <h4>ℹ️ Informasi Penting</h4>
+                <ul style="margin-left: 20px; color: #475569; font-size: 14px; line-height: 1.6;">
+                    <li>Verifikasi data membutuhkan waktu maksimal 2x24 jam</li>
+                    <li>Pastikan dokumen yang diupload terbaca dengan jelas</li>
+                    <li>Jika ada revisi data, admin akan memberikan catatan</li>
+                    <li>Pembayaran harus dilakukan sebelum batas waktu yang ditentukan</li>
+                </ul>
+                <div class="contact-info">
+                    <strong>📞 Ada pertanyaan?</strong><br>
+                    Hubungi admin asrama: <strong>024-1234567</strong> (Jam kerja: Senin-Jumat, 08.00-16.00)
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data status dari localStorage / API
+        let pendaftaranStatus = {
+            dataDiri: { status: 'completed', date: '2026-04-15' },
+            dokumen: { status: 'completed', date: '2026-04-15' },
+            verifikasi: { status: 'active', date: null },
+            kamar: { status: 'pending', date: null },
+            pembayaran: { status: 'pending', date: null }
+        };
+        
+        // Cek data dari localStorage
+        const dataDiri = localStorage.getItem('dataDiri');
+        const uploadedDocs = localStorage.getItem('uploadedDocuments');
+        const buktiBayar = localStorage.getItem('buktiPembayaran');
+        
+        if (dataDiri) pendaftaranStatus.dataDiri.status = 'completed';
+        if (uploadedDocs) {
+            const docs = JSON.parse(uploadedDocs);
+            const requiredDocs = ['ktm', 'kk', 'foto', 'rekomendasi'];
+            let allUploaded = true;
+            for (const doc of requiredDocs) {
+                if (!docs[doc] || docs[doc].status === 'deleted') {
+                    allUploaded = false;
+                    break;
+                }
+            }
+            pendaftaranStatus.dokumen.status = allUploaded ? 'completed' : 'pending';
+        }
+        if (buktiBayar) pendaftaranStatus.pembayaran.status = 'active';
+        
+        function renderTimeline() {
+            const timelineData = [
+                { key: 'dataDiri', icon: '📝', title: 'Pengisian Data Diri', desc: 'Formulir data diri dan data keluarga' },
+                { key: 'dokumen', icon: '📄', title: 'Upload Dokumen', desc: 'Unggah berkas persyaratan' },
+                { key: 'verifikasi', icon: '👑', title: 'Verifikasi Admin', desc: 'Pemeriksaan data dan dokumen oleh pengelola' },
+                { key: 'kamar', icon: '🛏️', title: 'Penempatan Kamar', desc: 'Admin menetapkan kamar untuk penghuni' },
+                { key: 'pembayaran', icon: '💳', title: 'Pembayaran', desc: 'Konfirmasi pembayaran dan lunas' }
+            ];
+            
+            const container = document.getElementById('timelineContainer');
+            container.innerHTML = '<h3 style="margin-bottom: 24px;">📋 Timeline Pendaftaran</h3>';
+            
+            for (const item of timelineData) {
+                const status = pendaftaranStatus[item.key];
+                let iconClass = 'pending';
+                let iconHtml = item.icon;
+                
+                if (status.status === 'completed') {
+                    iconClass = 'completed';
+                    iconHtml = '✓';
+                } else if (status.status === 'active') {
+                    iconClass = 'active';
+                }
+                
+                const dateHtml = status.date ? `<div class="timeline-date">📅 ${status.date}</div>` : '';
+                
+                container.innerHTML += `
+                    <div class="timeline-item">
+                        <div class="timeline-icon ${iconClass}">${iconHtml}</div>
+                        <div class="timeline-content">
+                            <div class="timeline-title">${item.title}</div>
+                            <div class="timeline-desc">${item.desc}</div>
+                            ${dateHtml}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Status keseluruhan
+            const allCompleted = timelineData.every(item => pendaftaranStatus[item.key]?.status === 'completed');
+            if (allCompleted) {
+                container.innerHTML += `
+                    <div style="margin-top: 24px; padding: 16px; background: #d1fae5; border-radius: 16px; text-align: center;">
+                        🎉 <strong>Selamat!</strong> Semua tahapan telah selesai. Anda resmi terdaftar sebagai penghuni asrama.
+                    </div>
+                `;
+            }
+        }
+        
+        renderTimeline();
+    </script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

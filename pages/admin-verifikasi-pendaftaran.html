@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verifikasi Pendaftaran - Admin</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 24px;
+            padding: 32px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+        .detail-card {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+        .detail-row {
+            display: flex;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .detail-label {
+            width: 130px;
+            font-weight: 500;
+            color: #64748b;
+        }
+        .detail-value {
+            flex: 1;
+            color: #1a2e3a;
+        }
+        .berkas-list {
+            margin-top: 16px;
+        }
+        .berkas-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            border: 1px solid #e2e8f0;
+        }
+        .btn-preview {
+            background: #2c7a4d;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-preview:hover {
+            background: #1e5a3a;
+        }
+        .preview-img {
+            max-width: 100%;
+            max-height: 400px;
+            border-radius: 12px;
+        }
+        .file-info {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar-layout">
+        <div class="sidebar">
+            <div class="logo">🏡 Admin Asrama</div>
+            <nav>
+                <a href="admin-dashboard.html">📊 Dashboard</a>
+                <a href="admin-verifikasi-pendaftaran.html" class="active">📝 Verifikasi Pendaftaran</a>
+                <a href="admin-verifikasi-pembayaran.html">💰 Verifikasi Pembayaran</a>
+                <a href="admin-manajemen-kamar.html">🛏️ Manajemen Kamar</a>
+                <a href="admin-data-penghuni.html">👥 Data Penghuni</a>
+                <a href="admin-konfirmasi-keluar.html">🚪 Konfirmasi Keluar</a>
+                <a href="admin-laporan.html">📄 Laporan & Rekap</a>
+                <a href="admin-syarat-ketentuan.html">📜 Syarat & Ketentuan</a>
+                <a href="admin-pencarian.html">🔍 Pencarian Data</a>
+                <a href="#" id="logoutBtn">🚪 Keluar</a>
+            </nav>
+        </div>
+        
+        <div class="main-content">
+            <h1>📝 Verifikasi Pendaftaran</h1>
+            <p>Periksa data dan berkas pendaftar, lalu verifikasi.</p>
+            
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr><th>Nama</th><th>NIM</th><th>Prodi</th><th>Tgl Daftar</th><th>Status</th><th>Aksi</th></tr>
+                    </thead>
+                    <tbody id="pendaftarList">
+                        <tr><td colspan="6" style="text-align:center;">Memuat data...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Detail & Verifikasi -->
+    <div id="verifModal" class="modal">
+        <div class="modal-content">
+            <h3 style="margin-bottom: 20px;">📋 Detail Pendaftar</h3>
+            
+            <div id="modalDetail"></div>
+            
+            <h4 style="margin: 20px 0 10px;">📎 Berkas Persyaratan</h4>
+            <div id="berkasList" class="berkas-list"></div>
+            
+            <div class="form-group" style="margin-top: 20px;">
+                <label>Keputusan</label>
+                <select id="keputusan" style="width:100%; padding:10px; border-radius:10px;">
+                    <option value="diterima">✓ Terima Pendaftaran</option>
+                    <option value="ditolak">✗ Tolak Pendaftaran</option>
+                </select>
+            </div>
+            <div class="form-group" id="catatanGroup" style="display:none;">
+                <label>Catatan Penolakan</label>
+                <textarea id="catatan" rows="3" placeholder="Alasan penolakan..." style="width:100%; padding:10px; border-radius:10px;"></textarea>
+            </div>
+            <div style="display: flex; gap: 12px; margin-top: 20px;">
+                <button onclick="submitVerifikasi()" class="btn-primary">Simpan</button>
+                <button onclick="closeModal()" class="btn-secondary">Batal</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Preview Berkas -->
+    <div id="previewModal" class="modal">
+        <div class="modal-content" style="max-width: 500px; text-align: center;">
+            <h3 id="previewTitle">Preview Berkas</h3>
+            <div id="previewContent"></div>
+            <button onclick="closePreviewModal()" class="btn-primary" style="margin-top: 20px;">Tutup</button>
+        </div>
+    </div>
+
+    <script>
+        let pendaftarData = [
+            { 
+                id: 1, nama: 'Maria Angelina', nim: '23K10020', prodi: 'Teknik Informatika', tglDaftar: '15 Apr 2026', status: 'menunggu',
+                dataLengkap: { nim: '23K10020', namaLengkap: 'Maria Angelina', tempatLahir: 'Jakarta', tglLahir: '2005-05-15', agama: 'Katolik', alamat: 'Jl. Setiabudi No.2, Semarang', noHp: '081234567890', prodi: 'Teknik Informatika', fakultas: 'Ilmu Komputer' },
+                berkas: [
+                    { nama: 'Scan KTM', file: 'ktm_maria.pdf', ukuran: '1.2 MB', tipe: 'PDF' },
+                    { nama: 'Scan Kartu Keluarga', file: 'kk_maria.pdf', ukuran: '0.8 MB', tipe: 'PDF' },
+                    { nama: 'Pas Foto', file: 'foto_maria.jpg', ukuran: '0.5 MB', tipe: 'JPG' },
+                    { nama: 'Surat Rekomendasi', file: 'rekomendasi_maria.pdf', ukuran: '0.9 MB', tipe: 'PDF' }
+                ]
+            },
+            { 
+                id: 2, nama: 'Angeline', nim: '23K10024', prodi: 'Manajemen', tglDaftar: '14 Apr 2026', status: 'menunggu',
+                dataLengkap: { nim: '23K10024', namaLengkap: 'Angeline', tempatLahir: 'Semarang', tglLahir: '2005-03-10', agama: 'Kristen', alamat: 'Jl. Pandanaran No.5, Semarang', noHp: '081234567891', prodi: 'Manajemen', fakultas: 'Ekonomi' },
+                berkas: [
+                    { nama: 'Scan KTM', file: 'ktm_angeline.pdf', ukuran: '1.1 MB', tipe: 'PDF' },
+                    { nama: 'Scan Kartu Keluarga', file: 'kk_angeline.pdf', ukuran: '0.7 MB', tipe: 'PDF' },
+                    { nama: 'Pas Foto', file: 'foto_angeline.jpg', ukuran: '0.4 MB', tipe: 'JPG' }
+                ]
+            }
+        ];
+        
+        let currentPendaftarId = null;
+        
+        function renderPendaftarList() {
+            const tbody = document.getElementById('pendaftarList');
+            tbody.innerHTML = pendaftarData.map(p => `
+                <tr>
+                    <td>${p.nama}</td>
+                    <td>${p.nim}</td>
+                    <td>${p.prodi}</td>
+                    <td>${p.tglDaftar}</td>
+                    <td><span class="status-badge status-warning">⏳ Menunggu</span></td>
+                    <td><button onclick="openModal(${p.id})" class="btn-primary" style="padding:5px 12px;">Verifikasi</button></td>
+                </tr>
+            `).join('');
+        }
+        
+        function openModal(id) {
+            currentPendaftarId = id;
+            const pendaftar = pendaftarData.find(p => p.id === id);
+            
+            const detailHtml = `
+                <div class="detail-card">
+                    <div class="detail-row"><span class="detail-label">NIM</span><span class="detail-value">${pendaftar.dataLengkap.nim}</span></div>
+                    <div class="detail-row"><span class="detail-label">Nama Lengkap</span><span class="detail-value">${pendaftar.dataLengkap.namaLengkap}</span></div>
+                    <div class="detail-row"><span class="detail-label">Tempat/Tgl Lahir</span><span class="detail-value">${pendaftar.dataLengkap.tempatLahir}, ${pendaftar.dataLengkap.tglLahir}</span></div>
+                    <div class="detail-row"><span class="detail-label">Agama</span><span class="detail-value">${pendaftar.dataLengkap.agama}</span></div>
+                    <div class="detail-row"><span class="detail-label">Alamat</span><span class="detail-value">${pendaftar.dataLengkap.alamat}</span></div>
+                    <div class="detail-row"><span class="detail-label">No. HP</span><span class="detail-value">${pendaftar.dataLengkap.noHp}</span></div>
+                    <div class="detail-row"><span class="detail-label">Prodi/Fakultas</span><span class="detail-value">${pendaftar.dataLengkap.prodi} / ${pendaftar.dataLengkap.fakultas}</span></div>
+                </div>
+            `;
+            document.getElementById('modalDetail').innerHTML = detailHtml;
+            
+            // Render daftar berkas
+            const berkasHtml = pendaftar.berkas.map(b => `
+                <div class="berkas-item">
+                    <div>
+                        <strong>📄 ${b.nama}</strong>
+                        <div class="file-info">${b.ukuran} • ${b.tipe}</div>
+                    </div>
+                    <button onclick="previewBerkas('${b.nama}', '${b.file}', '${b.tipe}')" class="btn-preview">👁️ Lihat</button>
+                </div>
+            `).join('');
+            document.getElementById('berkasList').innerHTML = berkasHtml || '<p>Tidak ada berkas</p>';
+            
+            document.getElementById('verifModal').style.display = 'flex';
+            
+            document.getElementById('keputusan').onchange = function() {
+                document.getElementById('catatanGroup').style.display = this.value === 'ditolak' ? 'block' : 'none';
+            };
+        }
+        
+        function previewBerkas(nama, file, tipe) {
+            const isImage = ['JPG', 'PNG', 'JPEG'].includes(tipe.toUpperCase());
+            let previewContent = '';
+            
+            if (isImage) {
+                previewContent = `<img src="https://placehold.co/400x300/2c7a4d/white?text=${encodeURIComponent(file)}" class="preview-img" alt="${nama}">`;
+            } else {
+                previewContent = `
+                    <div style="padding: 40px; background: #f1f5f9; border-radius: 12px;">
+                        <div style="font-size: 48px; margin-bottom: 16px;">📄</div>
+                        <p><strong>${nama}</strong></p>
+                        <p>File: ${file}</p>
+                        <p>Tipe: ${tipe}</p>
+                        <a href="#" style="color: #2c7a4d;">Download file</a>
+                    </div>
+                `;
+            }
+            
+            document.getElementById('previewTitle').innerHTML = `Preview: ${nama}`;
+            document.getElementById('previewContent').innerHTML = previewContent;
+            document.getElementById('previewModal').style.display = 'flex';
+        }
+        
+        function closePreviewModal() {
+            document.getElementById('previewModal').style.display = 'none';
+        }
+        
+        function closeModal() {
+            document.getElementById('verifModal').style.display = 'none';
+            currentPendaftarId = null;
+        }
+        
+        function submitVerifikasi() {
+            const keputusan = document.getElementById('keputusan').value;
+            const catatan = document.getElementById('catatan').value;
+            const pendaftar = pendaftarData.find(p => p.id === currentPendaftarId);
+            
+            if (keputusan === 'diterima') {
+                showAlert(`Pendaftaran ${pendaftar.nama} diterima!`, 'success');
+            } else {
+                showAlert(`Pendaftaran ${pendaftar.nama} ditolak. Catatan: ${catatan || 'Tidak ada catatan'}`, 'error');
+            }
+            
+            pendaftarData = pendaftarData.filter(p => p.id !== currentPendaftarId);
+            renderPendaftarList();
+            closeModal();
+        }
+        
+        renderPendaftarList();
+    </script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

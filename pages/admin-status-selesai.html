@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Status Selesai (Nonaktif)</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="sidebar-layout">
+        <div class="sidebar">
+            <div class="logo">🏠 Admin Asrama</div>
+            <nav>
+                <a href="admin-dashboard.html">📊 Dashboard</a>
+                <a href="admin-verifikasi-pendaftaran.html">📝 Verifikasi Pendaftaran</a>
+                <a href="admin-verifikasi-pembayaran.html">💰 Verifikasi Pembayaran</a>
+                <a href="admin-manajemen-kamar.html">🛏️ Manajemen Kamar</a>
+                <a href="admin-data-penghuni.html">👥 Data Penghuni</a>
+                <a href="admin-konfirmasi-keluar.html">🚪 Konfirmasi Keluar</a>
+                <a href="admin-laporan.html">📄 Laporan & Rekap</a>
+                <a href="admin-syarat-ketentuan.html">📜 Syarat & Ketentuan</a>
+                <a href="admin-pencarian.html">🔍 Pencarian Data</a>
+                <a href="#" id="logoutBtn">🚪 Logout</a>
+            </nav>
+        </div>
+        
+        <div class="main-content">
+            <h1>Status Penghuni - Selesai (Nonaktif)</h1>
+            
+            <div style="background: white; border-radius: 15px; padding: 20px; text-align: center;">
+                <div style="font-size: 60px;">✅</div>
+                <h2 style="color: #22543d;">Konfirmasi Keluar Asrama Berhasil!</h2>
+                <p>Penghuni <strong>Brigitta (23K10001)</strong> telah dikonfirmasi keluar.</p>
+                <p>Status akun: <span class="status-badge status-danger">Nonaktif / Diblokir</span></p>
+                <p>Tanggal keluar: 20 April 2026</p>
+                <hr>
+                <p style="color: #666;">Akun penghuni tidak dapat lagi digunakan untuk login ke sistem.</p>
+                <button onclick="location.href='admin-data-penghuni.html'" class="btn-primary" style="margin-top: 20px;">Kembali ke Data Penghuni</button>
+            </div>
+        </div>
+    </div>
+    <script src="../js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Tinjauan Berkas Mahasiswa</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="sidebar-layout">
+        <div class="sidebar">
+            <div class="logo">🏠 Admin Asrama</div>
+            <nav>
+                <a href="admin-dashboard.html">📊 Dashboard</a>
+                <a href="admin-verifikasi-pendaftaran.html">📝 Verifikasi Pendaftaran</a>
+                <a href="admin-verifikasi-pembayaran.html">💰 Verifikasi Pembayaran</a>
+                <a href="admin-manajemen-kamar.html">🛏️ Manajemen Kamar</a>
+                <a href="admin-data-penghuni.html" class="active">👥 Data Penghuni</a>
+                <a href="admin-konfirmasi-keluar.html">🚪 Konfirmasi Keluar</a>
+                <a href="admin-laporan.html">📄 Laporan & Rekap</a>
+                <a href="admin-syarat-ketentuan.html">📜 Syarat & Ketentuan</a>
+                <a href="admin-pencarian.html">🔍 Pencarian Data</a>
+                <a href="#" id="logoutBtn">🚪 Logout</a>
+            </nav>
+        </div>
+        
+        <div class="main-content">
+            <h1>Tinjauan Berkas Mahasiswa</h1>
+            
+            <div style="background: white; border-radius: 15px; padding: 20px;">
+                <h3>Maria Angelina - 23K10020</h3>
+                <hr>
+                <div class="table-container">
+                    <table class="data-table">
+                        <tr><th>Jenis Dokumen</th><th>Status</th><th>Aksi</th></tr>
+                        <tr><td>Scan KTM</td><td><span class="status-badge status-success">✓ Terverifikasi</span></td><td><button class="btn-secondary">Lihat</button></td></tr>
+                        <tr><td>Scan Kartu Keluarga</td><td><span class="status-badge status-success">✓ Terverifikasi</span></td><td><button class="btn-secondary">Lihat</button></td></tr>
+                        <tr><td>Pas Foto</td><td><span class="status-badge status-success">✓ Terverifikasi</span></td><td><button class="btn-secondary">Lihat</button></td></tr>
+                        <tr><td>Surat Rekomendasi</td><td><span class="status-badge status-success">✓ Terverifikasi</span></td><td><button class="btn-secondary">Lihat</button></td></tr>
+                    </table>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <h4>Informasi Penghuni</h4>
+                    <p><strong>Tanggal Masuk Asrama:</strong> 15 Januari 2024</p>
+                    <p><strong>Status Hunian:</strong> <span class="status-badge status-success">Aktif</span></p>
+                    <p><strong>Masa Hunian:</strong> 2 tahun 3 bulan</p>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <button onclick="location.href='admin-konfirmasi-keluar.html'" class="btn-primary">Konfirmasi Keluar Asrama</button>
+                    <button onclick="location.href='admin-data-penghuni.html'" class="btn-secondary">Kembali</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="../js/main.js"></script>
+</body>
+</html>

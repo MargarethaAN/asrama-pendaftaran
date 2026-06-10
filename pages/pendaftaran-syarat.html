@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pendaftaran - Syarat & Ketentuan</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .terms-box {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid #e2e8f0;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .terms-box h4 {
+            color: #1a2e3a;
+            margin-bottom: 16px;
+        }
+        .terms-box p {
+            margin-bottom: 12px;
+            line-height: 1.6;
+            color: #334155;
+            font-size: 14px;
+        }
+        .agree-check {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: #f1f5f9;
+            border-radius: 12px;
+            margin-bottom: 24px;
+        }
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar-layout">
+        <div class="sidebar">
+            <div class="logo">🏡 Asrama Putri</div>
+            <nav>
+                <a href="dashboard.html">📊 Dashboard</a>
+                <a href="pendaftaran-data-diri.html" class="active">📝 Pendaftaran</a>
+                <a href="ketersediaan-kamar.html">🛏️ Ketersediaan Kamar</a>
+                <a href="dokumen.html">📄 Dokumen</a>
+                <a href="pembayaran.html">💳 Pembayaran</a>
+                <a href="status-pendaftaran.html">📌 Status</a>
+                <a href="booking-confirmation.html">✅ Konfirmasi</a>
+                <a href="#" id="logoutBtn">🚪 Keluar</a>
+            </nav>
+        </div>
+        
+        <div class="main-content">
+            <h1>📜 Syarat & Ketentuan</h1>
+            <p>Baca dan pahami sebelum menyetujui.</p>
+            
+            <div class="progress-steps">
+                <div class="step completed"><div class="step-number">✓</div><div class="step-label">Data Diri</div></div>
+                <div class="step completed"><div class="step-number">✓</div><div class="step-label">Data Keluarga</div></div>
+                <div class="step active"><div class="step-number">3</div><div class="step-label">Syarat & Ketentuan</div></div>
+            </div>
+            
+            <div class="terms-box">
+                <h4>📋 Syarat dan Ketentuan Pendaftaran Asrama Putri</h4>
+                <p>1. Mahasiswi aktif Universitas Katolik Soegijapranata.</p>
+                <p>2. Belum menikah.</p>
+                <p>3. Memiliki IPK minimal 2.75 (dibuktikan dengan transkrip nilai).</p>
+                <p>4. Melampirkan surat rekomendasi dari orang tua/wali.</p>
+                <p>5. Bersedia mengikuti seluruh peraturan dan tata tertib asrama.</p>
+                <p>6. Membayar biaya pendaftaran sesuai ketentuan yang berlaku.</p>
+                <p>7. Mengisi data dengan jujur dan benar sesuai dokumen resmi.</p>
+                <p>8. Menyetujui seluruh kebijakan asrama yang telah ditetapkan.</p>
+                <p>9. Bersedia mengikuti kegiatan pembinaan asrama.</p>
+                <p>10. Menjaga nama baik asrama dan universitas.</p>
+                <hr style="margin: 16px 0;">
+                <h4>📎 Kelengkapan Berkas yang Harus Diupload</h4>
+                <p>• Scan KTM (Kartu Tanda Mahasiswa) - maksimal 2MB, format PDF/JPG/PNG</p>
+                <p>• Scan Kartu Keluarga - maksimal 2MB, format PDF/JPG/PNG</p>
+                <p>• Pas foto terbaru ukuran 3x4 - maksimal 2MB, format JPG/PNG</p>
+                <p>• Surat rekomendasi orang tua - maksimal 2MB, format PDF</p>
+                <p>• Transkrip nilai sementara - maksimal 2MB, format PDF</p>
+            </div>
+            
+            <div class="agree-check">
+                <input type="checkbox" id="setuju_syarat" required>
+                <label style="margin:0; font-weight:500;">Saya telah membaca, memahami, dan menyetujui seluruh syarat dan ketentuan yang berlaku.</label>
+            </div>
+            
+            <div class="form-actions">
+                <button type="button" onclick="window.location.href='pendaftaran-data-keluarga.html'" class="btn-secondary">← Kembali</button>
+                <button type="submit" id="submitBtn" class="btn-primary">Kirim Pendaftaran</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('submitBtn').addEventListener('click', async function() {
+            if (!document.getElementById('setuju_syarat').checked) {
+                showAlert('Harap setujui syarat dan ketentuan terlebih dahulu', 'error');
+                return;
+            }
+            
+            const dataDiri = JSON.parse(localStorage.getItem('dataDiri') || '{}');
+            const dataKeluarga = JSON.parse(localStorage.getItem('dataKeluarga') || '{}');
+            const allData = { ...dataDiri, ...dataKeluarga };
+            
+            // Simpan ke backend
+            const result = await savePendaftaran(allData);
+            
+            if (result.success) {
+                showAlert('Pendaftaran berhasil dikirim! Menunggu verifikasi admin.', 'success');
+                localStorage.removeItem('dataDiri');
+                localStorage.removeItem('dataKeluarga');
+                setTimeout(() => {
+                    window.location.href = 'status-pendaftaran.html';
+                }, 2000);
+            } else {
+                showAlert(result.message || 'Gagal mengirim pendaftaran', 'error');
+            }
+        });
+    </script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

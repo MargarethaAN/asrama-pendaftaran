@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ketersediaan Kamar - Pendaftaran Asrama</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .page-header-card {
+            background: linear-gradient(135deg, #1a5d3a 0%, #2c7a4d 100%);
+            border-radius: 24px;
+            padding: 28px 32px;
+            margin-bottom: 28px;
+        }
+        .page-header-card h1 {
+            color: white;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .page-header-card p {
+            color: rgba(255,255,255,0.85);
+            font-size: 14px;
+        }
+        .filter-bar {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 24px;
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            border: 1px solid #e2e8f0;
+        }
+        .filter-group {
+            flex: 1;
+            min-width: 150px;
+        }
+        .filter-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+        .filter-group select, .filter-group input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            background: #f8fafc;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .filter-group select:focus, .filter-group input:focus {
+            outline: none;
+            border-color: #2c7a4d;
+            box-shadow: 0 0 0 3px rgba(44,122,77,0.1);
+        }
+        .room-stats {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+        .room-stat-badge {
+            background: white;
+            padding: 12px 24px;
+            border-radius: 40px;
+            border: 1px solid #e2e8f0;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .room-stat-badge .count {
+            font-weight: 700;
+            font-size: 20px;
+            margin-right: 4px;
+        }
+        .room-stat-badge.tersedia .count { color: #10b981; }
+        .room-stat-badge.terisi .count { color: #f59e0b; }
+        .room-stat-badge.perbaikan .count { color: #ef4444; }
+        .room-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
+        }
+        .room-card {
+            background: white;
+            padding: 20px;
+            border-radius: 16px;
+            text-align: center;
+            transition: all 0.2s;
+            border: 1px solid #e2e8f0;
+            position: relative;
+            overflow: hidden;
+        }
+        .room-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+        }
+        .room-card.tersedia {
+            border-left: 4px solid #10b981;
+        }
+        .room-card.terisi {
+            border-left: 4px solid #f59e0b;
+            background: #fefaf5;
+        }
+        .room-card.perbaikan {
+            border-left: 4px solid #ef4444;
+            background: #fef5f5;
+        }
+        .room-number {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a2e3a;
+            margin-bottom: 8px;
+        }
+        .room-lantai {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 4px;
+        }
+        .room-kapasitas {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 12px;
+        }
+        .room-status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .status-tersedia {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        .status-terisi {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        .status-perbaikan {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        .info-note {
+            margin-top: 24px;
+            padding: 16px 20px;
+            background: #f0fdf4;
+            border-radius: 16px;
+            border: 1px solid #bbf7d0;
+            font-size: 13px;
+            color: #166534;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar-layout">
+        <div class="sidebar">
+            <div class="logo">🏡 St. Teresa Dorm</div>
+            <nav>
+                <a href="dashboard.html">📊 Dashboard</a>
+                <a href="pendaftaran-data-diri.html">📝 Pendaftaran</a>
+                <a href="ketersediaan-kamar.html" class="active">🛏️ Ketersediaan Kamar</a>
+                <a href="dokumen.html">📄 Dokumen</a>
+                <a href="pembayaran.html">💳 Pembayaran</a>
+                <a href="status-pendaftaran.html">📌 Status</a>
+                <a href="booking-confirmation.html">✅ Konfirmasi</a>
+                <a href="#" id="logoutBtn">🚪 Keluar</a>
+            </nav>
+        </div>
+        
+        <div class="main-content">
+            <div class="page-header-card">
+                <h1>
+                    <span>🛏️</span> Ketersediaan Kamar
+                </h1>
+                <p>Informasi status kamar asrama secara real-time.</p>
+            </div>
+            
+            <div class="room-stats" id="roomStats">
+                <div class="room-stat-badge tersedia">
+                    <span>🟢</span>
+                    <span class="count" id="totalTersedia">0</span>
+                    <span>Kamar Tersedia</span>
+                </div>
+                <div class="room-stat-badge terisi">
+                    <span>🟠</span>
+                    <span class="count" id="totalTerisi">0</span>
+                    <span>Kamar Terisi</span>
+                </div>
+                <div class="room-stat-badge perbaikan">
+                    <span>🔴</span>
+                    <span class="count" id="totalPerbaikan">0</span>
+                    <span>Kamar Perbaikan</span>
+                </div>
+                <div class="room-stat-badge">
+                    <span>📊</span>
+                    <span class="count" id="totalKamar">0</span>
+                    <span>Total Kamar</span>
+                </div>
+            </div>
+            
+            <div class="filter-bar">
+                <div class="filter-group">
+                    <label>Filter Lantai</label>
+                    <select id="filterLantai">
+                        <option value="all">Semua Lantai</option>
+                        <option value="1">Lantai 1</option>
+                        <option value="2">Lantai 2</option>
+                        <option value="3">Lantai 3</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Filter Status</label>
+                    <select id="filterStatus">
+                        <option value="all">Semua Status</option>
+                        <option value="tersedia">Tersedia</option>
+                        <option value="terisi">Terisi</option>
+                        <option value="perbaikan">Perbaikan</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Cari Kamar</label>
+                    <input type="text" id="searchKamar" placeholder="Cari nomor kamar...">
+                </div>
+            </div>
+            
+            <div class="room-grid" id="roomGrid">
+                <!-- Data akan di-load via JS langsung -->
+            </div>
+            
+            <div class="info-note">
+                <span>📌</span>
+                <span><strong>Informasi:</strong> Pemilihan kamar akan ditentukan oleh pengurus asrama setelah verifikasi pendaftaran selesai. Halaman ini hanya bersifat informatif.</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data kamar langsung (tanpa loading)
+        const kamarData = [
+            { id: 1, nomor_kamar: '101', lantai: 1, kapasitas: 2, status_kamar: 'tersedia' },
+            { id: 2, nomor_kamar: '102', lantai: 1, kapasitas: 2, status_kamar: 'tersedia' },
+            { id: 3, nomor_kamar: '103', lantai: 1, kapasitas: 2, status_kamar: 'terisi' },
+            { id: 4, nomor_kamar: '104', lantai: 1, kapasitas: 2, status_kamar: 'tersedia' },
+            { id: 5, nomor_kamar: '105', lantai: 1, kapasitas: 2, status_kamar: 'tersedia' },
+            { id: 6, nomor_kamar: '201', lantai: 2, kapasitas: 2, status_kamar: 'tersedia' },
+            { id: 7, nomor_kamar: '202', lantai: 2, kapasitas: 2, status_kamar: 'tersedia' },
+            { id: 8, nomor_kamar: '203', lantai: 2, kapasitas: 2, status_kamar: 'perbaikan' },
+            { id: 9, nomor_kamar: '204', lantai: 2, kapasitas: 2, status_kamar: 'tersedia' },
+            { id: 10, nomor_kamar: '205', lantai: 2, kapasitas: 2, status_kamar: 'terisi' },
+            { id: 11, nomor_kamar: '301', lantai: 3, kapasitas: 2, status_kamar: 'tersedia' },
+            { id: 12, nomor_kamar: '302', lantai: 3, kapasitas: 2, status_kamar: 'tersedia' },
+            { id: 13, nomor_kamar: '303', lantai: 3, kapasitas: 2, status_kamar: 'terisi' },
+            { id: 14, nomor_kamar: '304', lantai: 3, kapasitas: 2, status_kamar: 'tersedia' },
+            { id: 15, nomor_kamar: '305', lantai: 3, kapasitas: 2, status_kamar: 'perbaikan' }
+        ];
+        
+        function updateStats() {
+            const total = kamarData.length;
+            const tersedia = kamarData.filter(k => k.status_kamar === 'tersedia').length;
+            const terisi = kamarData.filter(k => k.status_kamar === 'terisi').length;
+            const perbaikan = kamarData.filter(k => k.status_kamar === 'perbaikan').length;
+            
+            document.getElementById('totalKamar').innerText = total;
+            document.getElementById('totalTersedia').innerText = tersedia;
+            document.getElementById('totalTerisi').innerText = terisi;
+            document.getElementById('totalPerbaikan').innerText = perbaikan;
+        }
+        
+        function displayKamar() {
+            const filterLantai = document.getElementById('filterLantai').value;
+            const filterStatus = document.getElementById('filterStatus').value;
+            const searchQuery = document.getElementById('searchKamar').value.toLowerCase();
+            
+            let filtered = [...kamarData];
+            
+            if (filterLantai !== 'all') {
+                filtered = filtered.filter(k => k.lantai == filterLantai);
+            }
+            if (filterStatus !== 'all') {
+                filtered = filtered.filter(k => k.status_kamar === filterStatus);
+            }
+            if (searchQuery) {
+                filtered = filtered.filter(k => k.nomor_kamar.toLowerCase().includes(searchQuery));
+            }
+            
+            const grid = document.getElementById('roomGrid');
+            if (filtered.length === 0) {
+                grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:60px; color:#64748b;">🔍 Tidak ada kamar yang sesuai dengan filter</div>';
+                return;
+            }
+            
+            grid.innerHTML = filtered.map(k => {
+                let statusClass = '';
+                let statusText = '';
+                if (k.status_kamar === 'tersedia') {
+                    statusClass = 'status-tersedia';
+                    statusText = '✓ Tersedia';
+                } else if (k.status_kamar === 'terisi') {
+                    statusClass = 'status-terisi';
+                    statusText = '👥 Terisi';
+                } else {
+                    statusClass = 'status-perbaikan';
+                    statusText = '🔧 Perbaikan';
+                }
+                
+                return `
+                    <div class="room-card ${k.status_kamar}">
+                        <div class="room-number">${k.nomor_kamar}</div>
+                        <div class="room-lantai">Lantai ${k.lantai}</div>
+                        <div class="room-kapasitas">Kapasitas: ${k.kapasitas} orang</div>
+                        <div class="room-status ${statusClass}">${statusText}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        document.getElementById('filterLantai').addEventListener('change', displayKamar);
+        document.getElementById('filterStatus').addEventListener('change', displayKamar);
+        document.getElementById('searchKamar').addEventListener('input', displayKamar);
+        
+        // Langsung tampilkan data tanpa loading
+        updateStats();
+        displayKamar();
+        
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = '../index.html';
+        });
+    </script>
+    <script src="../js/main.js"></script>
+</body>
+</html>
