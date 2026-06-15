@@ -116,7 +116,7 @@
         
         <div class="main-content">
             <h1>🔍 Pencarian Data</h1>
-            <p>Cari data pendaftar, penghuni, atau alumni secara cepat.</p>
+            <p>Cari数据 pendaftar, penghuni, atau alumni secara cepat.</p>
             
             <div class="search-section">
                 <div class="search-filters">
@@ -161,7 +161,7 @@
                         <tr><th>Nama</th><th>NIM</th><th>Program Studi</th><th>Status Hunian</th><th>Kamar</th><th>Aksi</th></tr>
                     </thead>
                     <tbody id="searchResults">
-                        <tr><td colspan="6" class="loading">Memuat data...</td></tr>
+                        <tr><td colspan="6" class="loading">Memuat数据...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -179,8 +179,9 @@
         </div>
     </div>
 
+    <script src="../js/main.js"></script>
     <script>
-        const BASE_URL = window.location.origin + '/asrama-pendaftaran/backend/api/';
+        // BASE_URL sudah dari main.js, jangan deklarasi ulang
         let allData = [];
         let uniqueProdi = [];
         
@@ -205,18 +206,16 @@
                 const result = await response.json();
                 if (result.success && result.data) {
                     allData = result.data;
-                    // Extract unique program studi untuk filter
                     uniqueProdi = [...new Set(allData.map(p => p.prodi).filter(p => p))];
                     updateProdiFilter();
                 } else {
                     allData = [];
                 }
-                // Tampilkan data awal
                 searchData();
             } catch (error) {
                 console.error('Error:', error);
                 allData = [];
-                document.getElementById('searchResults').innerHTML = '<tr><td colspan="6" class="loading">Gagal memuat data</td></tr>';
+                document.getElementById('searchResults').innerHTML = '<tr><td colspan="6" class="loading">Gagal memuat数据</td></tr>';
             }
         }
         
@@ -278,7 +277,7 @@
             resultCount.innerHTML = `Ditemukan ${results.length} data`;
             
             if (results.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Tidak ada data yang ditemukan</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Tidak ada数据 yang ditemukan</td></tr>';
                 return;
             }
             
@@ -296,7 +295,7 @@
                         <td>${item.nomor_kamar || '-'}</td>
                         <td class="action-buttons">
                             <button onclick="showDetail(${item.id_pendaftar})" class="btn-secondary" style="padding:5px 10px;">Detail</button>
-                         </td>
+                          </td>
                     </tr>
                 `;
             }).join('');
@@ -350,9 +349,7 @@
             window.location.href = '../index.html';
         });
         
-        // Load data dari database
         loadAllData();
     </script>
-    <script src="../js/main.js"></script>
 </body>
 </html>

@@ -148,7 +148,7 @@
             <h1>📋 Tinjauan Berkas Mahasiswa</h1>
             
             <div id="contentContainer">
-                <div class="loading">Memuat data...</div>
+                <div class="loading">Memuat数据...</div>
             </div>
         </div>
     </div>
@@ -162,8 +162,9 @@
         </div>
     </div>
 
+    <script src="../js/main.js"></script>
     <script>
-        const BASE_URL = window.location.origin + '/asrama-pendaftaran/backend/api/';
+        // BASE_URL sudah dari main.js, jangan deklarasi ulang
         let currentIdPendaftar = null;
         
         function showAlertLocal(message, type) {
@@ -181,7 +182,6 @@
             }, 3000);
         }
         
-        // Ambil parameter dari URL
         function getUrlParameter(name) {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get(name);
@@ -196,18 +196,16 @@
             currentIdPendaftar = idPendaftar;
             
             try {
-                // Load data pendaftar
                 const resPendaftar = await fetch(BASE_URL + 'get_pendaftar_by_id.php?id=' + idPendaftar);
                 const resultPendaftar = await resPendaftar.json();
                 
-                // Load data dokumen
                 const resDokumen = await fetch(BASE_URL + 'get_dokumen_admin.php?id_pendaftar=' + idPendaftar);
                 const resultDokumen = await resDokumen.json();
                 
                 renderContent(resultPendaftar.data, resultDokumen.data);
             } catch (error) {
                 console.error('Error:', error);
-                document.getElementById('contentContainer').innerHTML = '<div class="info-card"><p>Gagal memuat data</p><button onclick="history.back()" class="btn-secondary">Kembali</button></div>';
+                document.getElementById('contentContainer').innerHTML = '<div class="info-card"><p>Gagal memuat数据</p><button onclick="history.back()" class="btn-secondary">Kembali</button></div>';
             }
         }
         
@@ -238,7 +236,6 @@
             const statusHunian = pendaftar.status_keluar === 'aktif' ? 'Aktif' : 'Nonaktif';
             const statusClass = pendaftar.status_keluar === 'aktif' ? 'status-success' : 'status-danger';
             
-            // Daftar dokumen yang diharapkan
             const expectedDocs = ['ktm', 'kk', 'foto', 'rekomendasi', 'transkrip'];
             const docNames = {
                 'ktm': 'Scan KTM',
@@ -248,7 +245,6 @@
                 'transkrip': 'Transkrip Nilai'
             };
             
-            // Buat map dokumen yang sudah diupload
             const uploadedDocs = {};
             dokumen.forEach(doc => {
                 uploadedDocs[doc.jenis_dokumen] = doc;
@@ -259,13 +255,13 @@
             for (const docKey of expectedDocs) {
                 const doc = uploadedDocs[docKey];
                 const status = doc ? (doc.status_verifikasi === 'diverifikasi' ? 'Terverifikasi' : 'Menunggu') : 'Belum Upload';
-                const statusClass = doc ? (doc.status_verifikasi === 'diverifikasi' ? 'status-success' : 'status-warning') : 'status-danger';
+                const statClass = doc ? (doc.status_verifikasi === 'diverifikasi' ? 'status-success' : 'status-warning') : 'status-danger';
                 const action = doc ? `<button onclick="previewBerkas('${doc.file_path}', '${docNames[docKey]}')" class="btn-preview">👁️ Lihat</button>` : '-';
                 
                 dokumenHtml += `
                     <tr>
                         <td>${docNames[docKey]}</td>
-                        <td><span class="status-badge ${statusClass}">${status}</span></td>
+                        <td><span class="status-badge ${statClass}">${status}</span></td>
                         <td>${action}</td>
                     </tr>
                 `;
@@ -280,37 +276,16 @@
                     </div>
                     
                     <div class="info-grid">
-                        <div class="info-item">
-                            <div class="info-label">NIM</div>
-                            <div class="info-value">${pendaftar.nim || '-'}</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Nama Lengkap</div>
-                            <div class="info-value">${escapeHtml(pendaftar.nama_lengkap || '-')}</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Program Studi</div>
-                            <div class="info-value">${escapeHtml(pendaftar.prodi || '-')}</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">No. Handphone</div>
-                            <div class="info-value">${pendaftar.no_hp || '-'}</div>
-                        </div>
+                        <div class="info-item"><div class="info-label">NIM</div><div class="info-value">${pendaftar.nim || '-'}</div></div>
+                        <div class="info-item"><div class="info-label">Nama Lengkap</div><div class="info-value">${escapeHtml(pendaftar.nama_lengkap || '-')}</div></div>
+                        <div class="info-item"><div class="info-label">Program Studi</div><div class="info-value">${escapeHtml(pendaftar.prodi || '-')}</div></div>
+                        <div class="info-item"><div class="info-label">No. Handphone</div><div class="info-value">${pendaftar.no_hp || '-'}</div></div>
                     </div>
                     
                     <div class="info-grid">
-                        <div class="info-item">
-                            <div class="info-label">Tanggal Masuk Asrama</div>
-                            <div class="info-value">${pendaftar.tanggal_masuk_asrama || 'Belum ditentukan'}</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Masa Hunian</div>
-                            <div class="info-value">${masaHunian}</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Kamar</div>
-                            <div class="info-value">${pendaftar.nomor_kamar || 'Belum ditentukan'}</div>
-                        </div>
+                        <div class="info-item"><div class="info-label">Tanggal Masuk Asrama</div><div class="info-value">${pendaftar.tanggal_masuk_asrama || 'Belum ditentukan'}</div></div>
+                        <div class="info-item"><div class="info-label">Masa Hunian</div><div class="info-value">${masaHunian}</div></div>
+                        <div class="info-item"><div class="info-label">Kamar</div><div class="info-value">${pendaftar.nomor_kamar || 'Belum ditentukan'}</div></div>
                     </div>
                     
                     <hr style="margin: 20px 0;">
@@ -373,6 +348,5 @@
             window.location.href = '../index.html';
         });
     </script>
-    <script src="../js/main.js"></script>
 </body>
 </html>

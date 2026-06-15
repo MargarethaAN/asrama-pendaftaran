@@ -132,7 +132,7 @@
         </div>
     </div>
 
-    <!-- Modal Tambah/Edit -->
+    <!-- Modal Tambah -->
     <div id="skModal" class="modal">
         <div class="modal-content">
             <h3 id="modalTitle">Tambah Syarat & Ketentuan</h3>
@@ -148,8 +148,8 @@
         </div>
     </div>
 
+    <script src="../js/main.js"></script>
     <script>
-        const BASE_URL = window.location.origin + '/asrama-pendaftaran/backend/api/';
         let skData = [];
         let editingId = null;
         
@@ -250,75 +250,60 @@
             editingId = null;
         }
         
-        async function saveSK() {
-            const judul = document.getElementById('skJudul').value.trim();
-            const versi = document.getElementById('skVersi').value.trim();
-            const tanggal = document.getElementById('skTanggal').value;
-            const isi = document.getElementById('skIsi').value;
-            const status = document.getElementById('skStatus').value;
-            
-            if (!judul || !isi) {
-                showAlertLocal('Judul dan isi harus diisi!', 'error');
-                return;
-            }
-            
-            const url = editingId ? BASE_URL + 'update_syarat_ketentuan.php' : BASE_URL + 'tambah_syarat_ketentuan.php';
-            const body = editingId ? { id_sk: editingId, judul, versi, tanggal_berlaku: tanggal, isi, status } : { judul, versi, tanggal_berlaku: tanggal, isi, status };
-            
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(body)
-                });
-                const result = await response.json();
-                showAlertLocal(result.message, result.success ? 'success' : 'error');
-                if (result.success) {
-                    loadSKFromDB();
-                    closeModal();
-                }
-            } catch (error) {
-                showAlertLocal('Gagal menyimpan data', 'error');
+        function saveSK() {
+    const judul = document.getElementById('skJudul').value;
+    const versi = document.getElementById('skVersi').value;
+    const tanggal = document.getElementById('skTanggal').value;
+    const isi = document.getElementById('skIsi').value;
+    const status = document.getElementById('skStatus').value;
+    
+    if (!judul || !isi) {
+        showAlertLocal('Judul dan isi harus diisi!', 'error');
+        return;
+    }
+    
+    if (editingId) {
+        // Mode Edit - Kirim ke update_syarat_ketentuan.php
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = BASE_URL + 'update_syarat_ketentuan.php';
+        form.innerHTML = `
+            <input name="id_sk" value="${editingId}">
+            <input name="judul" value="${escapeHtml(judul)}">
+            <input name="versi" value="${escapeHtml(versi)}">
+            <input name="tanggal_berlaku" value="${tanggal}">
+            <textarea name="isi">${escapeHtml(isi)}</textarea>
+            <input name="status" value="${status}">
+        `;
+        document.body.appendChild(form);
+        form.submit();
+    } else {
+        // Mode Tambah - Kirim ke tambah_syarat.php
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = BASE_URL + 'tambah_syarat.php';
+        form.innerHTML = `
+            <input name="judul" value="${escapeHtml(judul)}">
+            <input name="versi" value="${escapeHtml(versi)}">
+            <input name="tanggal" value="${tanggal}">
+            <textarea name="isi">${escapeHtml(isi)}</textarea>
+            <input name="status" value="${status}">
+        `;
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+        
+        function toggleStatus(id) {
+            window.location.href = BASE_URL + 'toggle_syarat.php?id=' + id;
+        }
+        
+        function deleteSK(id) {
+            if (confirm('Hapus syarat & ketentuan ini?')) {
+                window.location.href = BASE_URL + 'hapus_syarat.php?id=' + id;
             }
         }
         
-        async function toggleStatus(id) {
-            try {
-                const response = await fetch(BASE_URL + 'update_syarat_ketentuan.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id_sk: id, status: null }) // Akan di-handle di API
-                });
-                const result = await response.json();
-                showAlertLocal(result.message, result.success ? 'success' : 'error');
-                if (result.success) {
-                    loadSKFromDB();
-                }
-            } catch (error) {
-                showAlertLocal('Gagal mengubah status', 'error');
-            }
-        }
-        
-        async function deleteSK(id) {
-            if (!confirm('Hapus syarat & ketentuan ini?')) return;
-            
-            try {
-                const response = await fetch(BASE_URL + 'delete_syarat_ketentuan.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id_sk: id })
-                });
-                const result = await response.json();
-                showAlertLocal(result.message, result.success ? 'success' : 'error');
-                if (result.success) {
-                    loadSKFromDB();
-                }
-            } catch (error) {
-                showAlertLocal('Gagal menghapus data', 'error');
-            }
-        }
-        
-        // Load data dari database
         loadSKFromDB();
         
         document.getElementById('logoutBtn').addEventListener('click', function(e) {
@@ -326,6 +311,5 @@
             window.location.href = '../index.html';
         });
     </script>
-    <script src="../js/main.js"></script>
 </body>
 </html>

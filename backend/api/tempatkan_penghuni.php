@@ -17,23 +17,32 @@ $data = json_decode(file_get_contents('php://input'), true);
 $id_kamar = intval($data['id_kamar']);
 $id_pendaftar = intval($data['id_pendaftar']);
 
-// Cek apakah sudah ada hunian
-$check = "SELECT id_hunian FROM hunian WHERE id_pendaftar = $id_pendaftar";
-$result = mysqli_query($conn, $check);
+// Dapatkan id_pendaftaran
+$query = "SELECT id_pendaftaran FROM pendaftaran WHERE id_pendaftar = $id_pendaftar ORDER BY id_pendaftaran DESC LIMIT 1";
+$result = mysqli_query($conn, $query);
 
 if (mysqli_num_rows($result) > 0) {
-    // Update hunian yang sudah ada
-    $query = "UPDATE hunian SET id_kamar = $id_kamar, ditetapkan_pada = NOW() WHERE id_pendaftar = $id_pendaftar";
-} else {
-    // Buat hunian baru
-    $query = "INSERT INTO hunian (id_pendaftar, id_kamar, tanggal_masuk, status_hunian, ditetapkan_pada) VALUES ($id_pendaftar, $id_kamar, CURDATE(), 'aktif', NOW())";
-}
-
-if (mysqli_query($conn, $query)) {
-    // Update status kamar menjadi terisi
+    $row = mysqli_fetch_assoc($result);
+    $id_pendaftaran = $row['id_pendaftaran'];
+    
+    // Cek apakah sudah ada hunian
+    $check = "SELECT id_hunian FROM hunian WHERE id_pendaftaran = $id_pendaftaran";
+    $checkResult = mysqli_query($conn, $check);
+    
+    if (mysqli_num_rows($checkResult) > 0) {
+        $update = "UPDATE hunian SET id_kamar = $id_kamar, ditetapkan_pada = NOW() WHERE id_pendaftaran = $id_pendaftaran";
+        mysqli_query($conn, $update);
+    } else {
+        $insert = "INSERT INTO hunian (id_pendaftaran, id_kamar, tanggal_masuk, status_hunian, ditetapkan_pada) 
+                   VALUES ($id_pendaftaran, $id_kamar, CURDATE(), 'aktif', NOW())";
+        mysqli_query($conn, $insert);
+    }
+    
+    // Update status kamar
     mysqli_query($conn, "UPDATE kamar SET status_kamar = 'terisi' WHERE id_kamar = $id_kamar");
+    
     echo json_encode(['success' => true, 'message' => 'Penghuni berhasil ditempatkan']);
 } else {
-    echo json_encode(['success' => false, 'message' => 'Gagal: ' . mysqli_error($conn)]);
+    echo json_encode(['success' => false, 'message' => 'Data pendaftaran tidak ditemukan']);
 }
 ?>

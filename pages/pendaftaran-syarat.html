@@ -102,7 +102,7 @@
                 <p>4. Melampirkan surat rekomendasi dari orang tua/wali.</p>
                 <p>5. Bersedia mengikuti seluruh peraturan dan tata tertib asrama.</p>
                 <p>6. Membayar biaya pendaftaran sesuai ketentuan yang berlaku.</p>
-                <p>7. Mengisi data dengan jujur dan benar sesuai dokumen resmi.</p>
+                <p>7. Mengisi数据 dengan jujur dan benar sesuai dokumen resmi.</p>
                 <p>8. Menyetujui seluruh kebijakan asrama yang telah ditetapkan.</p>
                 <p>9. Bersedia mengikuti kegiatan pembinaan asrama.</p>
                 <p>10. Menjaga nama baik asrama dan universitas.</p>
@@ -127,8 +127,9 @@
         </div>
     </div>
 
+    <script src="../js/main.js"></script>
     <script>
-        const BASE_URL = window.location.origin + '/asrama-pendaftaran/backend/api/';
+        // BASE_URL sudah dari main.js, jangan deklarasi ulang
         
         function showAlertLocal(message, type) {
             const oldAlert = document.querySelector('.alert-fixed');
@@ -146,7 +147,7 @@
         }
         
         async function submitPendaftaran() {
-            showAlertLocal('Menyimpan data...', 'success');
+            showAlertLocal('Menyimpan数据...', 'success');
             
             try {
                 const response = await fetch(BASE_URL + 'update_status_pendaftaran.php', {
@@ -183,6 +184,5 @@
             window.location.href = '../index.html';
         });
     </script>
-    <script src="../js/main.js"></script>
 </body>
 </html>

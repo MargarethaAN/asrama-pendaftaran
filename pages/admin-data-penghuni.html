@@ -185,7 +185,6 @@
             color: #991b1b;
             border-left: 4px solid #ef4444;
         }
-        /* Modal Pindah Kamar */
         .move-modal {
             display: none;
             position: fixed;
@@ -316,7 +315,7 @@
         </div>
     </div>
 
-    <!-- Modal Detail Penghuni (BAGUS) -->
+    <!-- Modal Detail Penghuni -->
     <div id="detailModal" class="detail-modal">
         <div class="detail-modal-content">
             <div class="detail-header">
@@ -325,52 +324,26 @@
             </div>
             <div class="detail-body">
                 <div class="detail-section">
-                    <div class="detail-section-title">
-                        <span>👤</span> Identitas Diri
-                    </div>
+                    <div class="detail-section-title"><span>👤</span> Identitas Diri</div>
                     <div class="detail-grid">
-                        <div class="detail-info-item">
-                            <div class="detail-info-label">Nama Lengkap</div>
-                            <div class="detail-info-value" id="detailNama"></div>
-                        </div>
-                        <div class="detail-info-item">
-                            <div class="detail-info-label">Program Studi</div>
-                            <div class="detail-info-value" id="detailProdi"></div>
-                        </div>
-                        <div class="detail-info-item">
-                            <div class="detail-info-label">No. Handphone</div>
-                            <div class="detail-info-value" id="detailNoHp"></div>
-                        </div>
-                        <div class="detail-info-item">
-                            <div class="detail-info-label">Status</div>
-                            <div class="detail-info-value" id="detailStatus"></div>
-                        </div>
+                        <div class="detail-info-item"><div class="detail-info-label">Nama Lengkap</div><div class="detail-info-value" id="detailNama"></div></div>
+                        <div class="detail-info-item"><div class="detail-info-label">Program Studi</div><div class="detail-info-value" id="detailProdi"></div></div>
+                        <div class="detail-info-item"><div class="detail-info-label">No. Handphone</div><div class="detail-info-value" id="detailNoHp"></div></div>
+                        <div class="detail-info-item"><div class="detail-info-label">Status</div><div class="detail-info-value" id="detailStatus"></div></div>
                     </div>
                 </div>
                 
                 <div class="detail-section">
-                    <div class="detail-section-title">
-                        <span>🏠</span> Informasi Hunian
-                    </div>
+                    <div class="detail-section-title"><span>🏠</span> Informasi Hunian</div>
                     <div class="detail-grid">
-                        <div class="detail-info-item">
-                            <div class="detail-info-label">Kamar</div>
-                            <div class="detail-info-value" id="detailKamar"></div>
-                        </div>
-                        <div class="detail-info-item">
-                            <div class="detail-info-label">Tanggal Masuk</div>
-                            <div class="detail-info-value" id="detailTglMasuk"></div>
-                        </div>
+                        <div class="detail-info-item"><div class="detail-info-label">Kamar</div><div class="detail-info-value" id="detailKamar"></div></div>
+                        <div class="detail-info-item"><div class="detail-info-label">Tanggal Masuk</div><div class="detail-info-value" id="detailTglMasuk"></div></div>
                     </div>
                 </div>
                 
                 <div class="detail-section">
-                    <div class="detail-section-title">
-                        <span>📍</span> Alamat
-                    </div>
-                    <div class="detail-info-item full-width">
-                        <div class="detail-info-value" id="detailAlamat"></div>
-                    </div>
+                    <div class="detail-section-title"><span>📍</span> Alamat</div>
+                    <div class="detail-info-item full-width"><div class="detail-info-value" id="detailAlamat"></div></div>
                 </div>
             </div>
             <div class="detail-footer">
@@ -397,244 +370,240 @@
         </div>
     </div>
 
+    <script src="../js/main.js"></script>
     <script>
-        const BASE_URL = window.location.origin + '/asrama-pendaftaran/backend/api/';
-let penghuniData = [];
-let currentPindahId = null;
-let currentDetailId = null;
+        // BASE_URL sudah dari main.js, jangan deklarasi ulang
+        let penghuniData = [];
+        let currentPindahId = null;
+        let currentDetailId = null;
 
-function showAlertLocal(message, type) {
-    const oldAlert = document.querySelector('.alert-fixed');
-    if (oldAlert) oldAlert.remove();
-    
-    const alertDiv = document.createElement('div');
-    alertDiv.className = `alert-fixed alert-${type === 'success' ? 'success' : 'error'}`;
-    alertDiv.innerHTML = `${type === 'success' ? '✅' : '❌'} ${message}`;
-    document.body.appendChild(alertDiv);
-    
-    setTimeout(() => {
-        alertDiv.style.opacity = '0';
-        setTimeout(() => alertDiv.remove(), 300);
-    }, 3000);
-}
-
-function getStatusBadge(status) {
-    if (status === 'aktif') return '<span class="status-badge status-success">✓ Aktif</span>';
-    if (status === 'calon') return '<span class="status-badge status-warning">⏳ Calon</span>';
-    if (status === 'keluar') return '<span class="status-badge status-danger">📤 Keluar</span>';
-    return '<span class="status-badge status-info">📝 Pendaftar</span>';
-}
-
-// Ambil data dari database
-async function loadPenghuniFromDB() {
-    try {
-        const response = await fetch(BASE_URL + 'get_penghuni.php');
-        const result = await response.json();
-        if (result.success && result.data) {
-            penghuniData = result.data;
-        } else {
-            penghuniData = [];
-        }
-        renderPenghuniTable();
-        updateStats();
-    } catch (error) {
-        console.error('Error:', error);
-        penghuniData = [];
-        renderPenghuniTable();
-        updateStats();
-    }
-}
-
-function updateStats() {
-    const total = penghuniData.length;
-    const aktif = penghuniData.filter(p => p.status_keluar === 'aktif' && p.status_hunian === 'aktif').length;
-    const calon = penghuniData.filter(p => p.status_pendaftaran === 'menunggu_verifikasi').length;
-    const alumni = penghuniData.filter(p => p.status_keluar === 'keluar').length;
-    
-    document.getElementById('totalPenghuni').innerText = total;
-    document.getElementById('penghuniAktif').innerText = aktif;
-    document.getElementById('calonPenghuni').innerText = calon;
-    document.getElementById('alumni').innerText = alumni;
-}
-
-function renderPenghuniTable() {
-    const search = document.getElementById('searchInput').value.toLowerCase();
-    const filterStatus = document.getElementById('filterStatus').value;
-    
-    let filtered = [...penghuniData];
-    
-    if (search) {
-        filtered = filtered.filter(p => 
-            (p.nama_lengkap && p.nama_lengkap.toLowerCase().includes(search)) || 
-            (p.nim && p.nim.toLowerCase().includes(search))
-        );
-    }
-    
-    if (filterStatus !== 'all') {
-        if (filterStatus === 'aktif') {
-            filtered = filtered.filter(p => p.status_keluar === 'aktif');
-        } else if (filterStatus === 'calon') {
-            filtered = filtered.filter(p => p.status_pendaftaran === 'menunggu_verifikasi');
-        } else if (filterStatus === 'alumni') {
-            filtered = filtered.filter(p => p.status_keluar === 'keluar');
-        }
-    }
-    
-    const tbody = document.getElementById('penghuniTableBody');
-    if (filtered.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">Tidak ada data ditemukan</td></tr>';
-        updateStats();
-        return;
-    }
-    
-    tbody.innerHTML = filtered.map(p => {
-        let statusText = '';
-        let statusClass = '';
-        if (p.status_keluar === 'aktif' && p.status_hunian === 'aktif') {
-            statusText = 'Aktif';
-            statusClass = 'status-success';
-        } else if (p.status_pendaftaran === 'menunggu_verifikasi') {
-            statusText = 'Calon';
-            statusClass = 'status-warning';
-        } else if (p.status_keluar === 'keluar') {
-            statusText = 'Alumni';
-            statusClass = 'status-danger';
-        } else {
-            statusText = p.status_keluar || 'Pendaftar';
-            statusClass = 'status-info';
-        }
-        
-        return `
-            <tr>
-                <td>${p.nim || '-'}</td>
-                <td>${p.nama_lengkap || '-'}</td>
-                <td>${p.prodi || '-'}</td>
-                <td>${p.nomor_kamar || '-'}</td>
-                <td><span class="status-badge ${statusClass}">${statusText}</span></td>
-                <td>${p.tanggal_masuk || p.tanggal_masuk_asrama || '-'}</td>
-                <td class="action-buttons">
-                    <button onclick="showDetail(${p.id_pendaftar})" class="btn-table btn-table-detail">📋 Detail</button>
-                    ${p.status_keluar === 'aktif' ? `<button onclick="openPindahModal(${p.id_pendaftar}, '${p.nomor_kamar || ''}')" class="btn-table btn-table-move">🚪 Pindah Kamar</button>` : ''}
-                </td>
-            </tr>
-        `;
-    }).join('');
-    
-    updateStats();
-}
-
-async function showDetail(id) {
-    currentDetailId = id;
-    try {
-        const response = await fetch(BASE_URL + 'get_pendaftar_by_id.php?id=' + id);
-        const result = await response.json();
-        if (result.success && result.data) {
-            const p = result.data;
+        function showAlertLocal(message, type) {
+            const oldAlert = document.querySelector('.alert-fixed');
+            if (oldAlert) oldAlert.remove();
             
-            document.getElementById('detailNim').innerHTML = `NIM: ${p.nim || '-'}`;
-            document.getElementById('detailNama').innerHTML = p.nama_lengkap || '-';
-            document.getElementById('detailProdi').innerHTML = p.prodi || '-';
-            document.getElementById('detailNoHp').innerHTML = p.no_hp || '-';
-            document.getElementById('detailKamar').innerHTML = p.nomor_kamar || 'Belum ditentukan';
-            document.getElementById('detailTglMasuk').innerHTML = p.tanggal_masuk_asrama || p.tanggal_masuk || 'Belum ditentukan';
-            document.getElementById('detailAlamat').innerHTML = p.alamat_semarang || p.alamat_asal || '-';
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert-fixed alert-${type === 'success' ? 'success' : 'error'}`;
+            alertDiv.innerHTML = `${type === 'success' ? '✅' : '❌'} ${message}`;
+            document.body.appendChild(alertDiv);
             
-            let statusText = '';
-            if (p.status_keluar === 'aktif' && p.status_hunian === 'aktif') {
-                statusText = '<span class="status-badge-large status-success">✓ Aktif - Sedang Menempati</span>';
-            } else if (p.status_pendaftaran === 'menunggu_verifikasi') {
-                statusText = '<span class="status-badge-large status-warning">⏳ Calon - Proses Verifikasi</span>';
-            } else if (p.status_keluar === 'keluar') {
-                statusText = '<span class="status-badge-large status-danger">📤 Alumni - Sudah Keluar</span>';
-            } else {
-                statusText = '<span class="status-badge-large status-info">📝 Pendaftar Baru</span>';
-            }
-            document.getElementById('detailStatus').innerHTML = statusText;
-            
-            document.getElementById('detailModal').style.display = 'flex';
+            setTimeout(() => {
+                alertDiv.style.opacity = '0';
+                setTimeout(() => alertDiv.remove(), 300);
+            }, 3000);
         }
-    } catch (error) {
-        showAlertLocal('Gagal memuat detail', 'error');
-    }
-}
 
-function closeDetailModal() {
-    document.getElementById('detailModal').style.display = 'none';
-}
+        function getStatusBadge(status) {
+            if (status === 'aktif') return '<span class="status-badge status-success">✓ Aktif</span>';
+            if (status === 'calon') return '<span class="status-badge status-warning">⏳ Calon</span>';
+            if (status === 'keluar') return '<span class="status-badge status-danger">📤 Keluar</span>';
+            return '<span class="status-badge status-info">📝 Pendaftar</span>';
+        }
 
-async function openPindahModal(id, currentKamar) {
-    currentPindahId = id;
-    document.getElementById('pindahNama').innerHTML = `<strong>Mengubah kamar</strong><br><span style="font-size:12px;">Kamar saat ini: ${currentKamar || 'Belum ada'}</span>`;
-    
-    // Ambil daftar kamar dari database
-    try {
-        const response = await fetch(BASE_URL + 'get_kamar.php');
-        const result = await response.json();
-        if (result.success && result.data) {
-            const kamarOptions = result.data.filter(k => k.status_kamar === 'tersedia');
-            const select = document.getElementById('newKamarSelect');
-            select.innerHTML = '<option value="">-- Pilih Kamar --</option>';
-            kamarOptions.forEach(k => {
-                if (k.nomor_kamar !== currentKamar) {
-                    select.innerHTML += `<option value="${k.id_kamar}">Kamar ${k.nomor_kamar} (Lantai ${k.lantai})</option>`;
+        async function loadPenghuniFromDB() {
+            try {
+                const response = await fetch(BASE_URL + 'get_penghuni.php');
+                const result = await response.json();
+                if (result.success && result.data) {
+                    penghuniData = result.data;
+                } else {
+                    penghuniData = [];
                 }
-            });
+                renderPenghuniTable();
+                updateStats();
+            } catch (error) {
+                console.error('Error:', error);
+                penghuniData = [];
+                renderPenghuniTable();
+                updateStats();
+            }
         }
-    } catch (error) {
-        console.error('Error:', error);
-    }
-    document.getElementById('pindahKamarModal').style.display = 'flex';
-}
 
-function closePindahModal() {
-    document.getElementById('pindahKamarModal').style.display = 'none';
-    currentPindahId = null;
-}
+        function updateStats() {
+            const total = penghuniData.length;
+            const aktif = penghuniData.filter(p => p.status_keluar === 'aktif' && p.status_hunian === 'aktif').length;
+            const calon = penghuniData.filter(p => p.status_pendaftaran === 'menunggu_verifikasi').length;
+            const alumni = penghuniData.filter(p => p.status_keluar === 'keluar').length;
+            
+            document.getElementById('totalPenghuni').innerText = total;
+            document.getElementById('penghuniAktif').innerText = aktif;
+            document.getElementById('calonPenghuni').innerText = calon;
+            document.getElementById('alumni').innerText = alumni;
+        }
 
-async function savePindahKamar() {
-    const newKamarId = document.getElementById('newKamarSelect').value;
-    if (!newKamarId) {
-        showAlertLocal('Pilih kamar tujuan terlebih dahulu!', 'error');
-        return;
-    }
-    
-    try {
-        const response = await fetch(BASE_URL + 'pindah_kamar.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id_pendaftar: currentPindahId, id_kamar: newKamarId })
+        function renderPenghuniTable() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const filterStatus = document.getElementById('filterStatus').value;
+            
+            let filtered = [...penghuniData];
+            
+            if (search) {
+                filtered = filtered.filter(p => 
+                    (p.nama_lengkap && p.nama_lengkap.toLowerCase().includes(search)) || 
+                    (p.nim && p.nim.toLowerCase().includes(search))
+                );
+            }
+            
+            if (filterStatus !== 'all') {
+                if (filterStatus === 'aktif') {
+                    filtered = filtered.filter(p => p.status_keluar === 'aktif');
+                } else if (filterStatus === 'calon') {
+                    filtered = filtered.filter(p => p.status_pendaftaran === 'menunggu_verifikasi');
+                } else if (filterStatus === 'alumni') {
+                    filtered = filtered.filter(p => p.status_keluar === 'keluar');
+                }
+            }
+            
+            const tbody = document.getElementById('penghuniTableBody');
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">Tidak ada data ditemukan</td></tr>';
+                updateStats();
+                return;
+            }
+            
+            tbody.innerHTML = filtered.map(p => {
+                let statusText = '';
+                let statusClass = '';
+                if (p.status_keluar === 'aktif' && p.status_hunian === 'aktif') {
+                    statusText = 'Aktif';
+                    statusClass = 'status-success';
+                } else if (p.status_pendaftaran === 'menunggu_verifikasi') {
+                    statusText = 'Calon';
+                    statusClass = 'status-warning';
+                } else if (p.status_keluar === 'keluar') {
+                    statusText = 'Alumni';
+                    statusClass = 'status-danger';
+                } else {
+                    statusText = p.status_keluar || 'Pendaftar';
+                    statusClass = 'status-info';
+                }
+                
+                return `
+                    <tr>
+                        <td>${p.nim || '-'}</td>
+                        <td>${p.nama_lengkap || '-'}</td>
+                        <td>${p.prodi || '-'}</td>
+                        <td>${p.nomor_kamar || '-'}</td>
+                        <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                        <td>${p.tanggal_masuk || p.tanggal_masuk_asrama || '-'}</td>
+                        <td class="action-buttons">
+                            <button onclick="showDetail(${p.id_pendaftar})" class="btn-table btn-table-detail">📋 Detail</button>
+                            ${p.status_keluar === 'aktif' ? `<button onclick="openPindahModal(${p.id_pendaftar}, '${p.nomor_kamar || ''}')" class="btn-table btn-table-move">🚪 Pindah Kamar</button>` : ''}
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+            updateStats();
+        }
+
+        async function showDetail(id) {
+            currentDetailId = id;
+            try {
+                const response = await fetch(BASE_URL + 'get_pendaftar_by_id.php?id=' + id);
+                const result = await response.json();
+                if (result.success && result.data) {
+                    const p = result.data;
+                    
+                    document.getElementById('detailNim').innerHTML = `NIM: ${p.nim || '-'}`;
+                    document.getElementById('detailNama').innerHTML = p.nama_lengkap || '-';
+                    document.getElementById('detailProdi').innerHTML = p.prodi || '-';
+                    document.getElementById('detailNoHp').innerHTML = p.no_hp || '-';
+                    document.getElementById('detailKamar').innerHTML = p.nomor_kamar || 'Belum ditentukan';
+                    document.getElementById('detailTglMasuk').innerHTML = p.tanggal_masuk_asrama || p.tanggal_masuk || 'Belum ditentukan';
+                    document.getElementById('detailAlamat').innerHTML = p.alamat_semarang || p.alamat_asal || '-';
+                    
+                    let statusText = '';
+                    if (p.status_keluar === 'aktif' && p.status_hunian === 'aktif') {
+                        statusText = '<span class="status-badge-large status-success">✓ Aktif - Sedang Menempati</span>';
+                    } else if (p.status_pendaftaran === 'menunggu_verifikasi') {
+                        statusText = '<span class="status-badge-large status-warning">⏳ Calon - Proses Verifikasi</span>';
+                    } else if (p.status_keluar === 'keluar') {
+                        statusText = '<span class="status-badge-large status-danger">📤 Alumni - Sudah Keluar</span>';
+                    } else {
+                        statusText = '<span class="status-badge-large status-info">📝 Pendaftar Baru</span>';
+                    }
+                    document.getElementById('detailStatus').innerHTML = statusText;
+                    
+                    document.getElementById('detailModal').style.display = 'flex';
+                }
+            } catch (error) {
+                showAlertLocal('Gagal memuat detail', 'error');
+            }
+        }
+
+        function closeDetailModal() {
+            document.getElementById('detailModal').style.display = 'none';
+        }
+
+        async function openPindahModal(id, currentKamar) {
+            currentPindahId = id;
+            document.getElementById('pindahNama').innerHTML = `<strong>Mengubah kamar</strong><br><span style="font-size:12px;">Kamar saat ini: ${currentKamar || 'Belum ada'}</span>`;
+            
+            try {
+                const response = await fetch(BASE_URL + 'get_kamar.php');
+                const result = await response.json();
+                if (result.success && result.data) {
+                    const kamarOptions = result.data.filter(k => k.status_kamar === 'tersedia');
+                    const select = document.getElementById('newKamarSelect');
+                    select.innerHTML = '<option value="">-- Pilih Kamar --</option>';
+                    kamarOptions.forEach(k => {
+                        if (k.nomor_kamar !== currentKamar) {
+                            select.innerHTML += `<option value="${k.id_kamar}">Kamar ${k.nomor_kamar} (Lantai ${k.lantai})</option>`;
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+            document.getElementById('pindahKamarModal').style.display = 'flex';
+        }
+
+        function closePindahModal() {
+            document.getElementById('pindahKamarModal').style.display = 'none';
+            currentPindahId = null;
+        }
+
+        async function savePindahKamar() {
+            const newKamarId = document.getElementById('newKamarSelect').value;
+            if (!newKamarId) {
+                showAlertLocal('Pilih kamar tujuan terlebih dahulu!', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch(BASE_URL + 'pindah_kamar.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id_pendaftar: currentPindahId, id_kamar: newKamarId })
+                });
+                const result = await response.json();
+                showAlertLocal(result.message, result.success ? 'success' : 'error');
+                if (result.success) {
+                    loadPenghuniFromDB();
+                    closePindahModal();
+                }
+            } catch (error) {
+                showAlertLocal('Gagal memindahkan penghuni', 'error');
+            }
+        }
+
+        function filterData() {
+            renderPenghuniTable();
+        }
+
+        function resetFilter() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('filterStatus').value = 'all';
+            renderPenghuniTable();
+        }
+
+        document.getElementById('searchInput').addEventListener('keyup', renderPenghuniTable);
+        document.getElementById('filterStatus').addEventListener('change', renderPenghuniTable);
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = '../index.html';
         });
-        const result = await response.json();
-        showAlertLocal(result.message, result.success ? 'success' : 'error');
-        if (result.success) {
-            loadPenghuniFromDB();
-            closePindahModal();
-        }
-    } catch (error) {
-        showAlertLocal('Gagal memindahkan penghuni', 'error');
-    }
-}
 
-function filterData() {
-    renderPenghuniTable();
-}
-
-function resetFilter() {
-    document.getElementById('searchInput').value = '';
-    document.getElementById('filterStatus').value = 'all';
-    renderPenghuniTable();
-}
-
-document.getElementById('searchInput').addEventListener('keyup', renderPenghuniTable);
-document.getElementById('filterStatus').addEventListener('change', renderPenghuniTable);
-
-document.getElementById('logoutBtn').addEventListener('click', function(e) {
-    e.preventDefault();
-    window.location.href = '../index.html';
-});
-
-// Load data dari database
-loadPenghuniFromDB();
+        loadPenghuniFromDB();
     </script>
 </body>
 </html>

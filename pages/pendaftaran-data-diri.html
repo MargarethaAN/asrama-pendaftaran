@@ -97,7 +97,7 @@
         
         <div class="main-content">
             <h1>📝 Formulir Pendaftaran</h1>
-            <p>Isi data diri Anda dengan lengkap dan benar.</p>
+            <p>Isi数据 diri Anda dengan lengkap dan benar.</p>
             
             <div class="progress-steps">
                 <div class="step active"><div class="step-number">1</div><div class="step-label">Data Diri</div></div>
@@ -109,8 +109,9 @@
         </div>
     </div>
 
+    <script src="../js/main.js"></script>
     <script>
-        const BASE_URL = window.location.origin + '/asrama-pendaftaran/backend/api/';
+        // BASE_URL sudah dari main.js, jangan deklarasi ulang
         
         function showAlertLocal(message, type) {
             const oldAlert = document.querySelector('.alert-fixed');
@@ -305,11 +306,11 @@
                         window.location.href = 'pendaftaran-data-keluarga.html';
                     }, 1000);
                 } else {
-                    showAlertLocal(result.message || 'Gagal menyimpan data', 'error');
+                    showAlertLocal(result.message || 'Gagal menyimpan数据', 'error');
                 }
             } catch (error) {
                 console.error('Error:', error);
-                showAlertLocal('Gagal menyimpan data: ' + error.message, 'error');
+                showAlertLocal('Gagal menyimpan数据: ' + error.message, 'error');
             }
         }
         
@@ -335,7 +336,6 @@
             return div.innerHTML;
         }
         
-        // Inisialisasi
         checkExistingData();
         
         document.getElementById('logoutBtn').addEventListener('click', function(e) {
@@ -343,6 +343,5 @@
             window.location.href = '../index.html';
         });
     </script>
-    <script src="../js/main.js"></script>
 </body>
 </html>

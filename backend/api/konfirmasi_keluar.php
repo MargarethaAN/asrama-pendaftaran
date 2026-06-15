@@ -35,11 +35,11 @@ $updatePendaftar = "UPDATE pendaftar SET
 $insertKonfirmasi = "INSERT INTO konfirmasi_keluar (id_pendaftar, id_admin, tanggal_konfirmasi, keterangan) 
                      VALUES ($id_pendaftar, $id_admin, '$tanggal_sekarang', '$keterangan')";
 
-// Update status hunian
-$updateHunian = "UPDATE hunian SET 
-                  tanggal_keluar = '$tanggal_sekarang',
-                  status_hunian = 'selesai'
-                  WHERE id_pendaftar = $id_pendaftar AND status_hunian = 'aktif'";
+// Update status hunian (melalui pendaftaran)
+$updateHunian = "UPDATE hunian h 
+                  JOIN pendaftaran pk ON h.id_pendaftaran = pk.id_pendaftaran
+                  SET h.tanggal_keluar = '$tanggal_sekarang', h.status_hunian = 'selesai'
+                  WHERE pk.id_pendaftar = $id_pendaftar AND h.status_hunian = 'aktif'";
 
 if (mysqli_query($conn, $updatePendaftar)) {
     mysqli_query($conn, $insertKonfirmasi);

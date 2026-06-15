@@ -144,7 +144,7 @@
                         <tr><th>Nama</th><th>NIM</th><th>Prodi</th><th>Tgl Daftar</th><th>Status</th><th>Aksi</th></tr>
                     </thead>
                     <tbody id="pendaftarList">
-                        <tr><td colspan="6" class="loading">Memuat数据...</td></tr>
+                        <tr><td colspan="6" class="loading">Memuat data...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -185,8 +185,9 @@
         </div>
     </div>
 
+    <script src="../js/main.js"></script>
     <script>
-        const BASE_URL = window.location.origin + '/asrama-pendaftaran/backend/api/';
+        // BASE_URL sudah dari main.js, jangan deklarasi ulang
         let pendaftarData = [];
         let currentPendaftarId = null;
         let currentDokumen = [];
@@ -260,7 +261,6 @@
         async function openModal(idPendaftaran, idPendaftar) {
             currentPendaftarId = idPendaftaran;
             
-            // Ambil detail pendaftar
             try {
                 const response = await fetch(BASE_URL + 'get_pendaftar_by_id.php?id=' + idPendaftar);
                 const result = await response.json();
@@ -281,10 +281,9 @@
                     document.getElementById('modalDetail').innerHTML = detailHtml;
                 }
             } catch (error) {
-                document.getElementById('modalDetail').innerHTML = '<div class="detail-card">Gagal memuat数据</div>';
+                document.getElementById('modalDetail').innerHTML = '<div class="detail-card">Gagal memuat data</div>';
             }
             
-            // Ambil dokumen
             await loadDokumenForPendaftar(idPendaftar);
             
             if (currentDokumen.length === 0) {
@@ -368,7 +367,6 @@
             }
         }
         
-        // Load data awal
         loadPendaftarFromDB();
         
         document.getElementById('logoutBtn').addEventListener('click', function(e) {
@@ -376,6 +374,5 @@
             window.location.href = '../index.html';
         });
     </script>
-    <script src="../js/main.js"></script>
 </body>
 </html>

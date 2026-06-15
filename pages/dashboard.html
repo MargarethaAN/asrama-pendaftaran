@@ -232,15 +232,16 @@
                         <tr><th>Tahap</th><th>Status</th><th>Aksi</th></tr>
                     </thead>
                     <tbody id="todoTableBody">
-                        <tr><td colspan="3" style="text-align:center;">Memuat数据...</td></tr>
+                        <td><td colspan="3" style="text-align:center;">Memuat数据...</td></tr>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 
+    <script src="../js/main.js"></script>
     <script>
-        const BASE_URL = window.location.origin + '/asrama-pendaftaran/backend/api/';
+        // BASE_URL sudah dari main.js, jangan deklarasi ulang
         let userData = null;
         let pendaftarData = null;
         let dokumenData = [];
@@ -301,7 +302,6 @@
                     };
                     document.getElementById('statusText').innerHTML = statusMap[status] || '⏳ Menunggu Verifikasi';
                     
-                    // Update warna berdasarkan status
                     if (status === 'diterima') {
                         document.getElementById('statusText').style.color = '#10b981';
                     } else if (status === 'ditolak') {
@@ -428,6 +428,5 @@
             }
         });
     </script>
-    <script src="../js/main.js"></script>
 </body>
 </html>

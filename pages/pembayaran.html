@@ -176,8 +176,9 @@
         </div>
     </div>
 
+    <script src="../js/main.js"></script>
     <script>
-        const BASE_URL = window.location.origin + '/asrama-pendaftaran/backend/api/';
+        // BASE_URL sudah dari main.js, jangan deklarasi ulang
         let paymentStatus = null;
         
         function showAlertLocal(message, type) {
@@ -204,12 +205,10 @@
                     const data = result.data;
                     paymentStatus = data.status_pembayaran;
                     
-                    // Update status
                     const statusText = document.getElementById('statusText');
                     if (paymentStatus === 'lunas') {
                         statusText.innerHTML = '✅ Lunas';
                         statusText.className = 'status-badge status-lunas';
-                        // Sembunyikan area upload jika sudah lunas
                         document.getElementById('uploadArea').style.opacity = '0.6';
                         document.getElementById('dropzone').style.pointerEvents = 'none';
                     } else if (paymentStatus === 'menunggu') {
@@ -217,15 +216,13 @@
                         statusText.className = 'status-badge status-menunggu';
                     } else {
                         statusText.innerHTML = '⏳ Belum Dibayar';
-                        statusText.className ='status-badge status-menunggu';
+                        statusText.className = 'status-badge status-menunggu';
                     }
                     
-                    // Update jumlah tagihan jika ada
                     if (data.jumlah_tagihan) {
                         document.getElementById('jumlahTagihan').innerHTML = 'Rp' + Number(data.jumlah_tagihan).toLocaleString();
                     }
                     
-                    // Tampilkan bukti yang sudah diupload
                     if (data.bukti_pembayaran) {
                         const fileName = data.bukti_pembayaran.split('/').pop();
                         const container = document.getElementById('uploadedInfo');
@@ -257,7 +254,7 @@
                 
                 if (result.success) {
                     showAlertLocal('Bukti pembayaran berhasil diupload! Menunggu verifikasi admin.', 'success');
-                    loadPaymentData(); // Refresh data
+                    loadPaymentData();
                 } else {
                     showAlertLocal(result.message, 'error');
                 }
@@ -283,12 +280,10 @@
                 return;
             }
             
-            // Upload ke server
             uploadBukti(file);
             this.value = '';
         });
         
-        // Load data pembayaran dari database
         loadPaymentData();
         
         document.getElementById('logoutBtn').addEventListener('click', function(e) {
@@ -296,6 +291,5 @@
             window.location.href = '../index.html';
         });
     </script>
-    <script src="../js/main.js"></script>
 </body>
 </html>

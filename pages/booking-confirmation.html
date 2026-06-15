@@ -96,14 +96,15 @@
             <p>Konfirmasi pemesanan kamar Anda sebelum melanjutkan ke pembayaran.</p>
             
             <div id="contentContainer">
-                <div class="loading">Memuat data...</div>
+                <div class="loading">Memuat数据...</div>
             </div>
         </div>
     </div>
 
+    <script src="../js/main.js"></script>
     <script>
-        const BASE_URL = window.location.origin + '/asrama-pendaftaran/backend/api/';
-        let timeLeft = 47 * 3600 + 23 * 60 + 45; // 47 jam 23 menit 45 detik
+        // BASE_URL sudah dari main.js, jangan deklarasi ulang
+        let timeLeft = 47 * 3600 + 23 * 60 + 45;
         let timerInterval = null;
         
         function showAlertLocal(message, type) {
@@ -124,7 +125,9 @@
         function updateTimer() {
             if (timeLeft <= 0) {
                 if (timerInterval) clearInterval(timerInterval);
-                document.getElementById('timer').innerHTML = '00:00:00';
+                if (document.getElementById('timer')) {
+                    document.getElementById('timer').innerHTML = '00:00:00';
+                }
                 showAlertLocal('Waktu konfirmasi habis! Booking dibatalkan.', 'error');
                 setTimeout(() => {
                     window.location.href = 'dashboard.html';
@@ -136,15 +139,16 @@
             const minutes = Math.floor((timeLeft % 3600) / 60);
             const seconds = timeLeft % 60;
             
-            document.getElementById('timer').innerHTML = 
-                `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            const timerEl = document.getElementById('timer');
+            if (timerEl) {
+                timerEl.innerHTML = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            }
             
             timeLeft--;
         }
         
         async function loadData() {
             try {
-                // Ambil data pendaftar
                 const response = await fetch(BASE_URL + 'get_pendaftar.php');
                 const result = await response.json();
                 
@@ -152,7 +156,6 @@
                     const data = result.data;
                     const status = data.status_pendaftaran;
                     
-                    // Cek apakah sudah diterima
                     if (status !== 'diterima') {
                         document.getElementById('contentContainer').innerHTML = `
                             <div class="confirmation-card">
@@ -168,7 +171,6 @@
                         return;
                     }
                     
-                    // Tampilkan halaman konfirmasi
                     const kamarTawaran = data.nomor_kamar || '25';
                     const lantai = Math.ceil(parseInt(kamarTawaran) / 10) || 2;
                     
@@ -197,7 +199,6 @@
                         </div>
                     `;
                     
-                    // Start timer
                     timeLeft = 47 * 3600 + 23 * 60 + 45;
                     if (timerInterval) clearInterval(timerInterval);
                     timerInterval = setInterval(updateTimer, 1000);
@@ -219,7 +220,7 @@
                     <div class="confirmation-card">
                         <div class="success-icon">❌</div>
                         <h2>Gagal Memuat Data</h2>
-                        <p style="color: #64748b;">Terjadi kesalahan saat memuat data.</p>
+                        <p style="color: #64748b;">Terjadi kesalahan saat memuat数据.</p>
                         <div class="action-buttons">
                             <button onclick="location.reload()" class="btn-primary">Coba Lagi</button>
                         </div>
@@ -251,6 +252,5 @@
             window.location.href = '../index.html';
         });
     </script>
-    <script src="../js/main.js"></script>
 </body>
 </html>

@@ -4,8 +4,7 @@ header('Access-Control-Allow-Origin: *');
 
 require_once '../config/database.php';
 
-$query = "SELECT * FROM syarat_ketentuan ORDER BY tanggal_berlaku DESC";
-$result = mysqli_query($conn, $query);
+$result = mysqli_query($conn, "SELECT * FROM syarat_ketentuan ORDER BY id_sk DESC");
 
 $data = [];
 while ($row = mysqli_fetch_assoc($result)) {

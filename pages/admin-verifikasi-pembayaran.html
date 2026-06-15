@@ -103,7 +103,7 @@
                         <tr><th>Nama</th><th>NIM</th><th>Jumlah</th><th>Bank</th><th>Tanggal Upload</th><th>Status</th><th>Aksi</th></tr>
                     </thead>
                     <tbody id="paymentList">
-                        <tr><td colspan="7" class="loading">Memuat data...</td></tr>
+                        <tr><td colspan="7" class="loading">Memuat数据...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -126,8 +126,9 @@
         </div>
     </div>
 
+    <script src="../js/main.js"></script>
     <script>
-        const BASE_URL = window.location.origin + '/asrama-pendaftaran/backend/api/';
+        // BASE_URL sudah dari main.js, jangan deklarasi ulang
         let paymentData = [];
         let currentPaymentId = null;
         
@@ -148,7 +149,6 @@
             return div.innerHTML;
         }
         
-        // Ambil data dari database
         async function loadPaymentsFromDB() {
             try {
                 const response = await fetch(BASE_URL + 'get_pembayaran_list.php');
@@ -252,7 +252,6 @@
             }
         }
         
-        // Load data dari database
         loadPaymentsFromDB();
         
         document.getElementById('logoutBtn').addEventListener('click', function(e) {

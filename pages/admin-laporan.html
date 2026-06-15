@@ -97,7 +97,7 @@
         
         <div class="main-content">
             <h1>📄 Laporan & Rekap Administrasi</h1>
-            <p>Lihat dan unduh laporan data pendaftaran, penghuni, dan pembayaran.</p>
+            <p>Lihat dan unduh laporan数据 pendaftaran, penghuni, dan pembayaran.</p>
             
             <div class="stats-grid" id="statsGrid">
                 <div class="stat-card"><h3>Total Pendaftar</h3><div class="number" id="totalPendaftar">0</div></div>
@@ -149,7 +149,7 @@
                 <h3 style="padding: 20px 20px 0;" id="laporanTitle">📋 Data Pendaftaran</h3>
                 <table class="data-table" id="laporanTable">
                     <thead id="laporanHeader"></thead>
-                    <tbody id="laporanBody"><tr><td colspan="5">Memuat data...</td></tr></tbody>
+                    <tbody id="laporanBody"><tr><td colspan="5">Memuat数据...</td></tr></tbody>
                 </table>
             </div>
             
@@ -160,8 +160,9 @@
         </div>
     </div>
 
+    <script src="../js/main.js"></script>
     <script>
-        const BASE_URL = window.location.origin + '/asrama-pendaftaran/backend/api/';
+        // BASE_URL sudah dari main.js, jangan deklarasi ulang
         let allPendaftar = [];
         let allPenghuni = [];
         let allPembayaran = [];
@@ -225,7 +226,6 @@
         }
         
         function updateChart() {
-            // Hitung pendaftar per bulan
             const bulanCount = new Array(12).fill(0);
             allPendaftar.forEach(p => {
                 if (p.tanggal_daftar) {
@@ -262,7 +262,7 @@
                 document.getElementById('laporanTitle').innerText = '📋 Data Pendaftaran';
                 document.getElementById('laporanHeader').innerHTML = '<tr><th>Nama</th><th>NIM</th><th>Prodi</th><th>Tgl Daftar</th><th>Status</th></tr>';
                 if (data.length === 0) {
-                    document.getElementById('laporanBody').innerHTML = '<tr><td colspan="5">Tidak ada data</td></tr>';
+                    document.getElementById('laporanBody').innerHTML = '<tr><td colspan="5">Tidak ada数据</td></tr>';
                 } else {
                     document.getElementById('laporanBody').innerHTML = data.map(d => `
                         <tr>
@@ -284,7 +284,7 @@
                 document.getElementById('laporanTitle').innerText = '👥 Data Penghuni';
                 document.getElementById('laporanHeader').innerHTML = '<tr><th>Nama</th><th>NIM</th><th>Prodi</th><th>Kamar</th><th>Status</th></tr>';
                 if (data.length === 0) {
-                    document.getElementById('laporanBody').innerHTML = '<tr><td colspan="5">Tidak ada data</td></tr>';
+                    document.getElementById('laporanBody').innerHTML = '<tr><td colspan="5">Tidak ada数据</td></tr>';
                 } else {
                     document.getElementById('laporanBody').innerHTML = data.map(d => `
                         <tr>
@@ -306,7 +306,7 @@
                 document.getElementById('laporanTitle').innerText = '💰 Data Pembayaran';
                 document.getElementById('laporanHeader').innerHTML = '<tr><th>Nama</th><th>NIM</th><th>Jumlah</th><th>Tgl Bayar</th><th>Status</th></tr>';
                 if (data.length === 0) {
-                    document.getElementById('laporanBody').innerHTML = '<tr><td colspan="5">Tidak ada data</td></tr>';
+                    document.getElementById('laporanBody').innerHTML = '<tr><td colspan="5">Tidak ada数据</td></tr>';
                 } else {
                     document.getElementById('laporanBody').innerHTML = data.map(d => `
                         <tr>
@@ -332,6 +332,5 @@
             window.location.href = '../index.html';
         });
     </script>
-    <script src="../js/main.js"></script>
 </body>
 </html>
