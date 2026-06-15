@@ -258,39 +258,42 @@
     const status = document.getElementById('skStatus').value;
     
     if (!judul || !isi) {
-        showAlertLocal('Judul dan isi harus diisi!', 'error');
+        alert('Judul dan isi harus diisi!');
         return;
     }
     
+    // Buat form data
+    const formData = new FormData();
+    
     if (editingId) {
-        // Mode Edit - Kirim ke update_syarat_ketentuan.php
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = BASE_URL + 'update_syarat_ketentuan.php';
-        form.innerHTML = `
-            <input name="id_sk" value="${editingId}">
-            <input name="judul" value="${escapeHtml(judul)}">
-            <input name="versi" value="${escapeHtml(versi)}">
-            <input name="tanggal_berlaku" value="${tanggal}">
-            <textarea name="isi">${escapeHtml(isi)}</textarea>
-            <input name="status" value="${status}">
-        `;
-        document.body.appendChild(form);
-        form.submit();
+        // Mode Edit
+        formData.append('id_sk', editingId);
+        formData.append('judul', judul);
+        formData.append('versi', versi);
+        formData.append('tanggal_berlaku', tanggal);
+        formData.append('isi', isi);
+        formData.append('status', status);
+        
+        fetch(BASE_URL + 'update_syarat_ketentuan.php', {
+            method: 'POST',
+            body: formData
+        }).then(() => {
+            window.location.href = 'admin-syarat-ketentuan.html';
+        });
     } else {
-        // Mode Tambah - Kirim ke tambah_syarat.php
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = BASE_URL + 'tambah_syarat.php';
-        form.innerHTML = `
-            <input name="judul" value="${escapeHtml(judul)}">
-            <input name="versi" value="${escapeHtml(versi)}">
-            <input name="tanggal" value="${tanggal}">
-            <textarea name="isi">${escapeHtml(isi)}</textarea>
-            <input name="status" value="${status}">
-        `;
-        document.body.appendChild(form);
-        form.submit();
+        // Mode Tambah
+        formData.append('judul', judul);
+        formData.append('versi', versi);
+        formData.append('tanggal', tanggal);
+        formData.append('isi', isi);
+        formData.append('status', status);
+        
+        fetch(BASE_URL + 'tambah_syarat.php', {
+            method: 'POST',
+            body: formData
+        }).then(() => {
+            window.location.href = 'admin-syarat-ketentuan.html';
+        });
     }
 }
         
