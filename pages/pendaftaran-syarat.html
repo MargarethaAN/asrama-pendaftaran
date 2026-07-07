@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Pendaftaran - Syarat & Ketentuan</title>
+
+<link rel="stylesheet" href="../css/style.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<style>
+
+body{
+    font-family:'Inter',sans-serif;
+    background:#f7f8fc;
+}
+
+/*========================MAIN CONTENT=========================*/
+
+.main-content{
+    flex:1;
+    padding:40px 32px;
+}
+
+/*========================CARD=========================*/
+
+.terms-card{
+    background:#fff;
+    border:1px solid #E5E7EB;
+    border-top:2px solid #72D63F;
+    border-radius:12px;
+    width:100%;
+    max-width:870px;
+    margin:0 0 24px 80px;
+    overflow:hidden;
+    box-sizing:border-box;
+}
+
+.section-title{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    margin:8px 24px 2px;
+    font-size:15px;
+    font-weight:600;
+}
+
+.section-title i{
+    width:34px;
+    height:34px;
+    border-radius:50%;
+    background:#EEF8E8;
+    color:#72D63F;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:15px;
+    flex-shrink:0;
+}
+
+.bab1-icon{
+    transform:translateX(-19px);
+    margin-right:-19px;
+}
+
+.terms-list{
+    margin:0 24px 12px 42px;
+    padding-left:15px;
+}
+
+.terms-list li{
+    padding:4px 0;
+    line-height:1.45;
+    font-size:13px;
+    font-weight:500;
+    color:#4B5563;
+}
+
+.terms-list li:not(:last-child){
+    border-bottom:1px solid rgba(0,0,0,.05);
+    padding-bottom:6px;
+    margin-bottom:2px;
+}
+
+.terms-list-border li{
+    border-bottom:1px solid rgba(0,0,0,0.08);
+    padding-bottom:8px;
+}
+
+.card-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:20px 24px 18px;
+    border-bottom:1px solid #ECECEC;
+}
+
+.card-header-left{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+.card-header-left i{
+    width:44px;
+    height:44px;
+    border-radius:50%;
+    background:#EEF8E8;
+    color:#72D63F;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:20px;
+    flex-shrink:0;
+}
+
+.card-header-title{
+    font-size:19px;
+    font-weight:700;
+    color:#1F2937;
+}
+
+.card-header-subtitle{
+    margin-top:3px;
+    font-size:13px;
+    line-height:1.5;
+    color:#6B7280;
+}
+
+.version-badge{
+    padding:4px 10px;
+    border:1px solid #D1D5DB;
+    border-radius:999px;
+    background:#fff;
+    font-size:11px;
+    font-weight:500;
+    color:#6B7280;
+}
+
+/*========================SYARAT BOX=========================*/
+
+.terms-box {
+    background:#fff;
+    padding:8px 24px 22px;
+    overflow:visible;
+    max-height:none;
+}
+
+.terms-box ul{
+    padding-left:22px;
+    margin-top:0;
+}
+
+.terms-box ul li{
+    padding:10px 0;
+    margin-bottom:4px;
+    line-height:1.5;
+    color:#4B5563;
+    font-size:15px;
+}
+
+/*========================CHECKBOX=========================*/
+
+.agree-box{
+    background:#fff;
+    border:1px solid #E5E7EB;
+    border-radius:12px;
+    padding:22px 22px;
+    max-width:870px;
+    margin:0 0 24px 80px;
+    box-sizing:border-box;
+}
+
+.checkbox-row{
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+}
+
+.agree-info{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-top:10px;
+    margin-left:28px;
+    font-size:12px;
+    line-height:1.5;
+    color:#eb7a34;
+}
+
+.agree-info i{
+    font-size:12px;
+    color:#eb7a34;
+    margin-top:2px;
+}
+
+.checkbox-row input{
+    margin-top:3px;
+    transform:scale(1.05);
+    accent-color:#72D63F;
+}
+
+.checkbox-row label{
+    font-size:13px;
+    font-weight:500;
+    color:#374151;
+    line-height:1.6;
+    margin-top:-1px;
+}
+
+/* ==========================Header Halaman========================== */
+
+.content-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:72px;
+}
+
+.content-header h1{
+    margin:0;
+    font-size:24px;
+    font-weight:700;
+    color:#4C9A2A;
+    letter-spacing:-0.3px;
+}
+
+.update-badge{
+    padding:5px 12px;
+    border:1px solid #E5E7EB;
+    border-radius:20px;
+    background:#FAFAFA;
+    color:#6B7280;
+    font-size:11px;
+    font-weight:500;
+}
+
+.content-container{
+    width:960px;
+    max-width:100%;
+    margin:0 auto;
+}
+
+/*========================BUTTON=========================*/
+
+.form-actions{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    max-width:870px;
+    margin:24px 0 0 80px;
+    padding-top:8px;
+}
+
+.btn-back{
+    width:135px;
+    height:40px;
+    font-size:14px;
+}
+
+.btn-back:hover{
+    background:#F9FAFB;
+}
+
+.btn-submit{
+    width:125px;
+    height:40px;
+    font-size:14px;
+    gap:6px;
+}
+
+.btn-submit:hover{
+    background:#63C533;
+}
+
+        </style>
+        </head>
+
+        <body>
+
+        <div class="sidebar-layout">
+
+        <div class="sidebar">
+
+        <div class="logo">
+        <div class="logo-circle">
+        <i class="fa-solid fa-graduation-cap"></i>
+        </div>
+        <span>St. Teresa Dorm</span>
+        </div>
+
+        <nav>
+
+        <a href="dashboard.html">
+        <i class="fa-solid fa-table-columns"></i>
+        Dashboard
+        </a>
+
+        <a href="pendaftaran-data-diri.html" class="active">
+        <i class="fa-regular fa-file-lines"></i>
+        Pendaftaran
+        </a>
+
+        <a href="ketersediaan-kamar.html">
+        <i class="fa-solid fa-bed"></i>
+        Ketersediaan Kamar
+        </a>
+
+        <a href="dokumen.html">
+        <i class="fa-regular fa-folder-open"></i>
+        Dokumen
+        </a>
+
+        <a href="pembayaran.html">
+        <i class="fa-regular fa-credit-card"></i>
+        Pembayaran
+        </a>
+
+        <a href="status-pendaftaran.html">
+        <i class="fa-regular fa-circle-check"></i>
+        Status Pendaftaran
+        </a>
+
+        <a href="status-pendaftaran.html">
+        <i class="fa-regular fa-circle-check"></i>
+        Konfirmasi
+        </a>
+
+        </nav>
+
+        <div class="sidebar-footer">
+
+        <div class="profile-card">
+        <img src="https://i.pravatar.cc/80?img=32">
+        <div>
+        <h4>Maria Angelina</h4>
+        <p>Pendaftar</p>
+        </div>
+        </div>
+
+        <button class="logout-btn" id="logoutBtn">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        Logout
+        </button>
+
+        </div>
+        </div>
+
+<div class="main-content">
+    <div class="content-header">
+        <h1>Syarat & Ketentuan Pendaftaran Asrama</h1>
+        <div class="update-badge">
+            Terakhir diperbarui: 15 Mei 2025
+        </div>
+    </div>
+
+<div class="terms-card">
+    <div class="card-header">
+        <div class="card-header-left">
+            <i class="fa-regular fa-file-lines"></i>
+        <div>
+            <div class="card-header-title">
+                Dokumen Persetujuan Resmi
+            </div>
+
+            <div class="card-header-subtitle">
+                Harap Baca seluruh dokumen ini dengan seksama sebelum melanjutkan proses pendaftaran.
+            </div>
+
+        </div>
+
+    </div>
+
+    <span class="version-badge">
+        Versi 2.4.1
+    </span>
+</div>
+
+<div class="terms-box">
+
+    <div class="section-title">
+        <i class="fa-solid fa-user-check bab1-icon"></i>
+        <span>BAB 1 - PERSYARATAN PENDAFTARAN</span>
+    </div>
+</div>
+
+<ul class="terms-list">
+    <li>Calon penghuni adalah mahasiswi aktif Universitas Katolik Soegijapranata (terdaftar secara akademik).</li>
+    <li>Menyerahkan fotokopi kartu identitas (KTP/KTM) yang masih berlaku.</li>
+    <li>Bersedia mengikuti seluruh rangkaian program pembinaan karakter yang diselenggarakan asrama.</li>
+    <li>Mendapat izin tertulis dari orang tua atau wali murid yang sah.</li>
+</ul>
+
+    <div class="section-title">
+        <i class="fa-regular fa-file-lines"></i>
+        <span>BAB 2 - KELENGKAPAN BERKAS</span>
+    </div>
+
+    <ul class="terms-list terms-list-border">
+        <li>Pas foto berwarna terbaru ukuran 3x4 (2 lembar)</li>
+    </ul>
+</div>
+
+<div class="agree-box">
+
+    <div class="checkbox-row">
+
+        <input
+            type="checkbox"
+            id="setuju_syarat"
+            required>
+
+        <label for="setuju_syarat">
+            Saya telah membaca, memahami, dan menyetujui seluruh Syarat & Ketentuan Pendaftaran St.<br> 
+            Teresa Avila Dormitory
+        </label>
+
+    </div>
+    <div class="agree-info">
+        <i class="fa-solid fa-circle-info"></i>
+        <span>Persetujuan ini wajib dicentang untuk dapat melanjutkan proses pendaftaran.</span>
+    </div>
+
+</div>
+
+<div class="form-actions">
+
+    <button
+        type="button"
+        class="btn-back"
+        onclick="window.location.href='pendaftaran-data-keluarga.html'">
+
+        <i class="fa-solid fa-arrow-left"></i>
+        Kembali
+
+    </button>
+
+    <button
+        type="submit"
+        id="submitBtn"
+        class="btn-submit">
+        <span>Kirim</span>
+        <span>&gt;</span>
+    </button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+<script src="../js/main.js"></script>
+
+<script>
+
+// =========================================// ALERT// =========================================
+
+function showAlertLocal(message, type){
+
+    const oldAlert=document.querySelector(".alert-fixed");
+
+    if(oldAlert){
+        oldAlert.remove();
+    }
+
+    const alert=document.createElement("div");
+
+    alert.className=
+        `alert-fixed alert-${type==="success" ? "success":"error"}`;
+
+    alert.innerHTML=
+        `${type==="success" ? "✅":"❌"} ${message}`;
+
+    document.body.appendChild(alert);
+
+    setTimeout(()=>{
+
+        alert.style.opacity="0";
+
+        setTimeout(()=>{
+            alert.remove();
+        },300);
+
+    },3000);
+
+}
+
+// =========================================// SUBMIT PENDAFTARAN// =========================================
+
+async function submitPendaftaran(){
+
+    showAlertLocal(
+        "Mengirim pendaftaran...",
+        "success"
+    );
+
+    try{
+
+        const response=await fetch(
+
+            BASE_URL+"update_status_pendaftaran.php",
+
+            {
+                method:"POST",
+
+                headers:{
+                    "Content-Type":"application/json"
+                },
+
+                body:JSON.stringify({
+
+                    status:"menunggu_verifikasi"
+
+                })
+
+            }
+
+        );
+
+        const result=await response.json();
+
+        if(result.success){
+
+            showAlertLocal(
+
+                "Pendaftaran berhasil dikirim.",
+
+                "success"
+
+            );
+
+            setTimeout(()=>{
+
+                window.location.href=
+                "status-pendaftaran.html";
+
+            },1800);
+
+        }else{
+
+            showAlertLocal(
+
+                result.message,
+
+                "error"
+
+            );
+
+        }
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+        showAlertLocal(
+
+            "Terjadi kesalahan saat mengirim data.",
+
+            "error"
+
+        );
+
+    }
+
+}
+
+// =========================================// BUTTON SUBMIT// =========================================
+
+document
+.getElementById("submitBtn")
+.addEventListener("click",function(){
+
+    if(
+        !document.getElementById("setuju_syarat").checked
+    ){
+
+        showAlertLocal(
+
+            "Silakan centang persetujuan terlebih dahulu.",
+
+            "error"
+
+        );
+
+        return;
+
+    }
+
+    submitPendaftaran();
+
+});
+
+// =========================================//LOGOUT// =========================================
+
+document
+.getElementById("logoutBtn")
+.addEventListener("click",function(e){
+
+    e.preventDefault();
+
+    window.location.href="../index.html";
+
+});
+
+</script>
+
+</body>
+</html>

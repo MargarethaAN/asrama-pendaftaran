@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Penghuni - Admin</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        /* Layout Dasar & Main Content Modern (Visily Style) */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            margin: 0;
+            color: #1e293b;
+        }
+
+        .sidebar nav a{
+            display:flex;
+            align-items:center;
+            gap:10px;
+            padding:14px 18px;
+            text-decoration:none;
+            color:#444;
+            border-radius:10px;
+            margin:4px 10px;
+        }
+
+        .sidebar nav a.active{
+            background:#7ED957;
+            color:#fff;
+        }
+        
+        .sidebar-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .main-content {
+            flex: 1;
+            padding:20px 24px;
+            background-color: #f8fafc;
+            overflow-x: hidden;
+        }
+
+        .main-content h1 {
+            font-size:28px;
+            font-weight:700;
+            color:#69C33B;
+            margin-bottom:4px;
+        }
+
+        .main-content p {
+            font-size:12px;
+            color:#7d7d7d;
+            margin-bottom:18px;
+        }
+
+        .sidebar{
+            width:260px;
+            min-width:260px;
+            height:100vh;
+            background:#ffffff;
+            border-right:1px solid #EEF2F7;
+            display:flex;
+            flex-direction:column;
+            justify-content:space-between;
+        }
+
+        .sidebar-top{
+            padding:18px 14px;
+        }
+
+        .logo{
+            display:flex;
+            align-items:center;
+            gap:10px;
+            margin-bottom:24px;
+            padding:6px;
+        }
+
+        .logo-icon{
+            width:36px;
+            height:36px;
+            background:#6BCB3D;
+            border-radius:10px;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            color:#fff;
+            font-size:17px;
+            flex-shrink:0;
+        }
+
+        .logo-text{
+            font-size:22px;
+            font-weight:800;
+            color:#6BCB3D;
+            line-height:1;
+        }
+
+        .nav-menu{
+            display:flex;
+            flex-direction:column;
+            gap:4px;
+        }
+
+        .nav-item{
+            display:flex;
+            align-items:center;
+            gap:12px;
+            padding:11px 12px;
+            text-decoration:none;
+            font-size:14px;
+            font-weight:600;
+            color:#475569;
+            border-radius:12px;
+            transition:all .25s ease;
+        }
+
+        .nav-item i{
+            width:20px;
+            text-align:center;
+            font-size:16px;
+            flex-shrink:0;
+        }
+
+        .nav-item span{
+            white-space:nowrap;
+        }
+
+        .nav-item:hover{
+            background:#f5f5f5;
+            color:#111827;
+        }
+
+        .nav-item.active{
+            background:#6BCB3D;
+            color:#fff;
+        }
+
+        .sidebar-footer{
+            padding:16px 14px;
+            border-top:1px solid #ececec;
+        }
+
+        .profile-widget{
+            display:flex;
+            align-items:center;
+            gap:12px;
+            padding:10px;
+            background:#F8FAFC;
+            border-radius:12px;
+            margin-bottom:14px;
+        }
+
+        .avatar{
+            width:42px;
+            height:42px;
+            border-radius:50%;
+            background:#E2E8F0;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:18px;
+            color:#475569;
+        }
+
+        .profile-info h4{
+            margin:0;
+            font-size:14px;
+            font-weight:600;
+            color:#1E293B;
+        }
+
+        .profile-info p{
+            margin:2px 0 0;
+            font-size:12px;
+            color:#64748B;
+        }
+
+        /* Stats Grid Modern */
+        .stats-grid-visily {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 13px;
+            margin-bottom: 16px;
+        }
+
+        .stat-card-visily {
+            background:#fff;
+            border-radius:10px;
+            padding:14px 18px;
+            border-top:5px solid #69C33B;
+            box-shadow:0 2px 8px rgba(0,0,0,.06);
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+        }
+
+        .stat-desc{
+            margin-top:8px !important;
+            margin-bottom:0 !important;
+            font-size:12px !important;
+            color:#8a8a8a !important;
+            line-height:1.4;
+            font-weight:400;
+        }
+
+        .number-info h3 {
+            font-size: 10px;
+            color:#777;
+            font-weight:600;
+            margin-bottom:4px;
+        }
+
+        .number-info .number {
+            font-size: 35px;
+            font-weight: 700;
+            color:#111;
+        }
+
+        .number-icon {
+            width:47px;
+            height:47px;
+            border-radius:12px;
+            font-size:18px;
+        }
+        .total-icon { color: #15c087;}
+        .aktif-icon {  color: #15c087; }
+        .calon-icon {  color: #15c087; }
+        .alumni-icon {  color: #15c087; }
+
+        .visily-filter-box {
+            background:#fff;
+            border-radius:16px;
+            padding:20px;
+            margin-bottom:16px;
+            display:flex;
+            align-items:flex-end;
+            gap:16px;
+        }
+
+        .form-group-visily {
+            flex:1;
+            display:flex;
+            flex-direction:column;
+            gap:8px;
+        }
+
+        .form-group-visily label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #475569;
+            letter-spacing: 0.05em;
+        }
+
+        .search-input-wrapper {
+            position: relative;
+            width:100%;
+        }
+
+        .form-control-visily {
+            width:100%;
+            height:44px;
+            padding:0 14px;
+            border:1px solid #d1d5db;
+            border-radius:10px;
+            font-size:14px;
+            box-sizing:border-box;
+        }
+
+        .form-control-visily:focus {
+            border-color: #2c7a4d;
+        }
+
+        .search-input-wrapper .form-control-visily {
+            padding-left:42px;
+        }
+
+        .search-icon-wrapper {
+            position:absolute;
+            left:14px;
+            top:50%;
+            transform:translateY(-50%);
+            color:#94a3b8;
+            font-size:14px;
+            pointer-events:none;
+        }
+
+        .btn-visily-filter {
+            height:44px;
+            width:130px;
+            border-radius:10px;
+            background:#69C33B;
+            font-size:18px;
+            font-weight:600;
+        }
+
+        .btn-visily-filter:hover {
+            background: #1a5d3a;
+        }
+
+        /* Tabel Modern Visily */
+        .table-container {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .visily-data-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        .visily-data-table th {
+            background:#f7f7f7;
+            font-size:14px;
+            color:#333;
+            padding:12px;
+        }
+
+        .visily-data-table td {
+            padding:12px;
+            font-size:12px;
+        }
+
+        .visily-data-table tbody tr:hover {
+            background-color: #f8fafc;
+        }
+
+        /* Avatar Cell */
+        .visily-avatar-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar-table-visily {
+            width:32px;
+            height:32px;
+        }
+
+        /* Status Badges Visily Style */
+        .status-badge{
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            padding:6px 14px;
+            border-radius:999px;
+            font-size:12px;
+            font-weight:600;
+            min-width:70px;
+        }
+
+        /* Aktif */
+        .status-aktif{
+            background:#DCFCE7;
+            color:#15803D;
+        }
+
+        /* Calon */
+        .status-calon{
+            background:#F1F5F9;
+            color:#334155;
+        }
+
+        /* Alumni */
+        .status-alumni{
+            background:#F1F5F9;
+            color:#334155;
+        }
+
+        /* Icon Action Buttons */
+        .action-buttons-icon {
+            display:flex;
+            align-items:center;
+            justify-content: center;
+            gap:18px;
+        }
+        .action-icon{
+            font-size:19px;
+            cursor:pointer;
+            transition:.2s;
+        }
+        .action-icon:hover{
+            transform:scale(1.15);
+        }
+        /* Warna sesuai desain */
+        .detail-icon{
+            color:#7ED957;      /* hijau */
+        }
+        .edit-icon{
+            color:#555;
+        }
+        .assign-icon{
+            color:#D68B2A;      /* orange */
+        }
+        .delete-icon{
+            color:#D9534F;      /* merah */
+        }
+        .btn-icon-table {
+            border:none;
+            background:transparent;
+            width:auto;
+            height:auto;
+            font-size:22px;
+            cursor:pointer;
+        }
+
+        .btn-icon-table:hover {
+            background:none;
+            transform:scale(1.15);
+        }
+
+        /* Pagination Style */
+        .visily-pagination {
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            width:100%;
+            padding:16px 20px;
+            box-sizing:border-box;
+        }
+
+        .pagination-info {
+            flex:1;
+            font-size:13px;
+            color:#64748b;
+        }
+
+        .pagination-buttons {
+            display:flex;
+            align-items:center;
+            gap:8px;
+            margin-left:auto;
+        }
+
+        .visily-data-table th:last-child,
+        .visily-data-table td:last-child{
+            text-align:right;
+            padding-right:24px;
+        }
+
+        .btn-visily-prev, .btn-visily-next {
+            background: white;
+            border: 1px solid #cbd5e1;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+            color: #334155;
+            font-weight: 500;
+        }
+
+        .btn-visily-prev:hover, .btn-visily-next:hover {
+            background: #f8fafc;
+        }
+
+        .page-numbers-wrapper {
+            display: flex;
+            gap: 4px;
+        }
+
+        .btn-visily-page {
+            width: 34px;
+            height: 34px;
+            border: 1px solid #cbd5e1;
+            background: white;
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+            color: #334155;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-visily-page.active {
+            background: #2c7a4d;
+            color: white;
+            border-color: #2c7a4d;
+            font-weight: 600;
+        }
+
+        /* Modal Styles */
+        .detail-modal, .move-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.4);
+            justify-content: center; align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(2px);
+        }
+
+        .detail-modal-content, .move-modal-content {
+            background: white;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 550px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+            animation: modalFadeIn 0.2s ease-out;
+        }
+
+        .move-modal-content { max-width: 400px; padding: 24px; }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .detail-header {
+            background: linear-gradient(135deg, #1a5d3a 0%, #2c7a4d 100%);
+            color: white; padding: 24px; text-align: center;
+        }
+        .detail-header h3 { margin: 0 0 8px 0; font-size: 20px; color: white; }
+        .detail-header .nim-badge {
+            background: rgba(255,255,255,0.2); display: inline-block;
+            padding: 4px 12px; border-radius: 20px; font-size: 12px;
+        }
+
+        .detail-body { padding: 24px; }
+        .detail-section { margin-bottom: 20px; }
+        .detail-section-title {
+            font-size: 14px; font-weight: 600; color: #0f172a;
+            margin-bottom: 12px; padding-bottom: 6px; border-bottom: 2px solid #e2e8f0;
+        }
+
+        .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .detail-info-item { background: #f8fafc; padding: 12px; border-radius: 10px; }
+        .detail-info-label { font-size: 11px; color: #64748b; margin-bottom: 4px; }
+        .detail-info-value { font-size: 14px; font-weight: 500; color: #1e293b; }
+        .full-width { grid-column: span 2; }
+        .detail-footer { padding: 16px 24px; border-top: 1px solid #e2e8f0; text-align: right; }
+
+        .form-group-select label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; }
+        .form-group-select select { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 10px; }
+        .modal-buttons { display: flex; gap: 12px; margin-top: 20px; }
+        .btn-modal-save { background: #2c7a4d; color: white; border: none; padding: 10px; border-radius: 8px; flex: 1; cursor: pointer; }
+        .btn-modal-cancel, .btn-secondary { background: #e2e8f0; color: #1e293b; border: none; padding: 10px 16px; border-radius: 8px; cursor: pointer; }
+
+        /* Toast Alert */
+        .alert-fixed {
+            position: fixed; top: 20px; right: 20px; z-index: 2000;
+            padding: 14px 20px; border-radius: 10px; font-size: 14px; font-weight: 500;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); animation: slideIn 0.2s ease;
+        }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        .alert-success { background: #d1fae5; color: #065f46; border-left: 4px solid #10b981; }
+        .alert-error { background: #fee2e2; color: #991b1b; border-left: 4px solid #ef4444; }
+    </style>
+</head>
+<body>
+    <div class="sidebar-layout">
+        <div class="sidebar">
+            <div class="sidebar-top">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fa-regular fa-building"></i>
+                    </div>
+                    <div class="logo-text">
+                        DormyAdmin
+                    </div>
+                </div>
+                <nav class="nav-menu">
+                    <a href="admin-dashboard.html" class="nav-item">
+                        <i class="fa-solid fa-chart-line"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="admin-verifikasi-pendaftaran.html" class="nav-item">
+                        <i class="fa-regular fa-circle-check"></i>
+                        <span>Verifikasi Pendaftaran</span>
+                    </a>
+                    <a href="admin-verifikasi-pembayaran.html" class="nav-item">
+                        <i class="fa-regular fa-credit-card"></i>
+                        <span>Verifikasi Pembayaran</span>
+                    </a>
+                    <a href="admin-manajemen-kamar.html" class="nav-item">
+                        <i class="fa-solid fa-bed"></i>
+                        <span>Manajemen Kamar</span>
+                    </a>
+                    <a href="admin-data-penghuni.html" class="nav-item active">
+                        <i class="fa-solid fa-user"></i>
+                        <span>Data Penghuni</span>
+                    </a>
+                    <a href="admin-laporan.html" class="nav-item">
+                        <i class="fa-regular fa-file-lines"></i>
+                        <span>Laporan & Rekap</span>
+                    </a>
+                    <a href="admin-syarat-ketentuan.html" class="nav-item">
+                        <i class="fa-regular fa-file"></i>
+                        <span>Syarat & Ketentuan</span>
+                    </a>
+                    <a href="admin-pencarian.html" class="nav-item">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <span>Pencarian Data</span>
+                    </a>
+                </nav>
+            </div>
+            <div class="sidebar-footer">
+                <div class="profile-widget">
+                    <div class="avatar">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <div class="profile-info">
+                        <h4>Admin 1</h4>
+                        <p>Administrator</p>
+                    </div>
+                </div>
+                <a href="#" class="nav-item" id="logoutBtn" style="color:#ef4444;">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <h1>Data Penghuni Asrama</h1>
+            <p>Kelola informasi dan status hunian mahasiswa</p>
+            
+            <div class="stats-grid-visily" id="statsPenghuni">
+                <div class="stat-card-visily">
+                    <div class="number-info">
+                        <h3>TOTAL PENGHUNI</h3>
+                        <div class="number" id="totalPenghuni">0</div>
+                        <p class="stat-desc">
+                            Total keseluruhan data terdaftar
+                        </p>
+                    </div>
+                    <span class="number-icon total-icon">
+                        <i class="fa-solid fa-users"></i>
+                    </span>
+                </div>
+                <div class="stat-card-visily">
+                    <div class="number-info">
+                        <h3>PENGHUNI AKTIF</h3>
+                        <div class="number" id="penghuniAktif">0</div>
+                        <p class="stat-desc">
+                            Mahasiswa yang menetap saat ini
+                        </p>
+                    </div>
+                    <span class="number-icon aktif-icon">
+                        <i class="fa-solid fa-user-check"></i>
+                    </span>
+                </div>
+                <div class="stat-card-visily">
+                    <div class="number-info">
+                        <h3>CALON PENGHUNI</h3>
+                        <div class="number" id="calonPenghuni">0</div>
+                        <p class="stat-desc">
+                            Sedang dalam proses verifikasi
+                        </p>
+                    </div>
+                    <span class="number-icon calon-icon">
+                        <i class="fa-solid fa-user-clock"></i>
+                    </span>
+                </div>
+                <div class="stat-card-visily">
+                    <div class="number-info">
+                        <h3>ALUMNI</h3>
+                        <div class="number" id="alumni">0</div>
+                        <p class="stat-desc">
+                            Mahasiswa yang sudah keluar
+                        </p>
+                    </div>
+                    <span class="number-icon alumni-icon">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </span>
+                </div>
+            </div>
+            
+            <div class="visily-filter-box">
+                <div class="form-group-visily">
+                    <label>CARI PENGHUNI</label>
+                    <div class="search-input-wrapper">
+                        <input type="text" id="searchInput" placeholder="Cari berdasarkan Nama / NIM..." class="form-control-visily">
+                        <span class="search-icon-wrapper"><span>🔍</span></span>
+                    </div>
+                </div>
+                <div class="form-group-visily">
+                    <label>STATUS</label>
+                    <select id="filterStatus" class="form-control-visily">
+                        <option value="all">Semua Status</option>
+                        <option value="aktif">Aktif</option>
+                        <option value="calon">Calon</option>
+                        <option value="alumni">Alumni</option>
+                    </select>
+                </div>
+                <div class="form-group-visily">
+                    <label>LANTAI / KAMAR</label>
+                    <select id="filterKamar" class="form-control-visily">
+                        <option value="all">Semua Kamar</option>
+                    </select>
+                </div>
+                <button onclick="filterData()" class="btn-visily-filter">Cari Data</button>
+            </div>
+            
+            <div class="table-container">
+                <table class="visily-data-table">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>NIM</th>
+                            <th>Nama Lengkap</th>
+                            <th>Prodi</th>
+                            <th>Kamar</th>
+                            <th>Status Hunian</th>
+                            <th>Tgl Masuk</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="penghuniTableBody">
+                        <tr><td colspan="8" style="text-align:center;">Memuat data...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="visily-pagination">
+                <div class="pagination-info" id="paginationInfo">Menampilkan 0 dari 0 total penghuni</div>
+                <div class="pagination-buttons">
+                    <button class="btn-visily-prev">Sebelumnya</button>
+                    <div class="page-numbers-wrapper" id="pageNumbers">
+                        <button class="btn-visily-page active">1</button>
+                        <button class="btn-visily-page">2</button>
+                        <button class="btn-visily-page">3</button>
+
+                    </div>
+                    <button class="btn-visily-next">Selanjutnya</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="detailModal" class="detail-modal">
+        <div class="detail-modal-content">
+            <div class="detail-header">
+                <h3>📋 Profil Penghuni</h3>
+                <div class="nim-badge" id="detailNim">NIM: -</div>
+            </div>
+            <div class="detail-body">
+                <div class="detail-section">
+                    <div class="detail-section-title">👤 Identitas Diri</div>
+                    <div class="detail-grid">
+                        <div class="detail-info-item"><div class="detail-info-label">Nama Lengkap</div><div class="detail-info-value" id="detailNama"></div></div>
+                        <div class="detail-info-item"><div class="detail-info-label">Program Studi</div><div class="detail-info-value" id="detailProdi"></div></div>
+                        <div class="detail-info-item"><div class="detail-info-label">No. Handphone</div><div class="detail-info-value" id="detailNoHp"></div></div>
+                        <div class="detail-info-item"><div class="detail-info-label">Status</div><div class="detail-info-value" id="detailStatus"></div></div>
+                    </div>
+                </div>
+                <div class="detail-section">
+                    <div class="detail-section-title">🏠 Informasi Hunian</div>
+                    <div class="detail-grid">
+                        <div class="detail-info-item"><div class="detail-info-label">Kamar</div><div class="detail-info-value" id="detailKamar"></div></div>
+                        <div class="detail-info-item"><div class="detail-info-label">Tanggal Masuk</div><div class="detail-info-value" id="detailTglMasuk"></div></div>
+                    </div>
+                </div>
+                <div class="detail-section">
+                    <div class="detail-section-title">📍 Alamat Asal</div>
+                    <div class="detail-info-item full-width"><div class="detail-info-value" id="detailAlamat"></div></div>
+                </div>
+            </div>
+            <div class="detail-footer">
+                <button onclick="closeDetailModal()" class="btn-secondary">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="pindahKamarModal" class="move-modal">
+        <div class="move-modal-content">
+            <h3>🔄 Pindah Kamar</h3>
+            <p id="pindahNama"></p>
+            <div class="form-group-select">
+                <label>Kamar Baru</label>
+                <select id="newKamarSelect">
+                    <option value="">-- Pilih Kamar --</option>
+                </select>
+            </div>
+            <div class="modal-buttons">
+                <button onclick="savePindahKamar()" class="btn-modal-save">Pindahkan</button>
+                <button onclick="closePindahModal()" class="btn-modal-cancel">Batal</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script>
+        // Data internal/dummy terintegrasi jika database/BASE_URL kosong
+        let penghuniData = [
+            { id_pendaftar: 1, nim: '1202204123', nama_lengkap: 'Maria Angelina', prodi: 'Sistem Informasi', nomor_kamar: '101', status_keluar: 'aktif', status_hunian: 'aktif', tanggal_masuk_asrama: '15 Agu 2023', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=100&auto=format&fit=crop', status_pendaftaran: 'selesai', no_hp: '081234567890', alamat_asal: 'Pekalongan, Jawa Tengah' },
+            { id_pendaftar: 2, nim: '1202204556', nama_lengkap: 'Mia Amelia', prodi: 'Teknik Informatika', nomor_kamar: 'Belum ditentukan', status_keluar: 'aktif', status_hunian: 'calon', tanggal_masuk_asrama: null, avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=100&auto=format&fit=crop', status_pendaftaran: 'menunggu_verifikasi', no_hp: '081345678901', alamat_asal: 'Surabaya, Jawa Timur' },
+            { id_pendaftar: 3, nim: '1202204998', nama_lengkap: 'Siti Rahmawati', prodi: 'Manajemen Bisnis', nomor_kamar: '103', status_keluar: 'aktif', status_hunian: 'aktif', tanggal_masuk_asrama: '20 Sep 2023', avatar: 'https://images.unsplash.com/photo-1521119989659-a83eee488004?q=80&w=100&auto=format&fit=crop', status_pendaftaran: 'selesai', no_hp: '081456789012', alamat_asal: 'Kudus, Jawa Tengah' },
+            { id_pendaftar: 4, nim: '1202203112', nama_lengkap: 'Dewi Lestari', prodi: 'Akuntansi', nomor_kamar: '201', status_keluar: 'aktif', status_hunian: 'aktif', tanggal_masuk_asrama: '10 Jan 2023', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=100&auto=format&fit=crop', status_pendaftaran: 'selesai', no_hp: '081567890123', alamat_asal: 'Tegal, Jawa Tengah' },
+            { id_pendaftar: 5, nim: '1102201005', nama_lengkap: 'Rini Mirah', prodi: 'Psikologi', nomor_kamar: '202', status_keluar: 'keluar', status_hunian: 'alumni', tanggal_masuk_asrama: '12 Jul 2022', avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=100&auto=format&fit=crop', status_pendaftaran: 'selesai', no_hp: '081678901234', alamat_asal: 'Semarang, Jawa Tengah' }
+        ];
+        
+        let kamarData = [
+            { id_kamar: 1, nomor_kamar: '101', lantai: '1', status_kamar: 'tersedia' },
+            { id_kamar: 2, nomor_kamar: '102', lantai: '1', status_kamar: 'tersedia' },
+            { id_kamar: 3, nomor_kamar: '103', lantai: '1', status_kamar: 'tersedia' },
+            { id_kamar: 4, nomor_kamar: '201', lantai: '2', status_kamar: 'tersedia' },
+            { id_kamar: 5, nomor_kamar: '202', lantai: '2', status_kamar: 'tersedia' }
+        ];
+
+        let currentPindahId = null;
+        let currentDetailId = null;
+
+        function showAlertLocal(message, type) {
+            const oldAlert = document.querySelector('.alert-fixed');
+            if (oldAlert) oldAlert.remove();
+            
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert-fixed alert-${type === 'success' ? 'success' : 'error'}`;
+            alertDiv.innerHTML = `${type === 'success' ? '✅' : '❌'} ${message}`;
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.style.opacity = '0';
+                setTimeout(() => alertDiv.remove(), 300);
+            }, 3000);
+        }
+
+        function getStatusBadge(status, statusHunian) {
+            if (status === 'aktif' && statusHunian === 'aktif') {
+                return `<span class="status-badge status-aktif">Aktif</span>`;
+            }
+            if (statusHunian === 'calon') {
+                return `<span class="status-badge status-calon">Calon</span>`;
+            }
+            if (status === 'keluar' || statusHunian === 'alumni') {
+                return `<span class="status-badge status-alumni">Alumni</span>`;
+            }
+            return `<span class="status-badge status-calon">Pendaftar</span>`;
+        }
+
+        async function loadPenghuniFromDB() {
+            populateKamarFilter();
+            try {
+                if (typeof BASE_URL !== 'undefined') {
+                    const response = await fetch(BASE_URL + 'get_penghuni.php');
+                    const result = await response.json();
+                    if (result.success && result.data && result.data.length > 0) {
+                        penghuniData = result.data;
+                    }
+                }
+            } catch (error) {
+                console.warn('Menggunakan fallback data lokal (API tidak terjangkau):', error);
+            }
+            renderPenghuniTable();
+            updateStats();
+        }
+
+        function showSuccessAfterKonfirmasi() {
+            showAlertLocal(
+                "Mahasiswa berhasil dikonfirmasi keluar dari asrama.",
+                "success"
+            );
+
+            loadPenghuniFromDB();
+
+            const params = new URLSearchParams(window.location.search);
+
+            if (params.get("refresh") === "1") {
+
+                showAlertLocal(
+                    "Mahasiswa berhasil dikonfirmasi keluar dari asrama.",
+                    "success"
+                );
+
+                // hapus parameter refresh supaya kalau halaman di-refresh
+                // notif tidak muncul lagi
+                window.history.replaceState({}, "", "admin-data-penghuni.html");
+            }
+        }
+
+        function updateStats() {
+            const total = penghuniData.length;
+            const aktif = penghuniData.filter(p => p.status_keluar === 'aktif' && p.status_hunian === 'aktif').length;
+            const calon = penghuniData.filter(p => p.status_pendaftaran === 'menunggu_verifikasi' || p.status_hunian === 'calon').length;
+            const alumni = penghuniData.filter(p => p.status_keluar === 'keluar' || p.status_hunian === 'alumni').length;
+            
+            document.getElementById('totalPenghuni').innerText = total;
+            document.getElementById('penghuniAktif').innerText = aktif;
+            document.getElementById('calonPenghuni').innerText = calon;
+            document.getElementById('alumni').innerText = alumni;
+        }
+
+        function populateKamarFilter() {
+            const select = document.getElementById('filterKamar');
+            select.innerHTML = '<option value="all">Semua Kamar</option>';
+            const uniqueKamar = [...new Set(penghuniData.map(p => p.nomor_kamar).filter(k => k && k !== 'Belum ditentukan'))];
+            uniqueKamar.forEach(k => {
+                select.innerHTML += `<option value="${k}">Kamar ${k}</option>`;
+            });
+        }
+
+        function renderPenghuniTable() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const filterStatus = document.getElementById('filterStatus').value;
+            const filterKamar = document.getElementById('filterKamar').value;
+            
+            let filtered = [...penghuniData];
+            
+            if (search) {
+                filtered = filtered.filter(p => 
+                    (p.nama_lengkap && p.nama_lengkap.toLowerCase().includes(search)) || 
+                    (p.nim && p.nim.toLowerCase().includes(search))
+                );
+            }
+            
+            if (filterStatus !== 'all') {
+                if (filterStatus === 'aktif') {
+                    filtered = filtered.filter(p => p.status_keluar === 'aktif' && p.status_hunian === 'aktif');
+                } else if (filterStatus === 'calon') {
+                    filtered = filtered.filter(p => p.status_pendaftaran === 'menunggu_verifikasi' || p.status_hunian === 'calon');
+                } else if (filterStatus === 'alumni') {
+                    filtered = filtered.filter(p => p.status_keluar === 'keluar' || p.status_hunian === 'alumni');
+                }
+            }
+
+            if (filterKamar !== 'all') {
+                filtered = filtered.filter(p => p.nomor_kamar === filterKamar);
+            }
+            
+            const tbody = document.getElementById('penghuniTableBody');
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;">Tidak ada data ditemukan</td></tr>';
+                document.getElementById('paginationInfo').innerText = `Menampilkan 0 dari ${penghuniData.length} total penghuni`;
+                return;
+            }
+            
+            tbody.innerHTML = filtered.map((p, index) => {
+                const avatarUrl = p.avatar ? p.avatar : `https://ui-avatars.com/api/?name=${encodeURIComponent(p.nama_lengkap)}&background=random&color=fff&rounded=true`;
+                return `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${p.nim || '-'}</td>
+                        <td>
+                            <div class="visily-avatar-cell">
+                                <img src="${avatarUrl}" class="avatar-table-visily" alt="Avatar">
+                                <span><strong>${p.nama_lengkap || '-'}</strong></span>
+                            </div>
+                        </td>
+                        <td>${p.prodi || '-'}</td>
+                        <td>${p.nomor_kamar || 'Belum ditentukan'}</td>
+                        <td>${getStatusBadge(p.status_keluar, p.status_hunian)}</td>
+                        <td>${p.tanggal_masuk_asrama || p.tanggal_masuk || '-'}</td>
+                        <td class="action-buttons-icon">
+                            <!-- Tinjau -->
+                            <i class="fa-solid fa-arrow-up-right-from-square action-icon detail-icon"
+                            title="Tinjau"
+                            onclick="window.location.href='admin-tinjauan-berkas.html?id=${p.id_pendaftar}'"
+                            </i>
+
+                            <!-- Edit -->
+                            <i class="fa-regular fa-pen-to-square action-icon edit-icon"
+                            title="Edit"
+                            onclick="editPenghuni(${p.id_pendaftar})"></i>
+                            ${
+                                p.status_hunian !== 'alumni' &&
+                                p.status_keluar !== 'keluar'
+                                ? `
+                                <!-- Tempatkan -->
+                                <i class="fa-solid fa-user-plus action-icon assign-icon"
+                                title="Tempatkan"
+                                onclick="openPindahModal(${p.id_pendaftar}, '${p.nomor_kamar || ''}')"></i>
+                                `
+                                : ''
+                            }
+                            ${
+                                p.status_hunian === 'calon'
+                                ? `
+                                <!-- Hapus -->
+                                <i class="fa-regular fa-trash-can action-icon delete-icon"
+                                title="Hapus"
+                                onclick="hapusPenghuni(${p.id_pendaftar})"></i>
+                                `
+                                : ''
+                            }
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            document.getElementById('paginationInfo').innerText = `Menampilkan ${filtered.length} dari ${penghuniData.length} total penghuni`;
+        }
+
+        async function showDetail(id) {
+            currentDetailId = id;
+            // Gunakan pencarian objek lokal untuk respons instan sebelum fetch jika di perlukan
+            const localPerson = penghuniData.find(p => p.id_pendaftar == id);
+            
+            if (localPerson) {
+                fillDetailModal(localPerson);
+            }
+
+            try {
+                if (typeof BASE_URL !== 'undefined') {
+                    const response = await fetch(BASE_URL + 'get_pendaftar_by_id.php?id=' + id);
+                    const result = await response.json();
+                    if (result.success && result.data) {
+                        fillDetailModal(result.data);
+                    }
+                }
+            } catch (error) {
+                console.log('Menggunakan data lokal untuk detail modal.');
+            }
+            document.getElementById('detailModal').style.display = 'flex';
+        }
+
+        function fillDetailModal(p) {
+            document.getElementById('detailNim').innerHTML = `NIM: ${p.nim || '-'}`;
+            document.getElementById('detailNama').innerHTML = p.nama_lengkap || '-';
+            document.getElementById('detailProdi').innerHTML = p.prodi || '-';
+            document.getElementById('detailNoHp').innerHTML = p.no_hp || '-';
+            document.getElementById('detailKamar').innerHTML = p.nomor_kamar || 'Belum ditentukan';
+            document.getElementById('detailTglMasuk').innerHTML = p.tanggal_masuk_asrama || p.tanggal_masuk || 'Belum ditentukan';
+            document.getElementById('detailAlamat').innerHTML = p.alamat_asal || p.alamat_semarang || '-';
+            
+            let statusText = '';
+            if (p.status_keluar === 'aktif' && p.status_hunian === 'aktif') {
+                statusText = '<span class="status-badge status-success-visily">Aktif - Sedang Menempati</span>';
+            } else if (p.status_pendaftaran === 'menunggu_verifikasi' || p.status_hunian === 'calon') {
+                statusText = '<span class="status-badge status-warning-visily">Calon - Proses Verifikasi</span>';
+            } else {
+                statusText = '<span class="status-badge status-danger-visily">Alumni - Sudah Keluar</span>';
+            }
+            document.getElementById('detailStatus').innerHTML = statusText;
+        }
+
+        function closeDetailModal() {
+            document.getElementById('detailModal').style.display = 'none';
+        }
+
+        async function openPindahModal(id, currentKamar) {
+            currentPindahId = id;
+            document.getElementById('pindahNama').innerHTML = `<strong>Mengubah Kamar Penghuni</strong><br><span style="font-size:12px; color:#64748b;">Kamar saat ini: ${currentKamar || 'Belum ada'}</span>`;
+            
+            const select = document.getElementById('newKamarSelect');
+            select.innerHTML = '<option value="">-- Pilih Kamar --</option>';
+            
+            try {
+                if (typeof BASE_URL !== 'undefined') {
+                    const response = await fetch(BASE_URL + 'get_kamar.php');
+                    const result = await response.json();
+                    if (result.success && result.data) {
+                        kamarData = result.data;
+                    }
+                }
+            } catch (error) {
+                console.log('Menggunakan opsi kamar lokal.');
+            }
+
+            const tersedia = kamarData.filter(k => k.status_kamar === 'tersedia' && k.nomor_kamar !== currentKamar);
+            if(tersedia.length === 0) {
+                select.innerHTML = '<option value="">Tidak ada kamar kosong yang tersedia</option>';
+            } else {
+                tersedia.forEach(k => {
+                    select.innerHTML += `<option value="${k.id_kamar}">Kamar ${k.nomor_kamar} (Lantai ${k.lantai})</option>`;
+                });
+            }
+            
+            document.getElementById('pindahKamarModal').style.display = 'flex';
+        }
+
+        function closePindahModal() {
+            document.getElementById('pindahKamarModal').style.display = 'none';
+            currentPindahId = null;
+        }
+
+        async function savePindahKamar() {
+            const newKamarId = document.getElementById('newKamarSelect').value;
+            const selectElement = document.getElementById('newKamarSelect');
+            const selectedText = selectElement.options[selectElement.selectedIndex].text;
+            
+            if (!newKamarId) {
+                showAlertLocal('Pilih kamar tujuan terlebih dahulu!', 'error');
+                return;
+            }
+            
+            try {
+                if (typeof BASE_URL !== 'undefined') {
+                    const response = await fetch(BASE_URL + 'pindah_kamar.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ id_pendaftar: currentPindahId, id_kamar: newKamarId })
+                    });
+                    const result = await response.json();
+                    showAlertLocal(result.message, result.success ? 'success' : 'error');
+                    if (result.success) {
+                        loadPenghuniFromDB();
+                        closePindahModal();
+                        return;
+                    }
+                }
+            } catch (error) {
+                console.error(error);
+            }
+
+            // Simulasi lokal berhasil jika tidak ada koneksi backend
+            const index = penghuniData.findIndex(p => p.id_pendaftar == currentPindahId);
+            if (index !== -1) {
+                const matchKamar = selectedText.match(/Kamar (\d+)/);
+                penghuniData[index].nomor_kamar = matchKamar ? matchKamar[1] : 'Updated';
+                showAlertLocal('Kamar berhasil dipindahkan (Simulasi Lokal)', 'success');
+                renderPenghuniTable();
+                closePindahModal();
+            }
+        }
+
+        function filterData() {
+            renderPenghuniTable();
+        }
+
+        // Event listener ketik & ganti pilihan otomatis agar filter real-time
+        document.getElementById('searchInput').addEventListener('keyup', renderPenghuniTable);
+        document.getElementById('filterStatus').addEventListener('change', renderPenghuniTable);
+        document.getElementById('filterKamar').addEventListener('change', renderPenghuniTable);
+        
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = '../index.html';
+        });
+
+        // Panggil saat inisiasi halaman
+        loadPenghuniFromDB();
+    </script>
+</body>
+</html>

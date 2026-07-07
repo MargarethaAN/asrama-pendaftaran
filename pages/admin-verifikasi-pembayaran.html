@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verifikasi Pembayaran - Admin</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* --- Tampilan Kustom Mengikuti Mockup Gambar --- */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            margin: 0;
+            color: #1e293b;
+        }
+        
+        .sidebar-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Desain Header Utama & Info Sesi */
+        .main-content{
+
+    flex:1;
+
+    padding:30px;
+
+    background:#f8fafc;
+
+}
+
+.page-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding-bottom:18px;
+
+    margin-bottom:30px;
+
+    border-bottom:1px solid #e5e7eb;
+
+}
+
+.page-header h1{
+
+    margin:0;
+
+    font-size:24px;
+
+    font-weight:700;
+
+    color:#1f2937;
+
+}
+
+.page-header p{
+
+    margin-top:6px;
+
+    color:#6b7280;
+
+    font-size:15px;
+
+}
+
+.header-right{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:18px;
+
+}
+
+.notif-box{
+
+    width:44px;
+
+    height:44px;
+
+    background:#fff;
+
+    border:1px solid #e5e7eb;
+
+    border-radius:10px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    position:relative;
+
+    font-size:18px;
+
+    color:#555;
+
+}
+
+.notif-count{
+
+    position:absolute;
+
+    top:-5px;
+
+    right:-5px;
+
+    width:18px;
+
+    height:18px;
+
+    background:#ef4444;
+
+    color:#fff;
+
+    border-radius:50%;
+
+    font-size:11px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-weight:600;
+
+}
+
+.session-box{
+
+    border-left:1px solid #e5e7eb;
+
+    padding-left:18px;
+
+    text-align:right;
+
+}
+
+.session-box h4{
+
+    margin:0;
+
+    font-size:22px;
+
+    font-weight:600;
+
+    color:#222;
+
+}
+
+.session-box span{
+
+    color:#777;
+
+    font-size:14px;
+
+}
+        /* ================= SEARCH CARD ================= */
+
+.filter-card{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:16px;
+
+    background:#fff;
+
+    border-radius:14px;
+
+    padding:20px;
+
+    margin-bottom:30px;
+
+    border:1px solid #e5e7eb;
+
+    box-shadow:0 2px 10px rgba(0,0,0,.05);
+
+}
+
+.search-box{
+
+    position:relative;
+
+    flex:1;
+
+}
+
+.search-box input{
+
+    width:100%;
+
+    height:50px;
+
+    border:1px solid #e5e7eb;
+
+    border-radius:10px;
+
+    padding-left:45px;
+
+    padding-right:15px;
+
+    font-size:15px;
+
+    outline:none;
+
+    background:#fff;
+
+    box-sizing:border-box;
+
+}
+
+.search-box input:focus{
+
+    border-color:#57d52f;
+
+}
+
+.search-icon{
+
+    position:absolute;
+
+    left:16px;
+
+    top:50%;
+
+    transform:translateY(-50%);
+
+    color:#9ca3af;
+
+    font-size:16px;
+
+}
+
+.btn-search{
+
+    width:150px;
+
+    height:50px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:#57d52f;
+
+    color:#fff;
+
+    font-size:17px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+}
+
+.btn-search:hover{
+
+    background:#49c125;
+
+}
+
+.btn-filter{
+
+    height:50px;
+
+    padding:0 22px;
+
+    background:#fff;
+
+    border:1px solid #e5e7eb;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    font-size:15px;
+
+    font-weight:500;
+
+}
+
+.btn-filter:hover{
+
+    background:#f9fafb;
+
+}
+
+/*==========================
+TABLE
+===========================*/
+
+.table-container{
+
+    background:#fff;
+
+    border-radius:14px;
+
+    border:1px solid #e5e7eb;
+
+    box-shadow:0 2px 10px rgba(0,0,0,.05);
+
+    overflow:hidden;
+
+}
+
+.table-meta-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:22px 24px;
+
+}
+
+.table-meta-header h3{
+
+    margin:0;
+
+    font-size:30px;
+
+    font-weight:700;
+
+}
+
+.record-badge{
+
+    margin-left:10px;
+
+    padding:4px 12px;
+
+    background:#eafbe2;
+
+    color:#57d52f;
+
+    border-radius:20px;
+
+    font-size:13px;
+
+}
+
+.total-info{
+
+    color:#777;
+
+    font-size:15px;
+
+}
+
+.data-table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+}
+
+.data-table thead{
+
+    background:#fafafa;
+
+}
+
+.data-table th{
+
+    padding:18px;
+
+    color:#666;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    border-top:1px solid #ececec;
+
+    border-bottom:1px solid #ececec;
+
+}
+
+.data-table td{
+
+    padding:18px;
+
+    border-bottom:1px solid #f2f2f2;
+
+    font-size:15px;
+
+}
+
+.data-table tbody tr:hover{
+
+    background:#fafafa;
+
+}
+/* =======================
+   Avatar Nama
+======================= */
+
+.user-profile-cell{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.avatar-circle{
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    background:#ECFDF3;
+    color:#57D52F;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-weight:700;
+    font-size:15px;
+    flex-shrink:0;
+}
+        /* ==========================
+   Pagination
+========================== */
+
+.pagination-footer{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:18px 22px;
+    border-top:1px solid #e5e7eb;
+    background:#fff;
+}
+
+.pagination-nav{
+    display:flex;
+    gap:8px;
+}
+
+.page-btn{
+    padding:9px 16px;
+    border:1px solid #e5e7eb;
+    background:#fff;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:14px;
+    color:#4b5563;
+    transition:.2s;
+}
+
+.page-btn:hover{
+    background:#f9fafb;
+}
+
+.page-btn.active{
+    background:#57D52F;
+    color:white;
+    border-color:#57D52F;
+}
+        /* --- Style Modal (Tetap Dipertahankan) --- */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;
+        }
+        .modal-content {
+            background: white; border-radius: 24px; padding: 0; max-width: 550px; width: 90%;
+            max-height: 85vh; overflow-y: auto; animation: modalFadeIn 0.3s ease;
+        }
+        @keyframes modalFadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        .modal-header {
+            background: linear-gradient(135deg, #1a5d3a 0%, #2c7a4d 100%);
+            color: white; padding: 20px 24px; border-radius: 24px 24px 0 0; position: sticky; top: 0;
+        }
+        .modal-header h3 { color: white; margin: 0; font-size: 20px; display: flex; align-items: center; gap: 8px; }
+        .modal-body { padding: 24px; }
+        .payment-info-card { background: #f8fafc; border-radius: 16px; padding: 20px; margin-bottom: 24px; }
+        .payment-info-header { background: linear-gradient(135deg, #1a5d3a 0%, #2c7a4d 100%); color: white; padding: 12px 16px; border-radius: 12px; margin-bottom: 16px; }
+        .payment-info-header strong { display: flex; align-items: center; gap: 8px; }
+        .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .detail-item { background: white; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0; }
+        .detail-item-full { grid-column: span 2; }
+        .detail-label { font-size: 11px; color: #64748b; margin-bottom: 4px; }
+        .detail-value { font-size: 14px; font-weight: 500; color: #1a2e3a; word-break: break-word; }
+        .bukti-section { margin-top: 20px; border-top: 1px solid #e2e8f0; padding-top: 20px; }
+        .bukti-title { font-size: 14px; font-weight: 600; color: #1a2e3a; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .bukti-preview { max-width: 100%; border-radius: 12px; border: 1px solid #e2e8f0; }
+        .bukti-placeholder { background: #f1f5f9; border-radius: 12px; padding: 30px; text-align: center; border: 1px solid #e2e8f0; }
+        .bukti-placeholder .icon { font-size: 48px; margin-bottom: 12px; }
+        .modal-footer { padding: 16px 24px 24px; border-top: 1px solid #e2e8f0; display: flex; gap: 12px; justify-content: center; background: white; border-radius: 0 0 24px 24px; }
+        .btn-action { padding: 10px 20px; border-radius: 10px; border: none; cursor: pointer; font-weight: 500; transition: all 0.2s; flex: 1; }
+        .btn-success { background: #10b981; color: white; }
+        .btn-success:hover { background: #059669; }
+        .btn-danger { background: #ef4444; color: white; }
+        .btn-danger:hover { background: #dc2626; }
+        .btn-secondary { background: #e2e8f0; color: #1a2e3a; }
+        .btn-secondary:hover { background: #cbd5e1; }
+        .alert-fixed {
+            position: fixed; top: 20px; right: 20px; z-index: 2000; padding: 14px 20px;
+            border-radius: 12px; font-size: 14px; font-weight: 500; animation: slideIn 0.3s ease;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+        }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        .alert-success { background: #d1fae5; color: #065f46; border-left: 4px solid #10b981; }
+        .alert-error { background: #fee2e2; color: #991b1b; border-left: 4px solid #ef4444; }
+        .loading { text-align: center; padding: 40px; color: #64748b; }
+    .user-profile-cell{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.avatar-circle{
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    background:#ECFDF3;
+    color:#57D52F;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-weight:700;
+    font-size:15px;
+    flex-shrink:0;
+}
+/* =======================
+   Badge Status
+======================= */
+
+.status-badge-pill{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:7px 16px;
+
+    border-radius:20px;
+
+    font-size:13px;
+
+    font-weight:600;
+
+}
+
+.badge-pill-waiting{
+
+    background:#ffffff;
+
+    border:1px solid #d1d5db;
+
+    color:#374151;
+
+}
+
+.badge-pill-success{
+
+    background:#57D52F;
+
+    color:white;
+
+}
+
+.badge-pill-danger{
+
+    background:#EF4444;
+
+    color:white;
+
+}
+/* =======================
+   Tombol
+======================= */
+
+.btn-link-bukti{
+
+    color:#57D52F;
+
+    text-decoration:none;
+
+    font-weight:600;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:6px;
+
+    border:none;
+
+    background:none;
+
+    cursor:pointer;
+
+}
+
+.btn-link-bukti:hover{
+
+    text-decoration:underline;
+
+}
+
+.btn-table-action{
+
+    background:#57D52F;
+
+    color:white;
+
+    border:none;
+
+    padding:10px 18px;
+
+    border-radius:8px;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+}
+
+.btn-table-action:hover{
+
+    background:#43c31f;
+
+}
+    </style>
+</head>
+<body>
+    <div class="sidebar-layout">
+
+<div class="sidebar">
+        <div class="sidebar-top">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fa-regular fa-building"></i>
+                </div>
+                <div class="logo-text">
+                    DormyAdmin</div>
+            </div>
+
+            <nav class="nav-menu">
+                <a href="admin-dashboard.html" class="nav-item">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="admin-verifikasi-pendaftaran.html" class="nav-item">
+                    <i class="fa-regular fa-circle-check"></i>
+                    <span>Verifikasi Pendaftaran</span>
+                </a>
+
+                <a href="admin-verifikasi-pembayaran.html" class="nav-item active">
+                    <i class="fa-regular fa-credit-card"></i>
+                    <span>Verifikasi Pembayaran</span>
+                </a>
+
+                <a href="admin-manajemen-kamar.html" class="nav-item">
+                    <i class="fa-solid fa-users"></i>
+                    <span>Manajemen Kamar</span>
+                </a>
+
+                <a href="admin-data-penghuni.html" class="nav-item">
+                    <i class="fa-solid fa-user"></i>
+                    <span>Data Penghuni</span>
+                </a>
+
+                <a href="admin-laporan.html" class="nav-item">
+                    <i class="fa-regular fa-file-lines"></i>
+                    <span>Laporan & Rekap</span>
+                </a>
+
+                <a href="admin-syarat-ketentuan.html" class="nav-item">
+                    <i class="fa-regular fa-file"></i>
+                    <span>Syarat & Ketentuan (S&K)</span>
+                </a>
+
+                <a href="admin-pencarian.html" class="nav-item">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <span>Pencarian Data</span>
+                </a>
+            </nav>  
+        </div>
+
+        <div class="sidebar-footer">
+
+            <div class="profile-widget">
+                <div class="avatar">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <div class="profile-info">
+                    <h4>Admin 1</h4>
+                    <p>Administrator</p>
+                </div>
+            </div>
+                <a href="#" class="nav-item" id="logoutBtn" style="color:#ef4444;">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </div>
+        
+        <div class="main-content">
+
+<div class="page-header">
+
+    <div>
+
+        <h1>Verifikasi Pembayaran</h1>
+
+        <p>
+            Kelola dan validasi pembayaran
+        </p>
+
+    </div>
+
+    <div class="header-right">
+
+        <div class="notif-box">
+
+            <i class="fa-regular fa-clock"></i>
+
+            <span class="notif-count">3</span>
+
+        </div>
+
+        <div class="session-box">
+
+            <h4>Kamis, 16 Juni 2025</h4>
+
+            <span>Sesi Aktif: 04:20:15</span>
+
+        </div>
+
+    </div>
+
+</div>
+            
+            <div class="filter-card">
+
+    <div class="search-box">
+
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+
+        <input
+            type="text"
+            placeholder="Cari berdasarkan Nama, NIM, atau No. Transaksi...">
+
+    </div>
+
+    <button class="btn-search">
+        Cari Data
+    </button>
+
+    <button class="btn-filter">
+        <i class="fa-solid fa-filter"></i>
+        Filter Status
+    </button>
+
+    <button class="btn-filter">
+        <i class="fa-solid fa-download"></i>
+        Ekspor Laporan
+    </button>
+
+</div>
+            
+            <div class="table-container">
+
+    <div class="table-meta-header">
+        <h3>Daftar Antrean
+            <span class="record-badge" id="newRecordBadge">
+                5 Record Baru
+            </span>
+        </h3>
+
+        <span class="total-info" id="totalInfoText">
+            Menampilkan 5 dari 124 data keseluruhan
+        </span>
+    </div>
+
+    <table class="data-table">
+
+        <thead>
+
+            <tr>
+
+                <th>No</th>
+
+                <th>Nama Pendaftar</th>
+
+                <th>NIM</th>
+
+                <th>Jumlah</th>
+
+                <th>Tgl Upload</th>
+
+                <th>Status Verifikasi</th>
+
+                <th style="text-align:center">
+                    Aksi
+                </th>
+
+            </tr>
+
+        </thead>
+
+        <tbody id="paymentList">
+
+            <tr>
+
+                <td colspan="7" class="loading">
+
+                    Memuat data...
+
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+                <div class="pagination-footer">
+                    <div class="pagination-nav">
+                        <button class="page-btn">Sebelumnya</button>
+                        <button class="page-btn active">1</button>
+                        <button class="page-btn">2</button>
+                        <button class="page-btn">3</button>
+                        <button class="page-btn">Selanjutnya</button>
+                    </div>
+                    <div class="page-info">Halaman 1 dari 25</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="verifModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header"><h3>💰 Verifikasi Pembayaran</h3></div>
+            <div class="modal-body">
+                <div id="paymentDetail"></div>
+                <div id="buktiPreview"></div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="verifikasiBayar(true)" class="btn-action btn-success">✓ Terima</button>
+                <button onclick="verifikasiBayar(false)" class="btn-action btn-danger">✗ Tolak</button>
+                <button onclick="closeVerifModal()" class="btn-action btn-secondary">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script>
+        let paymentData = [];
+        let currentPaymentId = null;
+        
+        function showAlertLocal(message, type) {
+            const oldAlert = document.querySelector('.alert-fixed');
+            if (oldAlert) oldAlert.remove();
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert-fixed alert-${type === 'success' ? 'success' : 'error'}`;
+            alertDiv.innerHTML = `${type === 'success' ? '✅' : '❌'} ${message}`;
+            document.body.appendChild(alertDiv);
+            setTimeout(() => { alertDiv.style.opacity = '0'; setTimeout(() => alertDiv.remove(), 300); }, 3000);
+        }
+        
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        async function loadPaymentsFromDB() {
+            try {
+                const response = await fetch(BASE_URL + 'get_pembayaran_list.php');
+                const result = await response.json();
+                if (result.success && result.data) {
+                    paymentData = result.data;
+                } else {
+                    paymentData = [];
+                }
+                renderPaymentList();
+            } catch (error) {
+                console.error('Error:', error);
+                paymentData = [];
+                renderPaymentList();
+            }
+        }
+        
+        function renderPaymentList() {
+            const tbody = document.getElementById('paymentList');
+            if (paymentData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 30px; color: #64748b;">✅ Semua pembayaran sudah diverifikasi</td></tr>';
+                document.getElementById('newRecordBadge').innerText = '0 Record';
+                return;
+            }
+            
+            // Perbarui Badge jumlah antrean real-time sesuai data database
+            document.getElementById('newRecordBadge').innerText = `${paymentData.length} Antrean`;
+            
+            tbody.innerHTML = paymentData.map((p, index) => {
+                const namaTampil = escapeHtml(p.nama_lengkap || p.nama || '-');
+                const inisialNama = namaTampil.charAt(0).toUpperCase();
+                const nominal = p.jumlah_tagihan ? 'Rp ' + Number(p.jumlah_tagihan).toLocaleString('id-ID') : '-';
+                
+                // Menentukan visualisasi status pill badge
+                let statusBadge = `<span class="status-badge-pill badge-pill-waiting">Menunggu Verifikasi</span>`;
+                if(p.status === 'lunas') {
+                    statusBadge = `<span class="status-badge-pill badge-pill-success">Diterima</span>`;
+                } else if(p.status === 'ditolak') {
+                    statusBadge = `<span class="status-badge-pill badge-pill-danger">Ditolak</span>`;
+                }
+
+                return `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>
+                            <div class="user-profile-cell">
+                                <div class="avatar-circle">${inisialNama}</div>
+                                <strong>${namaTampil}</strong>
+                            </div>
+                        </td>
+                        <td>${p.nim || '-'}</td>
+                        <td style="font-weight: 600; color: #0f172a;">${nominal}</td>
+                        <td>${p.tanggal_bayar || '-'}</td>
+                        <td>${statusBadge}</td>
+                        <td>
+                            <div style="
+                                display:flex;
+                                align-items:center;
+                                justify-content:center;
+                                gap:12px;
+                            ">
+                                <button onclick="openVerifModal(${p.id_pembayaran})" 
+                                class="btn-link-bukti">
+                                <i class="fa-regular fa-eye"></i>
+                                Lihat Bukti
+                                </button>
+                                <button onclick="openVerifModal(${p.id_pembayaran})" class="btn-table-action">Verifikasi</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+        
+        async function openVerifModal(id) {
+            currentPaymentId = id;
+            const payment = paymentData.find(p => p.id_pembayaran === id);
+            if (!payment) return;
+            
+            const isImage = payment.bukti_pembayaran && payment.bukti_pembayaran.match(/\.(jpg|jpeg|png)$/i);
+            const buktiHtml = isImage 
+                ? `<img src="../${payment.bukti_pembayaran}" class="bukti-preview" alt="Bukti Transfer" style="width:100%;" onerror="this.src='https://placehold.co/500x300/ccc/white?text=Gambar+tidak+ditemukan'">`
+                : `<div class="bukti-placeholder">
+                    <div class="icon">📄</div>
+                    <p>File: ${payment.bukti_pembayaran?.split('/').pop() || 'bukti.pdf'}</p>
+                    <a href="../${payment.bukti_pembayaran}" target="_blank" style="color: #2c7a4d;">📥 Download file</a>
+                   </div>`;
+            
+            const detailHtml = `
+                <div class="payment-info-card">
+                    <div class="payment-info-header"><strong>💳 Informasi Transfer</strong></div>
+                    <div class="detail-grid">
+                        <div class="detail-item"><div class="detail-label">Nama Lengkap</div><div class="detail-value">${escapeHtml(payment.nama_lengkap || payment.nama)}</div></div>
+                        <div class="detail-item"><div class="detail-label">NIM</div><div class="detail-value">${payment.nim || '-'}</div></div>
+                        <div class="detail-item"><div class="detail-label">Jumlah Tagihan</div><div class="detail-value">Rp${Number(payment.jumlah_tagihan).toLocaleString('id-ID') || '-'}</div></div>
+                        <div class="detail-item"><div class="detail-label">Bank Tujuan</div><div class="detail-value">Bank BCA - 8888 0123 4567 8901</div></div>
+                        <div class="detail-item"><div class="detail-label">Bank Asal</div><div class="detail-value">${payment.bank || '-'}</div></div>
+                        <div class="detail-item"><div class="detail-label">No. Rekening Pengirim</div><div class="detail-value">${payment.no_rekening || '-'}</div></div>
+                        <div class="detail-item"><div class="detail-label">Atas Nama</div><div class="detail-value">${escapeHtml(payment.atas_nama || '-')}</div></div>
+                        <div class="detail-item"><div class="detail-label">Catatan</div><div class="detail-value">${escapeHtml(payment.catatan || '-')}</div></div>
+                        <div class="detail-item detail-item-full"><div class="detail-label">Tanggal Upload</div><div class="detail-value">${payment.tanggal_bayar || '-'}</div></div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('paymentDetail').innerHTML = detailHtml;
+            document.getElementById('buktiPreview').innerHTML = `
+                <div class="bukti-section">
+                    <div class="bukti-title"><span>📎</span> Bukti Transfer</div>
+                    ${buktiHtml}
+                </div>
+            `;
+            document.getElementById('verifModal').style.display = 'flex';
+        }
+        
+        function closeVerifModal() {
+            document.getElementById('verifModal').style.display = 'none';
+            currentPaymentId = null;
+        }
+        
+        async function verifikasiBayar(diterima) {
+            const payment = paymentData.find(p => p.id_pembayaran === currentPaymentId);
+            if (!payment) { closeVerifModal(); return; }
+            
+            try {
+                const response = await fetch(BASE_URL + 'verifikasi_pembayaran.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id_pembayaran: currentPaymentId, status: diterima ? 'lunas' : 'ditolak' })
+                });
+                const result = await response.json();
+                showAlertLocal(result.message, result.success ? 'success' : 'error');
+                if (result.success) {
+                    loadPaymentsFromDB();
+                    closeVerifModal();
+                }
+            } catch (error) {
+                showAlertLocal('Gagal verifikasi pembayaran', 'error');
+            }
+        }
+        
+        loadPaymentsFromDB();
+        
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = '../index.html';
+        });
+    </script>
+</body>
+</html>

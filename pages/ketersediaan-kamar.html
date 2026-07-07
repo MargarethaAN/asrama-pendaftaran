@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ketersediaan Kamar - Pendaftaran Asrama</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        .page-header{
+            margin-bottom:30px;
+            padding-bottom:18px;
+            border-bottom:1px solid #e5e7eb;
+        }
+
+        .page-header h2{
+            color:#63C64D;
+            font-size:30px;
+            font-weight:700;
+            margin-bottom:8px;
+        }
+
+        .page-header p{
+            color:#7b8794;
+            font-size:14px;
+        }
+        
+        .filter-bar{
+            background:#fff;
+            border:1px solid #e5e7eb;
+            border-radius:18px;
+            padding:22px;
+            display:flex;
+            gap:20px;
+            align-items:flex-end;
+            margin-bottom:30px;
+        }
+        .filter-group{
+            flex: 1;
+        }
+        .filter-group label{
+            display: block;
+            margin-bottom:8px;
+            font-size:12px;
+            font-weight:700;
+            color:#7b8794;
+            text-transform:uppercase;
+            letter-spacing:.5px;
+        }
+        .filter-group select{
+            width:100%;
+            height:46px;
+            border:1px solid #d7dde5;
+            border-radius:10px;
+            padding:0 15px;
+            background:#fff;
+            font-size:14px;
+            transition:.25s;
+        }
+        .filter-group select:focus{
+            outline:none;
+            border-color:#65C53D;
+            box-shadow:0 0 0 3px rgba(101,197,61,.12);
+        }
+        .btn-filter{
+            height:46px;
+            border:none;
+            padding:0 28px;
+            border-radius:10px;
+            background:#65C53D;
+            color:#fff;
+            font-weight:600;
+            cursor:pointer;
+            transition:.25s;
+        }
+        .btn-filter:hover{
+            background:#58b734;
+        }
+    
+        .filter-group select:focus, .filter-group input:focus {
+            outline: none;
+            border-color: #2c7a4d;
+            box-shadow: 0 0 0 3px rgba(44,122,77,0.1);
+        }
+        .room-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px,1fr));
+            gap: 22px;
+        }
+        /* ============================ROOM HEADER============================ */
+        .room-section-header{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:20px;
+        }
+        .room-section-header h3{
+            font-size:24px;
+            color:#2d3436;
+            font-weight:700;
+        }
+        .room-legend{
+            display:flex;
+            gap:20px;
+            font-size:14px;
+            color:#666;
+        }
+        .room-legend span{
+            display:flex;
+            align-items:center;
+            gap:8px;
+        }
+        .legend{
+            width:12px;
+            height:12px;
+            border-radius:50%;
+            display:inline-block;
+        }
+        .legend.tersedia{
+            background:#63C64D;
+        }
+        .legend.terisi{
+            background:#E85B5B;
+        }
+        .legend.perbaikan{
+            background:#C9CED6;
+        }
+        .room-card {
+            background:#fff;
+            border:1px solid #e8e8e8;
+            border-radius:16px;
+            padding:22px;
+            transition:.3s; 
+        }
+        .room-card:hover {
+            transform:translateY(-4px);
+            box-shadow:0 8px 24px rgba(0,0,0,.08);
+        }
+        .room-top{
+            display:flex;
+            justify-content:space-between;
+            align-items:flex-start;
+            margin-bottom:18px;
+        }
+        .room-icon{
+            width:62px;
+            height:62px;
+            background:#F5F6F8;
+            border-radius:14px;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            color:#63C64D;
+            font-size:24px;
+        }
+        .status-badge{
+            padding:6px 18px;
+            border-radius:30px;
+            font-size:12px;
+            font-weight:600;
+        }
+        .status-badge.tersedia{
+            background:#63C64D;
+        }
+        .status-badge.terisi{
+            background:#E85B5B;
+        }
+        .status-badge.perbaikan{
+            background:#ececec;
+            color:#444;
+        }
+        .room-title{
+            font-size:22px;
+            font-weight:700;
+            margin:18px 0 8px;
+            color:#2f2f2f;
+        }
+        .room-floor{
+            margin-top:8px;
+            margin-bottom:22px;
+            font-size:15px;
+            color:#7b8794;
+        }
+        .room-footer{
+            border-top:1px solid #ececec;
+            padding-top:14px;
+            font-size:11px;
+            font-weight:600;
+            color:#b0b0b0;
+            text-transform:uppercase;
+            letter-spacing:.5px;
+        }
+        .room-card.tersedia {
+            border-left: 4px solid #10b981;
+        }
+        .room-card.terisi {
+            border-left: 4px solid #f59e0b;
+            background: #fefaf5;
+        }
+        .room-card.perbaikan {
+            border-left: 4px solid #ef4444;
+            background: #fef5f5;
+        }
+        /* ===============================INFO BOX================================= */
+
+        .info-box{
+            display:flex;
+            align-items:flex-start;
+            gap:18px;
+            background:#F2FAEE;
+            border:1px solid #DDEFD6;
+            border-radius:16px;
+            padding:22px 24px;
+            margin-bottom:28px;
+        }
+
+        .info-icon{
+            width:42px;
+            height:42px;
+            border-radius:50%;
+            background:#E2F7D8;
+            color:#63C64D;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:22px;
+            font-weight:bold;
+            flex-shrink:0;
+        }
+
+        .info-content h3{
+            margin:0 0 8px;
+            color:#5CB338;
+            font-size:22px;
+            font-weight:700;
+        }
+
+        .info-content p{
+            margin:0;
+            color:#5f6368;
+            line-height:1.7;
+            font-size:14px;
+        }
+
+        .info-content strong{
+            color:#2d2d2d;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: #64748b;
+            background: white;
+            border-radius: 20px;
+        }
+        .alert-fixed {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
+        }
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar-layout">
+        <div class="sidebar">
+            <div class="logo">
+                <div class="logo-circle">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <span>St. Teresa Dorm</span>
+            </div>
+
+            <nav>
+                <a href="dashboard.html">
+                    <i class="fa-solid fa-table-columns"></i>
+                    Dashboard
+                </a>
+
+                <a href="pendaftaran-data-diri.html">
+                    <i class="fa-regular fa-file-lines"></i>
+                    Pendaftaran
+                </a>
+
+                <a href="ketersediaan-kamar.html" class="active">
+                    <i class="fa-solid fa-bed"></i>
+                    Ketersediaan Kamar
+                </a>
+                
+                </a>
+                    <a href="dokumen.html">
+                    <i class="fa-regular fa-folder-open"></i>
+                    Dokumen
+                </a>
+
+                <a href="pembayaran.html">
+                    <i class="fa-regular fa-credit-card"></i>
+                    Pembayaran
+                </a>
+
+                <a href="status-pendaftaran.html">
+                    <i class="fa-regular fa-circle-check"></i>
+                    Status Pendaftaran
+                </a>
+
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="profile-card">
+                    <img src="https://i.pravatar.cc/80?img=32" alt="profile">
+                    <div>
+                        <h4>Maria Angelina</h4>
+                        <p>Pendaftar</p>
+                    </div>
+                </div>
+
+                <button class="logout-btn" id="logoutBtn">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    Logout
+                </button>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="page-header">
+                <h2>Informasi Ketersediaan Kamar Asrama</h2>
+                <p>
+                    Berikut adalah informasi ketersediaan unit kamar asrama
+                    untuk pendaftar aktif.
+                </p>
+            </div>
+            
+            <div class="info-box">
+                <div class="info-icon">
+                    ⓘ
+                </div>
+                <div class="info-content">
+                    <h3>INFORMASI PENTING</h3>
+                    <p>
+                        Harap diperhatikan bahwa halaman ini hanya bersifat informatif
+                        untuk melihat status ketersediaan kamar.
+                        <strong>
+                            Pemilihan dan penempatan kamar sepenuhnya akan diatur oleh
+                            pengurus asrama.
+                        </strong>
+                        Notifikasi mengenai nomor kamar akan diberikan setelah
+                        verifikasi pendaftaran dan bukti pembayaran dinyatakan valid.
+                    </p>
+                </div>
+            </div>
+
+            <div class="filter-bar">
+                <div class="filter-group">
+                    <label>PILIH LANTAI</label>
+                    <select id="filterLantai">
+                        <option value="all">Semua Lantai</option>
+                        <option value="1">Lantai 1</option>
+                        <option value="2">Lantai 2</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>PILIH BLOK / WILAYAH</label>
+                    <select id="filterBlok">
+                        <option value="all">Semua Blok</option>
+                    </select>
+                </div>
+
+                <button class="btn-filter" id="btnFilter">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    Tampilkan
+                </button>
+            </div>
+
+            <div class="room-section-header">
+                <h3>Status Kamar Saat Ini</h3>
+
+                <div class="room-legend">
+                    <span>
+                        <i class="legend tersedia"></i>
+                        Tersedia
+                    </span>
+
+                    <span>
+                        <i class="legend terisi"></i>
+                        Terisi
+                    </span>
+
+                    <span>
+                        <i class="legend perbaikan"></i>
+                        Perbaikan
+                    </span>
+                </div>
+            </div>
+
+            <div class="room-grid" id="roomGrid">
+                <div class="loading">⏳ Memuat data kamar...</div>
+            </div>
+            
+        </div>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script>
+        // BASE_URL sudah dari main.js, jangan deklarasi ulang
+        let kamarData = [];
+        
+        function showAlertLocal(message, type) {
+            const oldAlert = document.querySelector('.alert-fixed');
+            if (oldAlert) oldAlert.remove();
+            
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert-fixed alert-${type === 'success' ? 'success' : 'error'}`;
+            alertDiv.innerHTML = `${type === 'success' ? '✅' : '❌'} ${message}`;
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.style.opacity = '0';
+                setTimeout(() => alertDiv.remove(), 300);
+            }, 3000);
+        }
+        
+        async function loadKamar() {
+            try {
+                const response = await fetch(BASE_URL + 'get_kamar.php');
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    kamarData = result.data;
+                } else {
+                    kamarData = [];
+                    showAlertLocal('Gagal memuat data kamar', 'error');
+                }
+                updateStats();
+                displayKamar();
+            } catch (error) {
+                console.error('Error loading kamar:', error);
+                kamarData = [];
+                updateStats();
+                displayKamar();
+                showAlertLocal('Gagal terhubung ke server', 'error');
+            }
+        }
+        
+        function updateStats() {
+             // Statistik disembunyikan pada desain baru
+        }
+        
+        function displayKamar() {
+            const filterLantai = document.getElementById('filterLantai').value;
+            const searchQuery = "";
+            let filtered = kamarData.filter(k =>
+                ["101","102","103","104","201","202","203","204"].includes(String(k.nomor_kamar))
+            );
+            
+            if (filterLantai !== 'all') {
+                filtered = filtered.filter(k => k.lantai == filterLantai);
+            }
+            if (searchQuery) {
+                filtered = filtered.filter(k => k.nomor_kamar.toLowerCase().includes(searchQuery));
+            }
+            
+            const grid = document.getElementById('roomGrid');
+            if (filtered.length === 0) {
+                grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:60px; color:#64748b;">🔍 Tidak ada kamar yang sesuai dengan filter</div>';
+                return;
+            }
+            
+            grid.innerHTML = filtered.map(k => {
+                let statusClass = '';
+                let statusText = "";
+                switch(k.status_kamar){
+                    case "tersedia":
+                        statusText = "TERSEDIA";
+                        break;
+                    case "terisi":
+                        statusText = "TERISI";
+                        break;
+                    default:
+                        statusText = "PERBAIKAN";
+                }
+
+                return `
+                    <div class="room-card">
+                        <div class="room-top">
+                        <div class="room-icon">
+                            <i class="fa-solid fa-bed"></i>
+                        </div>
+                        <div class="status-badge ${k.status_kamar}">
+                        ${statusText}
+                        </div> 
+                    </div>
+
+                    <div class="room-title">
+                        Kamar ${k.nomor_kamar}
+                    </div>
+
+                    <div class="room-floor">
+                        Lantai ${k.lantai}
+                    </div>
+
+                    <div class="room-footer">
+                        DATA DIPERBARUI : HARI INI
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+        
+        document.getElementById('btnFilter').addEventListener('click', displayKamar);
+
+        loadKamar();
+        
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = '../index.html';
+        });
+    </script>
+</body>
+</html>

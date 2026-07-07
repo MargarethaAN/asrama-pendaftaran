@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelengkapan Berkas - Pendaftaran Asrama</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        .page-header{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+        }
+
+        .page-title{
+            display:flex;
+            flex-direction:column;
+        }
+        .page-title h2{
+            margin: 0;
+            font-size:34px;
+            font-weight:700;
+            color:#222;
+        }
+        .upload-header h3{
+            margin:0;
+            font-size:20px;
+            font-weight:700;
+        }
+        .upload-header p{
+            margin-top:6px;
+            font-size:14px;
+            color:#7A7A7A;
+        }
+        .page-title p{
+            margin-top:8px;
+            color:#7b7b7b;
+            font-size:15px;
+        }
+        .upload-item:hover{
+            box-shadow:0 6px 18px rgba(0,0,0,0.06);
+        }
+
+        .upload-left{
+            display:flex;
+            align-items:center;
+            gap:18px;
+        }
+
+        .doc-icon{
+            width:56px;
+            height:56px;
+            border-radius:14px;
+            background:#F3F8F2;
+            color:#63C64D;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            font-size:22px;
+        }
+
+        .doc-title{
+            font-size:17px;
+            font-weight:700;
+            color:#2F2F2F;
+            margin-bottom:4px;
+        }
+
+        .doc-desc{
+            font-size:13px;
+            color:#7B8794;
+        }
+
+        .upload-right{
+            display:flex;
+            align-items:center;
+            gap:14px;
+        }
+        .alert-fixed {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
+        }
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+        }
+        .action-group {
+            display: flex;
+            gap: 8px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 24px;
+            padding: 24px;
+            width: 90%;
+            max-width: 500px;
+        }
+        .preview-img {
+            max-width: 100%;
+            border-radius: 12px;
+        }
+            .upload-item{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            padding:20px 25px 20px 35px;
+            border-bottom:1px solid #ECECEC;
+        }
+
+        .upload-item:not(:last-child){
+            border-bottom:1px solid #f1f5f9;
+        }
+
+        .upload-info{
+            display:flex;
+            align-items:center;
+            gap:18px;
+        }
+        .upload-icon{
+            width:38px;
+            height:38px;
+
+            display:flex;
+            align-items:center;
+            justify-content:center;
+
+            color:#666;
+            font-size:20px;
+        }
+        .upload-info h4{
+            font-size:18px;
+            font-weight:600;
+            margin-bottom:4px;
+        }
+        .upload-info p{
+            color:#8B8B8B;
+            font-size:13px;
+        }
+        .upload-status{
+            display:flex;
+            align-items:center;
+            gap:12px;
+        }
+        .status-ok{
+            color:#5CB338;
+            display:flex;
+            align-items:center;
+            gap:6px;
+            font-weight:600;
+            font-size:14px;
+        }
+        .status-empty{
+            color:#666;
+            display:flex;
+            align-items:center;
+            gap:6px;
+            font-size:14px;
+        }
+        .status-wrapper{
+            display:flex;
+            gap:30px;
+            align-items:flex-start;
+        }
+        .action-group{
+            display:flex;
+            gap:6px;
+            align-items:center;
+        }
+        .upload-section{
+            background:#fff;
+            border:1px solid #ECECEC;
+            border-radius:20px;
+            overflow:hidden;
+            margin-top:20px;
+        }
+        .status-pending,
+        .status-success{
+            display:flex;
+            align-items:center;
+            font-size:12px;
+            font-weight:600;
+            white-space:nowrap;
+        }
+        .btn-upload{
+            background:#66BB3A;
+            color:#fff;
+            border:none;
+            border-radius:10px;
+            padding:10px 20px;
+            font-size:14px;
+            font-weight:600;
+            display:flex;
+            align-items:center;
+            gap:8px;
+            cursor:pointer;
+        }
+
+        .btn-upload:hover{
+            background:#56A82F;
+        }
+
+        .btn-upload:hover{
+            background:#16a34a;
+        }
+
+        .btn-change{
+            background:#fff;
+            border:1px solid #DDD;
+            border-radius:10px;
+            padding:10px 18px;
+            display:flex;
+            align-items:center;
+            gap:8px;
+            font-size:14px;
+            cursor:pointer;
+        }
+
+        .btn-change:hover{
+            background:#F7F7F7;
+        }
+
+        .upload-header{
+            display:flex;
+            align-items:flex-start;
+            gap:18px;
+        }
+
+        .upload-header::before{
+            content:"";
+            width:5px;
+            height:52px;
+            background:#67c23a;
+            border-radius:20px;
+        }
+        .progress-pill{
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            padding:8px 18px;
+            border:1px solid #b9df9f;
+            background:#f5fcef;
+            border-radius:999px;
+            font-size:14px;
+            font-weight:600;
+            color:#5da83a;
+            min-width:110px;
+        }
+        .info-box{
+            margin-top:150px;
+            border:2px dashed #D7D7D7;
+            border-radius:18px;
+            background:#FCFDFC;
+            display:flex;
+            gap:18px;
+            padding:22px;
+        }
+        .info-box i{
+            font-size:20px;
+            color:#67C23A;
+        }
+        .info-box h4{
+            color:#67C23A;
+            margin-bottom:8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar-layout">
+        <div class="sidebar">
+            <div class="logo">
+                <div class="logo-circle">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <span>St. Teresa Dorm</span>
+            </div>
+            <nav>
+                <a href="dashboard.html">
+                    <i class="fa-solid fa-table-columns"></i>
+                    Dashboard
+                </a>
+                <a href="pendaftaran-data-diri.html">
+                    <i class="fa-regular fa-file-lines"></i>
+                    Pendaftaran
+                </a>
+                <a href="ketersediaan-kamar.html">
+                    <i class="fa-solid fa-bed"></i>
+                    Ketersediaan Kamar
+                </a>
+                <a href="pembayaran.html">
+                    <i class="fa-regular fa-credit-card"></i>
+                    Pembayaran
+                </a>
+                <a href="dokumen.html"class="active">
+                    <i class="fa-regular fa-folder-open"></i>
+                    Dokumen
+                </a>
+                <a href="status-pendaftaran.html">
+                    <i class="fa-regular fa-circle-check"></i>
+                    Status Pendaftaran
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="profile-card">
+                    <img src="https://i.pravatar.cc/80?img=32" alt="profile">
+                    <div>
+                        <h4>Maria Angelina</h4>
+                        <p>Pendaftar</p>
+                    </div>
+                </div>
+                <button class="logout-btn" id="logoutBtn">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    Logout
+                </button>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="page-header">
+                <div class="page-title">
+                    <h2>Formulir Kelengkapan Berkas</h2>
+                    <p>Lengkapi seluruh dokumen persyaratan untuk melanjutkan ke tahap verifikasi.</p>
+                </div>
+                <div class="progress-pill">
+                    Progres: <span id="progressPersen">25%</span>
+                </div>
+            </div>
+
+            <div class="upload-section">
+                <div class="upload-header">
+                    <div>
+                        <h3>Dokumen Persyaratan Pendaftaran</h3>
+                        <p>
+                            Unggah pindaian (scan) dokumen asli sesuai ketentuan yang berlaku.
+                        </p>
+                    </div>
+
+                </div>
+
+                <div id="uploadList">
+                    <div class="loading">
+                        Memuat data...
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <i class="fa-regular fa-star"></i>
+                <div>
+                    <h4>Informasi Penting</h4>
+                    <p>
+                        Berkas yang Anda masukkan akan digunakan untuk proses
+                        verifikasi administrasi. Mohon pastikan semua informasi
+                        akurat agar proses pendaftaran berjalan lancar.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Preview -->
+    <div id="previewModal" class="modal">
+        <div class="modal-content">
+            <h3 id="previewTitle">Preview Dokumen</h3>
+            <div id="previewContent"></div>
+            <button onclick="closePreviewModal()" class="btn-primary" style="margin-top: 16px;">Tutup</button>
+        </div>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script>
+        // BASE_URL sudah dari main.js
+        
+        const dokumenList = [
+            { id: 'ktm', nama: 'Scan KTM', keterangan: 'Kartu Tanda Mahasiswa (scan berwarna)', required: true, icon: '🪪' },
+            { id: 'kk', nama: 'Scan Kartu Keluarga', keterangan: 'Kartu Keluarga (halaman yang memuat data diri)', required: true, icon: '📇' },
+            { id: 'foto', nama: 'Pas Foto Terbaru', keterangan: 'Ukuran 3x4, background merah/putih', required: true, icon: '📸' },
+        ];
+        
+        let dokumenFromDB = [];
+        
+        function showAlertLocal(message, type) {
+            const oldAlert = document.querySelector('.alert-fixed');
+            if (oldAlert) oldAlert.remove();
+            
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert-fixed alert-${type === 'success' ? 'success' : 'error'}`;
+            alertDiv.innerHTML = `${type === 'success' ? '✅' : '❌'} ${message}`;
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.style.opacity = '0';
+                setTimeout(() => alertDiv.remove(), 300);
+            }, 3000);
+        }
+        
+        function previewFile(filePath, fileName) {
+    // filePath contoh: "uploads/dokumen/1781066700_6a28ebcc53944.png"
+    // Buat URL lengkap
+    const fullUrl = window.location.origin + '/asrama-pendaftaran/' + filePath;
+    const isImage = filePath && filePath.match(/\.(jpg|jpeg|png)$/i);
+    
+    console.log('Preview file:', fullUrl); // Cek di console browser
+    
+    let previewContent = '';
+    
+    if (isImage) {
+        previewContent = `<img src="${fullUrl}" class="preview-img" alt="${fileName}" style="max-width:100%; max-height:400px; border-radius:12px;" onerror="this.src='https://placehold.co/500x300/ccc/white?text=Gambar+tidak+ditemukan'; console.error('Gagal load gambar:', '${fullUrl}')">`;
+    } else {
+        previewContent = `
+            <div style="padding: 30px; background: #f1f5f9; border-radius: 12px; text-align: center;">
+                <div style="font-size: 48px;">📄</div>
+                <p><strong>${fileName}</strong></p>
+                <p>File PDF tidak bisa ditampilkan langsung di sini.</p>
+                <a href="${fullUrl}" target="_blank" style="color: #2c7a4d; text-decoration: none; display: inline-block; margin-top: 10px; padding: 8px 16px; background: #2c7a4d; color: white; border-radius: 8px;">📥 Download / Buka PDF</a>
+            </div>
+        `;
+    }
+    
+    document.getElementById('previewTitle').innerHTML = `Preview: ${fileName}`;
+    document.getElementById('previewContent').innerHTML = previewContent;
+    document.getElementById('previewModal').style.display = 'flex';
+}
+        
+        function closePreviewModal() {
+            document.getElementById('previewModal').style.display = 'none';
+        }
+        
+        async function deleteDocument(docId) {
+            if (!confirm('Apakah Anda yakin ingin menghapus dokumen ini?')) return;
+            
+            try {
+                const response = await fetch(BASE_URL + 'delete_dokumen.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id_dokumen: docId })
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlertLocal('Dokumen berhasil dihapus!', 'success');
+                    await loadDokumenFromServer();
+                } else {
+                    showAlertLocal(result.message, 'error');
+                }
+            } catch (error) {
+                showAlertLocal('Gagal menghapus dokumen', 'error');
+            }
+        }
+        
+        async function editDocument(docId, docType) {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.jpg,.jpeg,.png,.pdf';
+            input.onchange = async function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                if (file.size > 2 * 1024 * 1024) {
+                    showAlertLocal('Ukuran file maksimal 2MB!', 'error');
+                    return;
+                }
+                
+                const formData = new FormData();
+                formData.append('jenis_dokumen', docType);
+                formData.append('file', file);
+                formData.append('id_dokumen', docId);
+                formData.append('replace', 'true');
+                
+                showAlertLocal('Mengganti dokumen...', 'success');
+                
+                try {
+                    const response = await fetch(BASE_URL + 'upload_dokumen.php', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        showAlertLocal('Dokumen berhasil diganti!', 'success');
+                        await loadDokumenFromServer();
+                    } else {
+                        showAlertLocal(result.message, 'error');
+                    }
+                } catch (error) {
+                    showAlertLocal('Gagal mengganti dokumen', 'error');
+                }
+            };
+            input.click();
+        }
+        
+        async function loadDokumenFromServer() {
+            try {
+                const response = await fetch(BASE_URL + 'get_dokumen.php');
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    dokumenFromDB = result.data;
+                } else {
+                    dokumenFromDB = [];
+                }
+                renderUploadList();
+            } catch (error) {
+                console.error('Error loading dokumen:', error);
+                dokumenFromDB = [];
+                renderUploadList();
+                showAlertLocal('Gagal memuat data dokumen', 'error');
+            }
+        }
+        
+        function getDocIdByType(jenisDokumen) {
+            const doc = dokumenFromDB.find(d => d.jenis_dokumen === jenisDokumen);
+            return doc ? doc.id_dokumen : null;
+        }
+        
+        function getDocumentStatus(jenisDokumen) {
+            const doc = dokumenFromDB.find(d => d.jenis_dokumen === jenisDokumen);
+            if (doc) {
+                return { 
+                    uploaded: true, 
+                    status: doc.status_verifikasi, 
+                    file_path: doc.file_path, 
+                    file_name: doc.file_path ? doc.file_path.split('/').pop() : '',
+                    id_dokumen: doc.id_dokumen
+                };
+            }
+            return { uploaded: false, status: null };
+        }
+        
+        function updateProgress() {
+            const total = dokumenList.filter(d => d.required).length;
+            let uploaded = 0;
+            for (const doc of dokumenList) {
+                if (doc.required && getDocumentStatus(doc.id).uploaded) {
+                    uploaded++;
+                }
+            }
+            const percentage = (uploaded / total) * 100;
+            const progressFill = document.getElementById('progressFill');
+            if (progressFill) progressFill.style.width = percentage + '%';
+            const uploadedCount = document.getElementById('uploadedCount');
+            if (uploadedCount) uploadedCount.innerText = uploaded;
+            const totalCount = document.getElementById('totalCount');
+            if (totalCount) totalCount.innerText = total;
+        }
+        
+        async function uploadDocument(docId, input) {
+            const file = input.files[0];
+            if (!file) return;
+            
+            if (file.size > 2 * 1024 * 1024) {
+                showAlertLocal('Ukuran file maksimal 2MB!', 'error');
+                input.value = '';
+                return;
+            }
+            
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf'];
+            if (!allowedTypes.includes(file.type)) {
+                showAlertLocal('Format file harus JPG, PNG, atau PDF!', 'error');
+                input.value = '';
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('jenis_dokumen', docId);
+            formData.append('file', file);
+            
+            showAlertLocal('Mengupload file...', 'success');
+            
+            try {
+                const response = await fetch(BASE_URL + 'upload_dokumen.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlertLocal(`Dokumen "${getDocName(docId)}" berhasil diupload!`, 'success');
+                    await loadDokumenFromServer();
+                } else {
+                    showAlertLocal(result.message, 'error');
+                }
+            } catch (error) {
+                showAlertLocal('Gagal upload: ' + error.message, 'error');
+            }
+            input.value = '';
+        }
+        
+        function getDocName(docId) {
+            const doc = dokumenList.find(d => d.id === docId);
+            return doc ? doc.nama : docId;
+        }
+        
+            function renderUploadList() {
+            const container = document.getElementById('uploadList');
+            container.innerHTML = "";
+            let uploaded = 0;
+            let totalRequired = 0;
+            dokumenList.forEach(doc => {
+                if(doc.required) totalRequired++;
+                const status = getDocumentStatus(doc.id);
+                if(status.uploaded && doc.required) uploaded++;
+                let html = "";
+                if(status.uploaded){
+                    html = `
+                    <div class="upload-item">
+                        <div class="upload-info">
+                            <div class="upload-icon">
+                                <i class="fa-regular fa-file-lines"></i>
+                            </div>
+                            <div>
+                                <h4>${doc.nama}</h4>
+                                <p>${doc.keterangan}</p>
+                            </div>
+                        </div>
+                        <div class="upload-status">
+                            <span class="status-ok">
+                                <i class="fa-regular fa-circle-check"></i>
+                                Sudah Upload
+                            </span>
+                            <button
+                                class="btn-change"
+                                onclick="editDocument(${status.id_dokumen},'${doc.id}')">
+                                <i class="fa-solid fa-arrow-up-from-bracket"></i>
+                                Ganti File
+                            </button>
+                        </div>
+                    </div>
+                    `;
+                }else{
+                    html = `
+                    <div class="upload-item">
+                        <div class="upload-info">
+                            <div class="upload-icon">
+                                <i class="fa-regular fa-file-lines"></i>
+                            </div>
+                            <div>
+                                <h4>${doc.nama}</h4>
+                                <p>${doc.keterangan}</p>
+                            </div>
+                        </div>
+                        <div class="upload-status">
+                            <span class="status-empty">
+                                <i class="fa-regular fa-circle"></i>
+                                Belum Upload
+                            </span>
+                            <input
+                                type="file"
+                                id="fileInput_${doc.id}"
+                                accept=".jpg,.jpeg,.png,.pdf"
+                                style="display:none"
+                                onchange="uploadDocument('${doc.id}',this)">
+                            <button
+                                class="btn-upload"
+                                onclick="document.getElementById('fileInput_${doc.id}').click()">
+                                <i class="fa-solid fa-upload"></i>
+                                Upload
+                            </button>
+                        </div>
+                    </div>
+                    `;
+                }
+                container.innerHTML += html;
+            });
+            let persen = Math.round((uploaded/totalRequired)*100);
+            document.getElementById("progressPersen").innerHTML = persen+"%";
+        }
+        
+        // Load data dari server
+        loadDokumenFromServer();
+        
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = '../index.html';
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, height=device-height">
+    <title>Login - Sistem Pendaftaran Asrama</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Reset untuk halaman login - tidak ada scrolling */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            background: #FFFFFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+        }
+        
+        .login-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            position: relative;
+        }
+
+        .login-logo{
+            position:absolute;
+            top:35px;
+            left:40px;
+            color:white;
+            font-size:22px;
+            font-weight:700;
+        }
+        
+        .login-card {
+            background: white;
+            border-radius: 20px;
+            padding: 28px 32px;
+            width: 100%;
+            max-width: 380px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            animation: fadeIn 0.5s ease;
+            position: relative; overflow: hidden;
+        }
+        
+        .login-card::before{
+            content:"";
+            position:absolute;
+            top:0;
+            left:0;
+            width:100%;
+            height:3px;
+            background:#72D63F;
+        }
+
+        .login-icon{
+            display:flex;
+            justify-content:center;
+            margin-top:4px;
+            margin-bottom:12px;
+        }
+
+        .icon-circle{
+            width:56px;
+            height:56px;
+            border-radius:50%;
+            background:#EAF9E3;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+        }
+
+        .icon-circle i{
+            color:#72D63F;
+            font-size:28px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .login-card h1 {
+            font-size: 24px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 6px;
+            background: linear-gradient(135deg, #1a5d3a, #2c7a4d);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .login-card .subtitle {
+            text-align: center;
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 14px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #1a2e3a;
+            font-size: 14px;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 14px;
+            transition: all 0.2s;
+            background: #f8fafc;
+            font-family: inherit;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #2c7a4d;
+            box-shadow: 0 0 0 3px rgba(44, 122, 77, 0.1);
+            background: white;
+        }
+        
+        .btn-login {
+            background: #72D63F;
+            color: #ffffff;
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.2s;
+            font-family: inherit;
+            margin-top: 8px;
+        }
+        
+        .btn-login:hover {
+            background: #1e5a3a;
+            transform: translateY(-1px);
+        }
+
+        .google-btn{
+            width:100%;
+            margin-top:12px;
+            padding: 10px;
+            background:#fff;
+            border:1px solid #d1d5db;
+            border-radius:12px;
+            font-size:15px;
+            font-weight:500;
+            cursor:pointer;
+            transition:.2s;
+            font-family:inherit;
+        }
+
+        .google-btn:hover{
+            background:#f3f4f6;
+        }
+
+        .forgot-password{
+            text-align: right;
+            margin-top: -8px;
+            margin-bottom: 18px;
+        }
+
+        .forgot-password a{
+            color: #72D63F;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            transition: .2s;
+        }
+
+        .forgot-password a:hover{
+            color: #5DBB31;
+            text-decoration: underline;
+        }
+        
+        .demo-section {
+            margin-top: 28px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        .demo-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #94a3b8;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .demo-accounts {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+        
+        .demo-item {
+            background: #f1f5f9;
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-size: 11px;
+            color: #334155;
+            text-align: center;
+        }
+        
+        .demo-item strong {
+            color: #2c7a4d;
+            display: block;
+            margin-bottom: 4px;
+        }
+        
+        hr {
+            margin: 0;
+            border: none;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        .brand-logo{
+            position:absolute;
+            top:40px;
+            left:50px;
+            display:flex;
+            align-items:center;
+            gap:10px;
+        }
+
+        .logo-circle{
+            width:40px;
+            height:40px;
+            border-radius:50%;
+            background:#72D63F;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+        }
+
+        .logo-circle i{
+            color:white;
+            font-size:18px;
+        }
+
+        .brand-logo span{
+            color:#72D63F;
+            font-size:22px;
+            font-weight:600;
+        }
+
+        .left-decoration,
+        .right-decoration{
+            position:absolute;
+            width:230px;
+            text-align:center;
+        }
+
+        .left-decoration{
+            left:70px;
+            top:50%;
+            transform:translateY(-50%);
+        }
+
+        .right-decoration{
+            right:70px;
+            top:50%;
+            transform:translateY(-50%);
+        }
+
+        .deco-icon{
+            display:block;
+            font-size:72px;
+            color:#72D63F;
+            opacity:.15;
+            margin-bottom:20px;
+        }
+
+        .deco-small{
+            display:block;
+            font-size:56px;
+            color:#72D63F;
+            opacity:.10;
+            margin-top:50px;
+        }
+
+        .left-decoration h3,
+        .right-decoration h3{
+            color:#72D63F;
+            font-size:24px;
+            font-weight:600;
+            margin:10px 0;
+        }
+
+        .left-decoration p,
+        .right-decoration p{
+            color:#9B9B9B;
+            font-size:14px;
+            line-height:1.6;
+        }
+
+        .login-card{
+            z-index:10;
+        }
+
+        .password-wrapper{
+            position: relative;
+        }
+
+        .password-wrapper input{
+            width: 100%;
+            padding-right: 45px;
+        }
+
+        .password-wrapper i{
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9CA3AF;
+            cursor: pointer;
+        }
+
+        .password-wrapper i:hover{
+            color: #72D63F;
+        }
+
+        .input-icon{
+            position: relative;
+        }
+
+        .input-icon i{
+            position:absolute;
+            left:15px;
+            top:50%;
+            transform:translateY(-50%);
+            color:#9CA3AF;
+            font-size:14px;
+        }
+
+        .input-icon input,
+        .input-icon select{
+            padding-left:42px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="brand-logo">
+        <div class="logo-circle">
+            <i class="fa-solid fa-graduation-cap"></i>
+        </div>
+        <span>St. Teresa Dorm</span>
+    </div>
+
+    <div class="login-wrapper">
+        <div class="left-decoration">
+            <i class="fa-regular fa-building deco-icon"></i>
+            <h3>Hunian Nyaman</h3>
+            <p>
+                Lingkungan asrama yang mendukung fokus belajar
+                dan kenyamanan tinggal bagi mahasiswi.
+            </p>
+            <i class="fa-solid fa-house deco-small"></i>
+    </div>
+        <div class="login-card">
+            <div class="login-icon">
+                <div class="icon-circle">
+                    <i class="fa-solid fa-house"></i>
+                </div>
+            </div>
+            <h1>Login ke Sistem Pendaftaran Asrama</h1>
+            <div class="subtitle">Silakan masuk untuk mengakses sistem</div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Pilih Peran</label>
+
+                    <div class="input-icon">
+                        <i class="fa-regular fa-user"></i>
+
+                        <select id="role" required>
+                            <option value="pendaftar">Pendaftar</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Email</label>
+
+                    <div class="input-icon">
+                        <i class="fa-regular fa-user"></i>
+
+                        <input type="email"
+                            id="email"
+                            required
+                            placeholder="email@student.unika.ac.id"
+                            autocomplete="off">
+                    </div>        
+                </div>
+
+                <div class="form-group">
+                    <label>Kata Sandi</label>
+                    
+                    <div class="password-wrapper">
+                        <input type="password"
+                               id="password"
+                               required
+                               placeholder="Masukkan kata sandi Anda">
+
+                        <i class="fa-regular fa-eye" id="togglePassword"></i>
+                    </div>
+                </div>
+
+                <div class="forgot-password">
+                    <a href="#">
+                        Lupa Password?
+                    </a>
+                </div>
+
+                <button type="submit" class="btn-login">
+                    Masuk
+                </button>
+
+                <button type="button" class="google-btn">
+                    Masuk Menggunakan Akun Google
+                </button>
+
+                <div style="text-align:center; margin-top:20px;">
+                    Belum punya akun?
+                    <a href="register.html" style="color:#2c7a4d;">
+                        Daftar di sini
+                    </a>
+                </div>
+
+            </form>
+        </div>
+        <div class="right-decoration">
+            <i class="fa-solid fa-graduation-cap deco-icon"></i>
+            <h3>Masa Depan Cerah</h3>
+            <p>
+                Memulai perjalanan akademik
+                dengan fasilitas tempat tinggal
+                yang aman dan terintegrasi kampus.
+            </p>
+            <i class="fa-regular fa-building deco-small"></i>
+        </div>
+    </div>
+    <script src="../js/main.js"></script>
+
+    <script>
+    const password = document.getElementById("password");
+    const togglePassword = document.getElementById("togglePassword");
+
+    togglePassword.addEventListener("click", function () {
+        if (password.type === "password") {
+            password.type = "text";
+            this.classList.replace("fa-eye", "fa-eye-slash");
+        } else {
+            password.type = "password";
+            this.classList.replace("fa-eye-slash", "fa-eye");
+        }
+        });
+</script>
+</body>
+</html>

@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pembayaran - Pendaftaran Asrama</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        .payment-header {
+            background: linear-gradient(135deg, #1a5d3a 0%, #2c7a4d 100%);
+            border-radius: 24px;
+            padding: 28px;
+            margin-bottom: 24px;
+            text-align: center;
+            color: white;
+        }
+        .va-number {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            background: rgba(255,255,255,0.2);
+            display: inline-block;
+            padding: 12px 24px;
+            border-radius: 60px;
+            margin: 16px 0;
+            font-family: monospace;
+        }
+        .detail-card {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid #e2e8f0;
+        }
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+        .upload-area {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            border: 1px solid #e2e8f0;
+        }
+        .dropzone {
+            border: 2px dashed #cbd5e1;
+            border-radius: 16px;
+            padding: 32px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #f8fafc;
+        }
+        .dropzone:hover {
+            border-color: #2c7a4d;
+            background: #f0fdf4;
+        }
+        .uploaded-file {
+            background: #f0fdf4;
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-top: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .warning-box {
+            background: #fef3c7;
+            border: 1px solid #fde68a;
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-top: 16px;
+            font-size: 13px;
+            color: #92400e;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .status-menunggu {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        .status-lunas {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        .alert-fixed {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
+        }
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+        }
+        /* ================= HEADER ================= */
+        .page-header{
+            border-bottom:1px solid #e5e7eb;
+            padding-bottom:20px;
+            margin-bottom:25px;
+        }
+
+        .page-header h2{
+            font-size:22px;
+            font-weight:700;
+            color:#2d2d2d;
+        }
+
+        /* ================= LAYOUT ================= */
+
+        .payment-wrapper{
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:28px;
+        }
+
+        .payment-card{
+            background:#fff;
+            border:1px solid #ececec;
+            border-radius:16px;
+            padding:24px;
+        }
+
+        .card-title h3{
+            font-size:24px;
+            margin-bottom:6px;
+            color:#2d2d2d;
+        }
+
+        .card-title p{
+            color:#666;
+            font-size:12px;
+            line-height:1.6;
+            margin-bottom:25px;
+        }
+        .with-line{
+            border-left:4px solid #63C64D;
+            padding-left:16px;
+            margin-bottom:24px;
+        }
+
+        .with-line h3{
+            margin-bottom:6px;
+        }
+
+        /* ================= TAGIHAN ================= */
+
+        .invoice-box{
+            border:1px solid #ececec;
+            border-radius:14px;
+            padding:20px;
+        }
+
+        .invoice-box h4{
+            font-size:18px;
+            margin-bottom:18px;
+        }
+
+        .va-box{
+            background:#F5FBF2;
+            border:1px solid #DCEFD5;
+            border-radius:12px;
+            padding:18px;
+        }
+
+        .va-box label{
+            display:block;
+            font-size:12px;
+            color:#777;
+            font-weight:700;
+            margin-bottom:8px;
+        }
+
+        .va-row{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:15px;
+        }
+
+        .va-number{
+            font-size:18px;
+            color:#63C64D;
+            font-weight:700;
+            letter-spacing:3px;
+        }
+
+        .va-row i{
+            color:#63C64D;
+            cursor:pointer;
+        }
+
+        .va-box hr{
+            border:none;
+            border-top:1px solid #ddd;
+            margin:18px 0;
+        }
+
+        .payment-amount{
+            font-size:22px;
+            font-weight:700;
+            color:#222;
+        }
+
+        /* ================= STATUS ================= */
+
+        .status-section{
+            margin-top:25px;
+        }
+
+        .status-section h4{
+            font-size:16px;
+            margin-bottom:14px;
+            color:#2d2d2d;
+        }
+
+        .status-box{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            border:1px solid #ececec;
+            border-radius:12px;
+            padding:14px 18px;
+        }
+
+        .status-pill{
+            background:#ececec;
+            padding:6px 16px;
+            border-radius:30px;
+            font-size:13px;
+            font-weight:600;
+        }
+
+        /* ================= UPLOAD ================= */
+
+        .upload-preview img{
+            width:100%;
+            height:240px;
+            object-fit:cover;
+            border-radius:14px;
+            margin-bottom:18px;
+        }
+
+        .upload-file{
+            border:1px solid #DCEFD5;
+            background:#F5FBF2;
+            border-radius:10px;
+            padding:12px 16px;
+            display:flex;
+            align-items:center;
+            gap:10px;
+            margin-bottom:18px;
+        }
+
+        .upload-file i{
+            color:#429a2e;
+            font-size:20px;
+            margin-right:12px;
+        }
+
+        #uploadedInfo{
+            flex:1;
+            text-align:center;
+            font-size:12px;
+            font-weight:500;
+            color:#666;
+        }
+
+        .ready-badge{
+            margin-left:12px;
+            background:#429a2e;
+            color:#fff;
+            padding:4px 12px;
+            border-radius:20px;
+            font-size:11px;
+            font-weight:600;
+        }
+
+        .btn-upload{
+            width:220px;
+            display:block;
+            margin:18px auto 10px;
+            height:46px;
+            background:#63C64D;
+            color:white;
+            border:none;
+            border-radius:10px;
+            font-size:15px;
+            font-weight:600;
+        }
+
+        .btn-upload:hover{
+            background:#57b441;
+        }
+
+        .payment-card small{
+            display:block;
+            margin-top:12px;
+            text-align:center;
+            color:#777;
+            font-size:12px;
+            font-style:italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar-layout">
+                <div class="sidebar">
+            <div class="logo">
+                <div class="logo-circle">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <span>St. Teresa Dorm</span>
+            </div>
+
+            <nav>
+                <a href="dashboard.html">
+                    <i class="fa-solid fa-table-columns"></i>
+                    Dashboard
+                </a>
+
+                <a href="pendaftaran-data-diri.html">
+                    <i class="fa-regular fa-file-lines"></i>
+                    Pendaftaran
+                </a>
+
+                <a href="ketersediaan-kamar.html">
+                    <i class="fa-solid fa-bed"></i>
+                    Ketersediaan Kamar
+                </a>
+                
+                </a>
+                    <a href="dokumen.html">
+                    <i class="fa-regular fa-folder-open"></i>
+                    Dokumen
+                </a>
+
+                <a href="pembayaran.html" class="active">
+                    <i class="fa-regular fa-credit-card"></i>
+                    Pembayaran
+                </a>
+
+                <a href="status-pendaftaran.html">
+                    <i class="fa-regular fa-circle-check"></i>
+                    Status Pendaftaran
+                </a>
+
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="profile-card">
+                    <img src="https://i.pravatar.cc/80?img=32" alt="profile">
+                    <div>
+                        <h4>Maria Angelina</h4>
+                        <p>Pendaftar</p>
+                    </div>
+                </div>
+
+                <button class="logout-btn" id="logoutBtn">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    Logout
+                </button>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="page-header">
+                <h2>Upload Bukti Pembayaran</h2>
+            </div>
+
+            <div class="payment-wrapper">
+                <div class="payment-card">
+                    <div class="card-title with-line">
+                        <h3>Pembayaran via Virtual Account (VA)</h3>
+                        <p>
+                            Lakukan pelunasan biaya administrasi pendaftaran
+                            melalui VA yang tersedia
+                        </p>
+                    </div>
+
+                    <div class="invoice-box">
+                        <h4>Informasi Tagihan</h4>
+                        <div class="va-box">
+                            <label>NOMOR VIRTUAL ACCOUNT</label>
+                            <div class="va-row">
+                                <span class="va-number">
+                                    8888-1234-5678-90
+                                </span>
+                                <i class="fa-regular fa-copy"></i>
+                            </div>
+
+                            <hr>
+                            <label>JUMLAH PEMBAYARAN</label>
+                            <div class="payment-amount" id="jumlahTagihan">
+                                Rp 5.500.000
+                            </div>
+
+                        </div>
+                        <div class="status-section">
+                            <h4>
+                                <i class="fa-regular fa-square-check"></i>
+                                Status Pembayaran
+                            </h4>
+                            <div class="status-box">
+                                <span>Status</span>
+
+                                <span
+                                    id="statusText"
+                                    class="status-pill">
+                                    Menunggu Bukti
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="payment-card">
+                    <div class="card-title">
+                        <h3>Unggah Bukti Pembayaran</h3>
+
+                        <p>
+                            Lampirkan bukti transfer ATM,
+                            Mobile Banking,
+                            atau Internet Banking Anda.
+                        </p>
+                    </div>
+
+                    <div class="upload-preview">
+                        <img
+                        src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800"
+                        alt="Bukti Pembayaran">
+                    </div>
+                    <div class="upload-file">
+                        <i class="fa-regular fa-file-lines"></i>
+                        <span id="uploadedInfo">
+                            BuktiBayar_Maria_Angelina.jpg
+                        </span>
+                        <span class="ready-badge">
+                            Siap Kirim
+                        </span>
+                    </div>
+                    <input
+                    type="file"
+                    id="buktiFile"
+                    hidden>
+                    <button
+                    class="btn-upload"
+                    id="btnUpload">
+                        Kirim Bukti Pembayaran
+                    </button>
+
+                    <small>
+                        *Setelah dikirim, pengelola akan memeriksa pembayaran
+                        Anda dalam waktu 1x24 jam.
+                    </small>
+                </div>
+            </div>
+
+    <script src="../js/main.js"></script>
+    <script>
+        // BASE_URL sudah dari main.js, jangan deklarasi ulang
+        let paymentStatus = null;
+        let selectedFile = null;
+        
+        function showAlertLocal(message, type) {
+            const oldAlert = document.querySelector('.alert-fixed');
+            if (oldAlert) oldAlert.remove();
+            
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert-fixed alert-${type === 'success' ? 'success' : 'error'}`;
+            alertDiv.innerHTML = `${type === 'success' ? '✅' : '❌'} ${message}`;
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.style.opacity = '0';
+                setTimeout(() => alertDiv.remove(), 300);
+            }, 3000);
+        }
+        
+        async function loadPaymentData() {
+            try {
+                const response = await fetch(BASE_URL + 'get_pembayaran_user.php');
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    const data = result.data;
+                    paymentStatus = data.status_pembayaran;
+                    
+                    const statusText = document.getElementById('statusText');
+                    if (paymentStatus === 'lunas') {
+                        statusText.innerHTML = '✅ Lunas';
+                        statusText.className = 'status-badge status-lunas';
+                        document.getElementById('uploadArea').style.opacity = '0.6';
+                        document.getElementById('dropzone').style.pointerEvents = 'none';
+                    } else if (paymentStatus === 'menunggu') {
+                        statusText.innerHTML = '⏳ Menunggu Verifikasi';
+                        statusText.className = 'status-badge status-menunggu';
+                    } else {
+                        statusText.innerHTML = '⏳ Belum Dibayar';
+                        statusText.className = 'status-badge status-menunggu';
+                    }
+                    
+                    if (data.jumlah_tagihan) {
+                        document.getElementById('jumlahTagihan').innerHTML = 'Rp' + Number(data.jumlah_tagihan).toLocaleString();
+                    }
+                    
+                    if (data.bukti_pembayaran) {
+                        const fileName = data.bukti_pembayaran.split('/').pop();
+                        const container = document.getElementById('uploadedInfo');
+                        container.innerHTML = `
+                            <div class="uploaded-file">
+                                <span>✅ ${fileName}</span>
+                                <span style="color:#10b981;">Sudah diverifikasi</span>
+                            </div>
+                        `;
+                        document.getElementById('dropzone').style.pointerEvents = 'none';
+                        document.getElementById('dropzone').style.opacity = '0.6';
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading payment data:', error);
+            }
+        }
+        
+        async function uploadBukti(file) {
+            const formData = new FormData();
+            formData.append('bukti', file);
+            
+            try {
+                const response = await fetch(BASE_URL + 'upload_bukti.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlertLocal('Bukti pembayaran berhasil diupload! Menunggu verifikasi admin.', 'success');
+                    loadPaymentData();
+                } else {
+                    showAlertLocal(result.message, 'error');
+                }
+            } catch (error) {
+                showAlertLocal('Gagal upload bukti pembayaran', 'error');
+            }
+        }
+        
+        document.getElementById("buktiFile").addEventListener("change", function(e){
+            const file = e.target.files[0];
+            if(!file) return;
+            if(file.size > 2 * 1024 * 1024){
+                showAlertLocal("Ukuran file maksimal 2MB","error");
+                this.value="";
+                return;
+            }
+
+            selectedFile=file;
+            document.getElementById("uploadedInfo").innerHTML=
+                file.name;
+        });
+
+        document.getElementById("btnUpload").addEventListener("click",function(){
+            if(selectedFile==null){
+                showAlertLocal("Silakan pilih bukti pembayaran.","error");
+                return;
+            }
+            uploadBukti(selectedFile);
+        });
+        
+        loadPaymentData();
+        selectedFile = null;
+
+            document.getElementById("uploadedInfo").textContent =
+            file.name;
+
+            document.getElementById("buktiFile").value="";
+
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = '../index.html';
+        });
+    </script>
+</body>
+</html>

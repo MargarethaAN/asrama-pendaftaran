@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verifikasi Pendaftaran - Admin</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+
+body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background:#F8FAFC;
+    color:#1E293B;
+}
+
+/*==========================
+SIDEBAR
+==========================*/
+
+.sidebar{
+    position:fixed;
+    top:0;
+    left:0;
+    width:270px;
+    height:100vh;
+    background:#fff;
+    border-right:1px solid #E5E7EB;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+}
+
+.sidebar-top{
+    padding:18px 16px;
+}
+
+.sidebar-footer{
+    padding:18px;
+    border-top:1px solid #E5E7EB;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:10px 12px 24px;
+}
+
+.nav-item{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    height:48px;
+    padding:0 18px;
+    border-radius:12px;
+    color:#374151;
+    text-decoration:none;
+    font-weight:500;
+}
+
+.nav-item:hover{
+    background:#F3F4F6;
+}
+
+.nav-item.active{
+    background:#6BCB3D;
+    color:#fff;
+}
+/*==========================
+LOGO
+==========================*/
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:30px;
+}
+
+.logo-icon{
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    background:#6BCB3D;
+    color:#fff;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:20px;
+}
+
+.logo-text{
+    font-size:30px;
+    font-weight:700;
+    color:#6BCB3D;
+}
+/*==========================
+MAIN CONTENT
+==========================*/
+
+.main-content{
+    margin-left:275px;
+    padding:28px 32px;
+    min-height:100vh;
+    background:#F9FAFB;
+}
+
+/*==========================
+HEADER
+==========================*/
+
+.page-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding-bottom:18px;
+    margin-bottom:28px;
+    border-bottom:1px solid #E5E7EB;
+}
+
+.page-header h1{
+    margin:0;
+    font-size:32px;
+    font-weight:700;
+}
+
+.page-header p{
+    margin-top:6px;
+    color:#64748B;
+    font-size:15px;
+}
+
+.header-right{
+    display:flex;
+    align-items:center;
+    gap:18px;
+}
+
+.notification{
+    width:52px;
+    height:52px;
+    border:1px solid #E5E7EB;
+    border-radius:12px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    position:relative;
+    background:#fff;
+}
+
+.notification span{
+    position:absolute;
+    top:6px;
+    right:6px;
+    background:#EF4444;
+    color:#fff;
+    width:18px;
+    height:18px;
+    border-radius:50%;
+    font-size:11px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.session-box{
+    background:#fff;
+    border:1px solid #E5E7EB;
+    border-radius:12px;
+    padding:12px 18px;
+}
+
+.session-box strong{
+    display:block;
+    font-size:15px;
+}
+
+.session-box small{
+    color:#64748B;
+}
+.session-card{
+    display:flex;
+    align-items:center;
+    gap:15px;
+    background:#fff;
+    border:1px solid #E5E7EB;
+    border-radius:14px;
+    padding:12px 18px;
+    min-width:290px;
+}
+
+.session-icon{
+    width:48px;
+    height:48px;
+    border:1px solid #E5E7EB;
+    border-radius:12px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:20px;
+}
+
+.session-date{
+    font-weight:600;
+}
+
+.session-time{
+    font-size:13px;
+    color:#64748B;
+}
+/*==========================
+TOOLBAR
+==========================*/
+
+.toolbar{
+    display:flex;
+    align-items:center;
+    gap:20px;
+    background:#fff;
+    padding:22px 26px;
+    border-radius:18px;
+    border:1px solid #E5E7EB;
+    margin-bottom:30px;
+}
+
+.search-group{
+    flex:1;
+    position:relative;
+}
+
+.search-group i{
+    position:absolute;
+    top:22px;
+    left:20px;
+    color:#94A3B8;
+    font-size:20px;
+}
+.search-group input{
+    width:100%;
+    height:62px;
+    border:1px solid #E5E7EB;
+    border-radius:16px;
+    padding-left:56px;
+    font-size:18px;
+}
+.search-group input:focus{
+    border-color:#6BCB3D;
+}
+.search-input{
+    flex:1;
+    height:54px;
+    border:1px solid #E5E7EB;
+    border-radius:12px;
+    padding:0 18px;
+    font-size:15px;
+}
+
+.btn-green{
+    width:190px;
+    height:62px;
+    border:none;
+    border-radius:16px;
+    background:#7AC943;
+    color:#fff;
+    font-size:18px;
+    font-weight:700;
+}
+
+.btn-green:hover{
+    background:#58B532;
+}
+
+.btn-outline{
+    height:62px;
+    padding:0 28px;
+    border-radius:16px;
+    border:1px solid #E5E7EB;
+    background:#fff;
+    font-size:17px;
+}
+
+/*==========================
+CARD TABLE
+==========================*/
+
+.table-card{
+    background:#fff;
+    border-radius:22px;
+    border:1px solid #E5E7EB;
+    box-shadow:0 2px 10px rgba(0,0,0,.04);
+    overflow:hidden;
+}
+
+.table-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:22px 24px;
+}
+
+.table-header h2{
+    margin:0;
+    font-size:24px;
+    font-weight:700;
+}
+.new-record{
+    background:#DCFCE7;
+    color:#4CAF50;
+    padding:6px 14px;
+    border-radius:30px;
+    font-size:14px;
+    font-weight:600;
+    margin-left:14px;
+}
+
+.table-info{
+    color:#64748B;
+    font-size:14px;
+}
+
+/*==========================
+TABLE
+==========================*/
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th{
+    padding:22px 18px;
+    background:#FAFAFA;
+    color:#64748B;
+    font-size:14px;
+    font-weight:600;
+    border-bottom:1px solid #E5E7EB;
+}
+
+td{
+    padding:22px 18px;
+    border-bottom:1px solid #F1F5F9;
+    font-size:14px;
+}
+
+tbody tr:hover{
+    background:#FAFAFA;
+}
+
+/*==========================
+AVATAR
+==========================*/
+
+.avatar{
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    background:#F0FDF4;
+    color:#6BCB3D;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-weight:700;
+    flex-shrink:0;
+}
+.user-info{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+.user-name{
+    font-weight:600;
+    line-height:22px;
+    color:#1E293B;
+}
+/*==========================
+ACTION
+==========================*/
+
+.action-cell{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:16px;
+}
+
+.lihat-berkas{
+    color:#6BCB3D;
+    text-decoration:none;
+    font-weight:600;
+    display:flex;
+    align-items:center;
+    gap:6px;
+}
+
+.lihat-berkas:hover{
+    color:#59B72E;
+}
+
+.btn-verifikasi{
+    background:#6BCB3D;
+    color:#fff;
+    border:none;
+    border-radius:10px;
+    padding:10px 20px;
+    font-weight:600;
+    cursor:pointer;
+}
+
+.btn-verifikasi:hover{
+    background:#59B72E;
+}
+
+/*==========================
+STATUS
+==========================*/
+
+.status-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:8px 16px;
+    border-radius:999px;
+    font-size:13px;
+    font-weight:600;
+}
+.status-badge i{
+    margin-right:6px;
+}
+
+/*==========================
+BUTTON
+==========================*/
+
+.btn-verifikasi{
+    background:#6BCB3D;
+    color:white;
+    border:none;
+    padding:10px 18px;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:600;
+}
+
+.lihat-berkas{
+    color:#6BCB3D;
+    text-decoration:none;
+    font-weight:600;
+    margin-right:16px;
+}
+
+.lihat-berkas i{
+    margin-right:5px;
+}
+/*==========================
+PAGINATION
+==========================*/
+
+.pagination{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:24px;
+}
+
+.page-btns{
+    display:flex;
+    gap:8px;
+}
+
+.page-btn{
+    min-width:40px;
+    height:40px;
+    padding:0 16px;
+    border:1px solid #E5E7EB;
+    background:#fff;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.page-btn.active{
+    background:#6BCB3D;
+    color:#fff;
+    border-color:#6BCB3D;
+}
+/*==========================
+PROFILE
+==========================*/
+
+.profile-widget{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding-bottom:16px;
+}
+
+.profile-widget .avatar{
+    width:48px;
+    height:48px;
+    background:#E5F7DA;
+}
+
+.profile-info h4{
+    margin:0;
+    font-size:15px;
+}
+
+.profile-info p{
+    margin:4px 0 0;
+    color:#64748B;
+    font-size:13px;
+}
+
+</style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-top">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fa-regular fa-building"></i>
+                </div>
+                <div class="logo-text">DormyAdmin</div>
+            </div>
+
+            <nav class="nav-menu">
+                <a href="admin-dashboard.html" class="nav-item">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="admin-verifikasi-pendaftaran.html" class="nav-item active">
+                    <i class="fa-regular fa-circle-check"></i>
+                    <span>Verifikasi Pendaftaran</span>
+                </a>
+
+                <a href="admin-verifikasi-pembayaran.html" class="nav-item">
+                    <i class="fa-regular fa-credit-card"></i>
+                    <span>Verifikasi Pembayaran</span>
+                </a>
+
+                <a href="admin-manajemen-kamar.html" class="nav-item">
+                    <i class="fa-solid fa-users"></i>
+                    <span>Manajemen Kamar</span>
+                </a>
+
+                <a href="admin-data-penghuni.html" class="nav-item">
+                    <i class="fa-solid fa-user"></i>
+                    <span>Data Penghuni</span>
+                </a>
+
+                <a href="admin-laporan.html" class="nav-item">
+                    <i class="fa-regular fa-file-lines"></i>
+                    <span>Laporan & Rekap</span>
+                </a>
+
+                <a href="admin-syarat-ketentuan.html" class="nav-item">
+                    <i class="fa-regular fa-file"></i>
+                    <span>Syarat & Ketentuan (S&K)</span>
+                </a>
+
+                <a href="admin-pencarian.html" class="nav-item">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <span>Pencarian Data</span>
+                </a>
+            </nav>  
+        </div>
+
+        <div class="sidebar-footer">
+
+            <div class="profile-widget">
+                <div class="avatar">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <div class="profile-info">
+                    <h4>Admin 1</h4>
+                    <p>Administrator</p>
+                </div>
+            </div>
+                <a href="#" class="nav-item" id="logoutBtn" style="color:#ef4444;">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </div>
+        
+        <div class="main-content">
+<div class="page-header">
+
+    <div>
+        <h1>Verifikasi Pendaftaran</h1>
+        <p>Kelola dan validasi berkas pendaftaran.</p>
+    </div>
+
+    <div class="session-card">
+
+        <div class="session-icon">
+            <i class="fa-regular fa-clock"></i>
+        </div>
+
+        <div>
+            <div class="session-date">
+                Kamis, 16 Juni 2025
+            </div>
+
+            <div class="session-time">
+                Sesi Aktif: 04:20:15
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+        <div class="toolbar">
+
+    <div class="search-group">
+
+        <i class="fa-solid fa-magnifying-glass"></i>
+
+        <input
+            type="text"
+            placeholder="Cari berdasarkan Nama, NIM">
+
+    </div>
+
+    <button class="btn-green">
+        Cari Data
+    </button>
+
+    <button class="btn-outline">
+        <i class="fa-solid fa-filter"></i>
+        Filter Status
+    </button>
+
+    <button class="btn-outline">
+        <i class="fa-solid fa-download"></i>
+        Ekspor Laporan
+    </button>
+
+</div>
+
+            <div class="table-card">
+                <div class="table-header">
+
+    <div>
+
+        <h2>
+            Daftar Antrean
+            <span class="new-record">
+                5 Record Baru
+            </span>
+        </h2>
+
+    </div>
+
+    <div class="table-info">
+        Menampilkan 5 dari 124 data keseluruhan
+    </div>
+
+</div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Nama Pendaftar</th>
+                            <th>NIM</th>
+                            <th>Tgl Upload Berkas</th>
+                            <th>Status Verifikasi</th>
+                            <th style="text-align: center;">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pendaftarList">
+                        </tbody>
+                </table>
+
+                <div class="pagination">
+                    <div class="page-btns">
+                        <button class="page-btn">Sebelumnya</button>
+                        <button class="page-btn active">1</button>
+                        <button class="page-btn">2</button>
+                        <button class="page-btn">3</button>
+                        <button class="page-btn">Selanjutnya</button>
+                    </div>
+                    <div>Halaman 1 dari 25</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let pendaftarData = [];
+        async function loadPendaftarFromDB(){
+            try{
+                const response = await fetch("../api/get_all_pendaftar.php");
+                const result = await response.json();
+                console.log(result);
+                if(result.success){
+                    pendaftarData = result.data;
+                    console.log(pendaftarData);
+                    renderPendaftarList();
+                }else{
+                    alert(result.message);
+                }
+            }catch(error){
+                console.error(error);
+            }
+        }
+        function renderPendaftarList() {
+            const tbody = document.getElementById('pendaftarList');
+            tbody.innerHTML = pendaftarData.map((p, index) => {
+                let statusStyle='background:#fff;border:1px solid #D1D5DB;color:#374151;';
+                let statusText='<i class="fa-regular fa-clock"></i> Menunggu Verifikasi';
+                if(p.status_pendaftaran==="menunggu_verifikasi"){
+                    statusStyle="background:#fff;border:1px solid #D1D5DB;color:#374151;";
+                    statusText='<i class="fa-regular fa-clock"></i> Menunggu Verifikasi';
+                }
+                if (p.status_pendaftaran === 'diterima') { 
+                    statusStyle = "background:#6BCB3D;color:#fff;"; 
+                    statusText = '<i class="fa-solid fa-circle-check"></i> Diterima';
+                }
+                if (p.status_pendaftaran === 'ditolak') { 
+                    statusStyle = "background:#E74C3C;color:#fff;";
+
+                    statusText = '<i class="fa-solid fa-circle-xmark"></i> Ditolak';
+                }
+
+                return `
+                    <tr>
+                        <td style="text-align:center;">
+                        ${index+1}
+                        </td>
+                        <td>
+                            <div class="user-info">
+                                <div class="avatar">
+                                    ${p.nama_lengkap.charAt(0)}
+                                </div>
+                                <div class="user-name">
+                                    ${p.nama_lengkap.replace(/ /g,"<br>")}
+                                </div>
+                            </div>
+                            </td>
+                            <td>${p.nim}</td>
+                            <td>${p.tanggal_daftar}</td>
+                            <td>
+                                <span class="status-badge" style="${statusStyle}">
+                                ${statusText}
+                                </span>
+                            </td>
+                            <td>
+                            <div class="action-cell">
+                                <a href="#" class="lihat-berkas">
+                                    <i class="fa-regular fa-eye"></i>
+                                    Lihat Berkas
+                                </a>
+                            <button 
+                            onclick="openModal(${p.id_pendaftaran}, ${p.id_pendaftar})" 
+                            class="btn-verifikasi">
+                            Verifikasi
+                            </button>
+                        </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }    
+        document.addEventListener("DOMContentLoaded",function(){
+            loadPendaftarFromDB();
+    });
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Pendaftar</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Base Reset & Styling agar pas dengan gambar mockup */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body{
+            font-family:'Inter',sans-serif;
+            background:#F8FAFC;
+            color:#1F2937;
+        }
+        .sidebar-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Greeting Header */
+        .welcome-header{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            padding-bottom:18px;
+            margin-bottom:24px;
+            border-bottom:1px solid #ECECEC;
+        }
+
+        .welcome-header span{
+            font-size:20px;
+            font-weight:700;
+            color:#1F2937;
+        }
+
+        .header-avatar{
+            width:38px;
+            height:38px;
+            border-radius:50%;
+            object-fit:cover;
+            border:1px solid #E5E7EB;
+        }
+
+        /* Top Status Cards Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap:18px;
+            margin-bottom:32px;
+        }
+
+        .stat-card{
+            position:relative;
+            background:#FFFFFF;
+            border:1px solid #EAEAEA;
+            border-top:3px solid transparent;
+            border-radius:10px;
+            padding:18px;
+            display:flex;
+            align-items:center;
+            gap:14px;
+            box-shadow:none;
+        }
+
+        /* Color themes for top borders matching the mockup implicitly */
+        .stat-card.pendaftaran {  border-top-color:#F3F4F6; }
+        .stat-card.kamar { border-top-color:#E5E7EB; }
+        .stat-card.pembayaran { border-top-color:#EF4444; }
+
+        .stat-icon{
+            width:34px;
+            height:34px;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            font-size:16px;
+            color:#7C8360;
+            flex-shrink:0;
+        }
+
+        .stat-info {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .stat-info .label {
+            font-size:12px;
+            color:#6B7280;
+        }
+
+        .stat-info .value {
+            font-size:18px;
+            font-weight:700;
+            color: #2D2D2D;
+            margin-top:4px;
+        }
+
+        .stat-badge{
+            position:absolute;
+            top:12px;
+            right:14px;
+            padding:4px 10px;
+            font-size:10px;
+            font-weight:600;    
+            border-radius:20px;
+            border:1px solid #E5E7EB;
+            background:#FFFFFF;
+            color:#6B7280;
+        }
+
+        /* Two Column Content Row */
+        .dashboard-row{
+            display:grid;
+            grid-template-columns:2.2fr 1fr;
+            gap:22px;
+            align-items:flex-start;
+        }
+
+        /* Left Section: Yang Perlu Dilakukan */
+        .todo-section h3{
+            font-size:20px;
+            display:flex;
+            align-items:center;
+            gap:10px;
+        }
+
+        .todo-section h3 i{
+            color:#72D63F;
+        }
+
+        .todo-section p{
+            color:#6B7280;
+            width:100%;
+        }
+
+        .todo-list {
+            margin-top:18px;
+            display:flex;
+            flex-direction:column;
+            gap:0;
+        }
+
+        .todo-item{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            padding:16px 20px;
+            background:#fff;
+            border:1px solid #E5E7EB;
+            border-bottom:none;
+            min-height:64px;
+            cursor:pointer;
+            transition:all .25s ease;
+        }
+
+        .todo-item:first-child{
+            border-radius:12px 12px 0 0;
+        }
+
+        .todo-item:last-child{
+            border-bottom:1px solid #E5E7EB;
+            background:#FAFAFA;
+        }
+
+        .todo-item:hover{
+            border-color: #72D63F;
+            box-shadow:0 2px 8px rgba(0,0,0,.04);
+        }
+        
+        .todo-left{
+            display:flex;
+            align-items:center;
+            gap:12px;
+        }
+
+        .todo-left span{
+            font-size:14px;
+            font-weight:500;
+            color:#374151;
+        }
+        
+        .todo-circle{
+            color:transparent;
+        }
+
+        .todo-item.success .todo-circle {
+            color:#72D63F;
+        }
+
+        .todo-item.success span{
+            text-decoration:line-through;
+            color:#9CA3AF;
+        }
+
+        .todo-action-link{
+            color:#72D63F;
+            text-decoration:none;
+            font-size:13px;
+            font-weight:600;
+        }
+
+        .todo-action-link:hover {
+            text-decoration:underline;
+        }
+
+        .todo-status-text {
+            font-size:12px;
+            color:#9CA3AF;
+        }
+
+        /* Right Section: Notifikasi */
+        .notif-section-header{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:16px;
+        }
+
+        .notif-section-header h3{
+            font-size:18px;
+            font-weight:700;
+            color:#1F2937;
+            display:flex;
+            align-items:center;
+            gap:8px;
+        }
+
+        .btn-clear-notif {
+            background:none;
+            border:none;
+            color:#72D63F;
+            font-size:12px;
+            font-weight:600;
+            cursor:pointer;
+        }
+
+        .btn-clear-notif:hover {
+            color: #1e293b;
+        }
+        .notif-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .notif-card{
+            padding:14px;
+            border:1px solid #E5E7EB;
+            border-left:4px solid #72D63F;
+            border-radius:8px;
+            background:#FFFFFF;
+        }
+
+        .notif-card p {
+            font-size:13px;
+            color:#374151;
+            line-height:1.6;
+            margin-bottom:6px;
+        }
+
+        .notif-time {
+            font-size:11px;
+            color:#9CA3AF;
+            font-weight:600;
+            text-transform:uppercase;
+        }
+
+        .notif-section{
+            background:#FFFFFF;
+            padding:18px;
+            border-radius:10px;
+            border:1px solid #E5E7EB;
+        }
+
+        .btn-view-all-notif{
+            width:100%;
+            height:42px;
+            background:#FFFFFF;
+            border:1px dashed #D1D5DB;
+            border-radius:8px;
+            font-size:13px;
+            font-weight:600;
+            color:#4B5563;
+            cursor:pointer;
+            transition:.25s;
+        }
+
+        .btn-view-all-notif:hover {
+            border-color:#72D63F;
+            color:#72D63F;
+            background:#F9FFF5;
+        }
+
+        /* Toast Alert Container */
+        .alert-fixed {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            animation: slideIn 0.3s ease;
+            box-shadow:0 2px 8px rgba(0,0,0,.05);
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .alert-success { background: #d1fae5; color: #065f46; border-left: 4px solid #10b981; }
+        .alert-error { background: #fee2e2; color: #991b1b; border-left: 4px solid #ef4444; }
+    </style>
+</head>
+<body>
+    <div class="sidebar-layout">
+        <div class="sidebar">
+        <div class="logo">
+            <div class="logo-circle">
+                <i class="fa-solid fa-graduation-cap"></i>
+            </div>
+            <span>St. Teresa Dorm</span>
+            </div>
+
+            <nav>
+                <a href="dashboard.html" class="active">
+                    <i class="fa-solid fa-table-columns"></i>
+                    Dashboard
+                </a>
+                <a href="pendaftaran-data-diri.html">
+                    <i class="fa-regular fa-file-lines"></i>
+                    Pendaftaran
+                </a>
+                <a href="ketersediaan-kamar.html">
+                    <i class="fa-solid fa-bed"></i>
+                    Ketersediaan Kamar
+                </a>
+                <a href="pembayaran.html">
+                    <i class="fa-regular fa-credit-card"></i>
+                    Pembayaran
+                </a>
+                <a href="dokumen.html">
+                    <i class="fa-regular fa-folder-open"></i>
+                    Dokumen
+                </a>
+                <a href="status-pendaftaran.html">
+                    <i class="fa-regular fa-circle-check"></i>
+                    Status Pendaftaran
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="profile-card">
+                    <img src="https://i.pravatar.cc/80?img=32" alt="profile">
+                <div>
+                    <h4>Maria Angelina</h4>
+                    <p>Pendaftar</p>
+                </div>
+            </div>
+
+            <button class="logout-btn" id="logoutBtn">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                Logout
+            </button>
+        </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="welcome-header">
+                <span id="welcomeName">Selamat datang, Memuat...</span>
+
+                <img src="https://i.pravatar.cc/100?img=32"
+                    class="header-avatar"
+                    alt="Profile">
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card pendaftaran">
+                    <div class="stat-badge">
+                        Menunggu Data
+                    </div>
+                    <div class="stat-icon">
+                        <i class="fa-regular fa-file-lines"></i> 
+                    </div>
+                    <div class="stat-info">
+                        <span class="label">
+                            Status Pendaftaran
+                        </span>
+                        <span class="value" id="statusText">
+                            Belum Lengkap
+                        </span>
+                    </div>
+                </div>
+                <div class="stat-card kamar">
+                    <div class="stat-badge">
+                        Menunggu Antrian
+                    </div>
+                    <div class="stat-icon">
+                        <i class="fa-solid fa-bed"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="label">
+                            Status Kamar
+                        </span>
+                        <span class="value" id="kamarStatusText">
+                            Belum Tersedia
+                        </span>
+                    </div>
+                </div>
+                <div class="stat-card pembayaran">
+                    <div class="stat-badge" style="color: #ef4444;">
+                        Jatuh Tempo
+                    </div>
+                    <div class="stat-icon">
+                        <i class="fa-regular fa-credit-card"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="label">
+                            Status Pembayaran
+                        </span>
+                        <span class="value" id="pembayaranStatusText">
+                            Belum Bayar
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-row">
+                <div class="todo-section">
+                    <h3> <i class="fa-solid fa-list-check"></i>
+                        Yang Perlu Dilakukan</h3>
+                    <p>Selesaikan semua langkah di bawah ini untuk mengaktifkan status mahasiswa Anda.</p>
+                    
+                    <div class="todo-list" id="todoListContainer">
+                        <div style="text-align:center; padding: 20px; color: #94a3b8;">Memuat data tugas...</div>
+                    </div>
+                </div>
+                
+                <div class="notif-section">
+                    <div class="notif-section-header">
+                        <h3> <i class="fa-regular fa-bell"></i>
+                        Notifikasi</h3>
+                        <button class="btn-clear-notif">Tandai Baca</button>
+                    </div>
+                    
+                    <div class="notif-stack">
+                        <div class="notif-card">
+                            <p>Segera lengkapi berkas anda! Agar admin bisa segera melakukan verifikasi data!</p>
+                            <div class="notif-time">⏳ BARU SAJA</div>
+                        </div>
+                        <div class="notif-card">
+                            <p>Segera lakukan pendaftaran kamar asrama sebelum kuota penuh.</p>
+                            <div class="notif-time">⏳ 2 JAM YANG LALU</div>
+                        </div>
+                        <div class="notif-card">
+                            <p>Selamat! Akun pendaftaran Anda telah berhasil diverifikasi oleh sistem.</p>
+                            <div class="notif-time">⏳ 2 HARI YANG LALU</div>
+                        </div>
+                    </div>
+                    
+                    <button class="btn-view-all-notif">Lihat Semua Notifikasi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script>
+        let userData = null;
+        let pendaftarData = null;
+        let dokumenData = [];
+        
+        function showAlertLocal(message, type) {
+            const oldAlert = document.querySelector('.alert-fixed');
+            if (oldAlert) oldAlert.remove();
+            
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert-fixed alert-${type === 'success' ? 'success' : 'error'}`;
+            alertDiv.innerHTML = `${type === 'success' ? '✅' : '❌'} ${message}`;
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.style.opacity = '0';
+                setTimeout(() => alertDiv.remove(), 300);
+            }, 3000);
+        }
+        
+        async function getUserData() {
+            try {
+                const response = await fetch(BASE_URL + 'check_session.php');
+                const result = await response.json();
+                
+                if (result.logged_in) {
+                    userData = result;
+                    document.getElementById('welcomeName').innerHTML =
+                    `Selamat datang, ${result.nama || 'Pengguna'}`;
+                } else {
+                    window.location.href = 'login.html';
+                }
+                return result;
+            } catch (error) {
+                console.error('Error:', error);
+                window.location.href = 'login.html';
+            }
+        }
+        
+        async function getPendaftarData() {
+            try {
+                const response = await fetch(BASE_URL + 'get_pendaftar.php');
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    pendaftarData = result.data;
+                    const status = pendaftarData.status_pendaftaran;
+                    const statusMap = {
+                        'draf': 'Belum Lengkap',
+                        'menunggu_verifikasi': 'Menunggu Verifikasi',
+                        'diterima': 'Diterima',
+                        'ditolak': 'Ditolak'
+                    };
+                    document.getElementById('statusText').innerHTML = statusMap[status] || 'Belum Lengkap';
+                }
+                return result;
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+        
+        async function getKamarData() {
+            try {
+                const response = await fetch(BASE_URL + 'get_kamar.php');
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    const tersedia = result.data.filter(k => k.status_kamar === 'tersedia').length;
+                    if(tersedia > 0) {
+                        document.getElementById('kamarStatusText').innerHTML = 'Tersedia';
+                    }
+                }
+                return result;
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+        
+        async function getDokumenData() {
+            try {
+                const response = await fetch(BASE_URL + 'get_dokumen.php');
+                const result = await response.json();
+                if (result.success && result.data) {
+                    dokumenData = result.data;
+                }
+                return result;
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+        
+        // Render List Item Menyerupai Desain Baru pada image_0d54e1.png
+        function renderTodoList() {
+            const container = document.getElementById('todoListContainer');
+            const hasDataDiri = pendaftarData && pendaftarData.nim && pendaftarData.nama_lengkap;
+            const hasDokumen = dokumenData.length > 0;
+            const status = pendaftarData?.status_pendaftaran;
+            
+            const todos = [
+                { 
+                    name: 'Lengkapi data diri sesuai KTP & KK', 
+                    isDone: hasDataDiri, 
+                    link: 'pendaftaran-data-diri.html'
+                },
+                { 
+                    name: 'Upload syarat dokumen (Ijazah & Foto)', 
+                    isDone: hasDokumen, 
+                    link: 'dokumen.html'
+                },
+                { 
+                    name: 'Verifikasi berkas oleh Administrator', 
+                    isDone: (status === 'menunggu_verifikasi' || status === 'diterima'), 
+                    link: null
+                },
+                { 
+                    name: 'Upload bukti bayar registrasi awal', 
+                    isDone: false, 
+                    link: 'pembayaran.html'
+                }
+            ];
+            
+            container.innerHTML = todos.map(todo => `
+            <div class="todo-item ${todo.isDone ? 'success' : ''}">
+                <div class="todo-left">
+                    <div class="todo-circle">
+                        ${todo.isDone ? '<i class="fa-solid fa-check"></i>' : ''}
+                    </div>
+                    <span>
+                        ${todo.name}
+                    </span>
+                </div>
+                ${
+                    todo.isDone
+                    ?
+                    `<span class="todo-status-text">
+                        Selesai
+                    </span>`
+                    :
+                    (
+                        todo.link
+                        ?
+                        `<a href="${todo.link}" class="todo-action-link">
+                            Lakukan Sekarang
+                        </a>`
+                        :
+                        `<span class="todo-status-text">
+                            Menunggu
+                        </span>`
+                    )
+                }
+        </div>
+        `).join('');
+
+        }
+        async function init() {
+            await getUserData();
+            await getPendaftarData();
+            await getKamarData();
+            await getDokumenData();
+            renderTodoList();
+        }
+        
+        init();
+        
+        document.getElementById('logoutBtn').addEventListener('click', async function(e) {
+            e.preventDefault();
+            try {
+                await fetch(BASE_URL + 'logout.php', { method: 'POST' });
+                window.location.href = '../index.html';
+            } catch (error) {
+                window.location.href = '../index.html';
+            }
+        });
+    </script>
+</body>
+</html>

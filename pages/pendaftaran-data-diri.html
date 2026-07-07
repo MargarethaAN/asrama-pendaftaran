@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>St. Teresa Dorm - Pendaftaran</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css"> 
+    <style>
+        /* ========================================================== */
+        /* JANGAN UBAH BAGIAN INI - INI UNTUK SIDEBAR ASLI ANDA       */
+        /* ========================================================== */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9fafb;
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .sidebar-layout {
+            display: flex;
+            width: 100%;
+        }
+
+        /* ========================================================== */
+        /* CSS KHUSUS MAIN CONTENT (SESUAI GAMBAR BARU)               */
+        /* ========================================================== */
+        .main-content {
+            flex: 1;
+            padding:30px 36px;
+            background:#F8FAFC;
+            overflow-y:auto;
+        }
+
+        .content-card{
+            width:100%;
+            background:#FFFFFF;
+            border:1px solid #E5E7EB;
+            border-radius:12px;
+            overflow:hidden;
+            box-shadow:0 2px 8px rgba(0,0,0,.04);
+        }
+
+        /* Header Pendaftaran & Stepper */
+        .page-header {
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            padding-bottom:18px;
+            margin-bottom:0;
+            border-bottom:1px solid #ECECEC;
+        }
+        .header-title-group { display: flex; flex-direction: column; gap: 4px; }
+        .page-title {
+            display: flex; align-items: center; gap: 12px;
+            font-size: 20px; font-weight: 700; color:#1F2937; margin: 0;
+        }
+        .title-icon {
+            background:#72D63F; color: white; width: 36px; height: 36px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px;
+        }
+        .page-subtitle { font-size: 14px; color: #6b7280; margin-left: 48px; margin-top: 4px;}
+
+        /* Stepper */
+        .stepper {
+            display: flex; align-items: center;  width:560px; height:48px; background:#fff;
+            border: 1px solid #e5e7eb; border-radius: 30px; padding: 0px 18px;
+        }
+        .step { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 600; }
+        .step.active { color: #72D63F; }
+        .step.inactive { color: #6B7280; }
+        .step-icon {
+            width: 28px; height: 28px; border-radius: 50%; display: flex;
+            align-items: center; justify-content: center; font-size: 12px;
+        }
+        .step.active .step-icon { background:#72D63F; color: white; }
+        .step.inactive .step-icon { background: white; color: #9ca3af; border: 1px solid #d1d5db; }
+        .step-line {  flex:1; height: 1px; background-color: #e5e7eb; margin: 0 14px; }
+
+        /* Form Card */
+        .form-card {
+            background:#fff; border:1px solid #E5E7EB; border-top:none; border-radius:0 0 10px 10px; padding:22px 26px;
+        }
+        .section-title {
+            display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 700;
+            color:#1F2937; padding-bottom: 14px; border-bottom:1px solid #ECECEC; margin-bottom:22px;
+        }
+        .section-icon { color: #4ade80; font-size: 18px; }
+
+        /* Form Grid & Inputs */
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; column-gap:38px; row-gap:20px; }
+        .grid-col-left,.grid-col-right { display:flex; flex-direction:column; gap:20px; }
+        .form-group { display: flex; flex-direction: column; }
+        .form-label { display:flex; align-items:center; gap:8px; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px; }
+        .req { color:#EF4444; font-weight:700; }
+        .label-icon { width:16px; display:inline-flex; justify-content:center; align-items:center; font-size:13px;  color:#111827;}
+        
+        .form-input,
+        .form-select{
+            width:100%;
+            height:40px;
+            padding:0 14px;
+            border:1px solid #D8DDE3;
+            border-radius:10px;
+            background:#fff;
+            font-size:13px;
+            color:#374151;
+            box-sizing:border-box;
+        }
+
+        .form-input::placeholder, .form-textarea::placeholder { color:#B1B5BC; }
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus{
+            outline:none;
+            border-color:#72D63F;
+            box-shadow:0 0 0 3px rgba(114,214,63,.12);
+        }
+
+        .form-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;
+        }
+
+        .form-textarea{
+            width:100%;
+            min-height:65px;
+            padding:10px 14px;
+            border:1px solid #D8DDE3;
+            border-radius:10px;
+            resize:none;
+            font-size:13px;
+            font-family:'Inter',sans-serif;
+        }
+
+        /* Submit Button */
+        .form-actions { display: flex; justify-content: flex-end; margin-top: 32px; }
+        .btn-submit{
+            width:180px;
+            height:42px;
+            background:#72D63F;
+            color:#FFFFFF;
+            border:none;
+            border-radius:24px;
+            font-size:15px;
+            font-weight:600;
+            cursor:pointer;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            gap:8px;
+            transition:all .25s ease;
+        }
+
+        .btn-submit:hover { background-color: #58b62e; transform:translateY(-1px); box-shadow:0 6px 16px rgba(114,214,63,.25); }
+    </style>
+</head>
+<body>
+
+<div class="sidebar-layout">
+    
+    <div class="sidebar">
+    <div class="logo">
+        <div class="logo-circle">
+            <i class="fa-solid fa-graduation-cap"></i>
+        </div>
+        <span>St. Teresa Dorm</span>
+    </div>
+    <nav>
+        <a href="dashboard.html">
+            <i class="fa-solid fa-table-columns"></i>
+            Dashboard
+        </a>
+        <a href="pendaftaran-data-diri.html" class="active">
+            <i class="fa-regular fa-file-lines"></i>
+            Pendaftaran
+        </a>
+        <a href="ketersediaan-kamar.html">
+            <i class="fa-solid fa-bed"></i>
+            Ketersediaan Kamar
+        </a>
+        <a href="pembayaran.html">
+            <i class="fa-regular fa-credit-card"></i>
+            Pembayaran
+        </a>
+        <a href="dokumen.html">
+            <i class="fa-regular fa-folder-open"></i>
+            Dokumen
+        </a>
+        <a href="status-pendaftaran.html">
+            <i class="fa-regular fa-circle-check"></i>
+            Status Pendaftaran
+        </a>
+    </nav>
+    <div class="sidebar-footer">
+        <div class="profile-card">
+            <img src="https://i.pravatar.cc/80?img=32" alt="profile">
+            <div>
+                <h4>Maria Angelina</h4>
+                <p>Pendaftar</p>
+            </div>
+        </div>
+        <button class="logout-btn" id="logoutBtn">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+            Logout
+        </button>
+    </div>
+</div>
+
+    <main class="main-content">
+        <div class="content-card">
+        <header class="page-header">
+            <div class="header-title-group">
+                <h1 class="page-title">
+                    <div class="title-icon">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                    Formulir Pendaftaran
+                </h1>
+                <p class="page-subtitle">
+                    Silakan lengkapi seluruh informasi di bawah ini dengan benar.
+                </p>
+            </div>
+            
+            <div class="stepper">
+                <div class="step active">
+                    <div class="step-icon">
+                    <i class="fa-regular fa-user"></i>   
+                    </div>
+                    <span>Step 1 (Data Diri)</span>
+                </div>
+
+                <div class="step-line"></div>
+                <div class="step inactive">
+                    <div class="step-icon">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    <span>Step 2 (Data Keluarga)</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="form-card">
+            <h2 class="section-title">
+                <span class="section-icon">
+                    <i class="fa-regular fa-user"></i>
+                </span> Bagian 1: Identitas Pribadi (Data Diri)
+            </h2>
+            
+            <form action="#">
+                <div class="form-grid">
+                    
+                    <div class="grid-col-left">
+                        
+                        <div class="form-group">
+                            <label class="form-label">
+                                <span class="label-icon">
+                                    <i class="fa-regular fa-user"></i>
+                                </span> 
+                                Nama Lengkap 
+                                <span class="req">*</span>
+                            </label>
+                            <input type="text" class="form-input" placeholder="Masukkan nama lengkap sesuai KTP" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label"><span class="label-icon"><i class="fa-regular fa-user"></i></span> Nama Panggilan <span class="req">*</span></label>
+                            <input type="text" class="form-input" placeholder="Masukkan nama panggilan" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label"><span class="label-icon"></span> NIM</label>
+                            <input type="text" class="form-input" placeholder="Masukan Nomer Induk Mahasiswa">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label"><span class="label-icon"></span> Fakultas / Program Studi <span class="req">*</span></label>
+                            <select class="form-select" required>
+                                <option value="" disabled selected>Pilih fakultas</option>
+                                <option value="1">Fakultas Ilmu Komputer</option>
+                                <option value="2">Fakultas Ekonomi</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label"><span class="label-icon"><i class="fa-solid fa-location-dot"></i></span> Tempat Lahir <span class="req">*</span></label>
+                            <input type="text" class="form-input" placeholder="Contoh: Semarang" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label"><span class="label-icon"><i class="fa-regular fa-calendar"></i></span> Tanggal Lahir <span class="req">*</span></label>
+                            <input type="date" class="form-input" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label"><span class="label-icon"><i class="fa-solid fa-location-dot"></i></span> Alamat Asal <span class="req">*</span></label>
+                            <textarea class="form-textarea" placeholder="Tuliskan alamat lengkap tempat tinggal Anda saat ini" required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label"><span class="label-icon"></span> Asal Sekolah</label>
+                            <input type="text" class="form-input" placeholder="Masukan Nama Asal Sekolah">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label"><span class="label-icon"><i class="fa-solid fa-location-dot"></i></span> Alamat Keluarga di Semarang <span class="req">*</span></label>
+                            <textarea class="form-textarea" placeholder="Isi alamat keluarga di Semarang, jika tidak punya isi '-'" required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="grid-col-right">
+
+                        <div class="form-group">
+                            <label class="form-label"><span class="label-icon">☆</span> Agama <span class="req">*</span></label>
+                            <select class="form-select" required>
+                                <option value="" disabled selected>Pilih Agama</option>
+                                <option value="1">Katolik</option>
+                                <option value="2">Kristen</option>
+                                <option value="3">Islam</option>
+                                <option value="4">Hindu</option>
+                                <option value="5">Buddha</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label"><span class="label-icon"><i class="fa-solid fa-phone"></i></span> Nomor Kontak (HP) <span class="req">*</span></label>
+                            <input type="text" class="form-input" placeholder="Contoh: 081234567890 (Min. 10 digit)" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label"><span class="label-icon"><i class="fa-regular fa-envelope"></i></span> Alamat Email <span class="req">*</span></label>
+                            <input type="email" class="form-input" placeholder="nama@email.com" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label"><span class="label-icon">♡</span> Sifat Positif yang Dimiliki <span class="req">*</span></label>
+                            <textarea class="form-textarea" placeholder="Contoh: jujur, disiplin, bertanggung jawab" required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label"><span class="label-icon"> <i class="fa-solid fa-circle-info"></i></span> Sifat Negatif yang Dimiliki <span class="req">*</span></label>
+                            <textarea class="form-textarea" placeholder="Contoh: pemalu, suka menunda pekerjaan" required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label"><span class="label-icon"><i class="fa-regular fa-circle-dot"></i></span> Bakat yang Dimiliki <span class="req">*</span></label>
+                            <textarea class="form-textarea" placeholder="Contoh: menyanyi, olahraga, melukis" required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label"><span class="label-icon"></span> Alasan Masuk Asrama</label>
+                            <textarea class="form-textarea" placeholder="Isi Alasan Masuk Asrama"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-submit">
+                        Selanjutnya 
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+
+                </form>
+
+                <script>
+                document.querySelector("form").addEventListener("submit", function(e){
+                    e.preventDefault();
+                
+                    // nanti di sini bisa ditambah proses simpan data ke database
+                    window.location.href = "pendaftaran-data-keluarga.html";
+                });
+                </script>
+    </main>
+</body>
+</html>
