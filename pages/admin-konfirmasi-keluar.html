@@ -6,6 +6,8 @@
     <title>Konfirmasi Keluar Asrama - Admin</title>
     <link rel="stylesheet" href="../css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="../css/responsive.css">
     <style>
         /* Base & Typography */
         body {
@@ -20,28 +22,148 @@
             min-height: 100vh;
         }
 
-        /* Main Content Modernization */
         .main-content {
             flex: 1;
-            padding: 32px;
+            padding: 20px 24px;
             background-color: #f8fafc;
             overflow-x: hidden;
         }
 
         .main-content h1 {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: 700;
-            color: #0f172a;
-            margin: 0 0 8px 0;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            color: #69C33B;
+            margin-bottom: 4px;
         }
 
         .main-content p.subtitle {
+            font-size: 12px;
+            color: #7d7d7d;
+            margin-bottom: 18px;
+        }
+
+        /* Sidebar Style - KONSISTEN DENGAN HALAMAN LAIN */
+        .sidebar {
+            width: 260px;
+            min-width: 260px;
+            height: 100vh;
+            background: #ffffff;
+            border-right: 1px solid #EEF2F7;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .sidebar-top {
+            padding: 18px 14px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 24px;
+            padding: 6px;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: #6BCB3D;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-size: 17px;
+            flex-shrink: 0;
+        }
+
+        .logo-text {
+            font-size: 22px;
+            font-weight: 800;
+            color: #6BCB3D;
+            line-height: 1;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 12px;
+            text-decoration: none;
             font-size: 14px;
-            color: #64748b;
-            margin: 0 0 24px 0;
+            font-weight: 600;
+            color: #475569;
+            border-radius: 12px;
+            transition: all .25s ease;
+        }
+
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .nav-item span {
+            white-space: nowrap;
+        }
+
+        .nav-item:hover {
+            background: #f5f5f5;
+            color: #111827;
+        }
+
+        .nav-item.active {
+            background: #6BCB3D;
+            color: #fff;
+        }
+
+        .sidebar-footer {
+            padding: 16px 14px;
+            border-top: 1px solid #ececec;
+        }
+
+        .profile-widget {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            background: #F8FAFC;
+            border-radius: 12px;
+            margin-bottom: 14px;
+        }
+
+        .avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: #E2E8F0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #475569;
+        }
+
+        .profile-info h4 {
+            margin: 0;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1E293B;
+        }
+
+        .profile-info p {
+            margin: 2px 0 0;
+            font-size: 12px;
+            color: #64748B;
         }
 
         /* Info Banner */
@@ -154,6 +276,7 @@
         .badge-warning { background: #fef3c7; color: #92400e; }
         .badge-danger { background: #fee2e2; color: #991b1b; }
         .badge-neutral { background: #f1f5f9; color: #475569; }
+        .badge-aktif { background: #DCFCE7; color: #15803D; }
 
         /* Buttons */
         .btn-action {
@@ -171,7 +294,7 @@
         
         .btn-disabled { background: #e2e8f0; color: #94a3b8; cursor: not-allowed; }
 
-        /* Modal Modernization */
+        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -314,36 +437,163 @@
 
         .alert-success { background: #d1fae5; color: #065f46; border-left: 4px solid #10b981; }
         .alert-error { background: #fee2e2; color: #991b1b; border-left: 4px solid #ef4444; }
+    /* ============ FIX SIDEBAR SCROLL & LOGOUT ============ */
+.sidebar {
+    height: 100vh !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.sidebar-top {
+    flex: 1 !important;
+    overflow-y: auto !important;
+    padding-bottom: 8px !important;
+}
+
+.sidebar-top::-webkit-scrollbar {
+    width: 4px !important;
+}
+
+.sidebar-top::-webkit-scrollbar-thumb {
+    background: #CBD5E1 !important;
+    border-radius: 4px !important;
+}
+
+.sidebar-footer {
+    flex-shrink: 0 !important;
+    border-top: 1px solid #EDF2F7 !important;
+    padding: 12px 14px 16px !important;
+    background: #ffffff !important;
+    position: relative !important;
+    z-index: 5 !important;
+}
+
+/* Pastikan logout selalu terlihat */
+.sidebar-footer .nav-item {
+    margin-top: 2px !important;
+}
+
+/* Untuk mobile - sidebar tetap full height */
+@media (max-width: 768px) {
+    .sidebar {
+        height: 100vh !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 280px !important;
+        z-index: 999 !important;
+    }
+}
     </style>
 </head>
 <body>
+    <body>
+    <button class="sidebar-toggle" onclick="toggleSidebar()">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+    <div class="sidebar-backdrop" onclick="toggleSidebar()"></div>
     <div class="sidebar-layout">
+        <!-- SIDEBAR - KONSISTEN DENGAN HALAMAN LAIN -->
         <div class="sidebar">
-            <div class="logo">🏡 Admin Asrama</div>
-            <nav>
-                <a href="admin-dashboard.html">📊 Dashboard</a>
-                <a href="admin-verifikasi-pendaftaran.html">📝 Verifikasi Pendaftaran</a>
-                <a href="admin-verifikasi-pembayaran.html">💰 Verifikasi Pembayaran</a>
-                <a href="admin-manajemen-kamar.html">🛏️ Manajemen Kamar</a>
-                <a href="admin-data-penghuni.html">👥 Data Penghuni</a>
-                <a href="admin-konfirmasi-keluar.html" class="active">🚪 Konfirmasi Keluar</a>
-                <a href="admin-laporan.html">📄 Laporan & Rekap</a>
-                <a href="admin-syarat-ketentuan.html">📜 Syarat & Ketentuan</a>
-                <a href="admin-pencarian.html">🔍 Pencarian Data</a>
-                <a href="#" id="logoutBtn">🚪 Keluar</a>
-            </nav>
+            <div class="sidebar-top">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fa-regular fa-building"></i>
+                    </div>
+                    <div class="logo-text">
+                        DormyAdmin
+                    </div>
+                </div>
+                <nav class="nav-menu">
+                    <a href="admin-dashboard.html" class="nav-item">
+                        <i class="fa-solid fa-chart-line"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="admin-verifikasi-pendaftaran.html" class="nav-item">
+                        <i class="fa-regular fa-circle-check"></i>
+                        <span>Verifikasi Pendaftaran</span>
+                    </a>
+                    <a href="admin-verifikasi-pembayaran.html" class="nav-item">
+                        <i class="fa-regular fa-credit-card"></i>
+                        <span>Verifikasi Pembayaran</span>
+                    </a>
+                    <a href="admin-manajemen-kamar.html" class="nav-item">
+                        <i class="fa-solid fa-bed"></i>
+                        <span>Manajemen Kamar</span>
+                    </a>
+                    <a href="admin-data-penghuni.html" class="nav-item">
+                        <i class="fa-solid fa-user"></i>
+                        <span>Data Penghuni</span>
+                    </a>
+                    <a href="admin-konfirmasi-keluar.html" class="nav-item active">
+                        <i class="fa-solid fa-door-open"></i>
+                        <span>Konfirmasi Keluar</span>
+                    </a>
+                    <a href="admin-laporan.html" class="nav-item">
+                        <i class="fa-regular fa-file-lines"></i>
+                        <span>Laporan & Rekap</span>
+                    </a>
+                    <a href="admin-syarat-ketentuan.html" class="nav-item">
+                        <i class="fa-regular fa-file"></i>
+                        <span>Syarat & Ketentuan</span>
+                    </a>
+                    <a href="admin-pencarian.html" class="nav-item">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <span>Pencarian Data</span>
+                    </a>
+                </nav>
+            </div>
+            <div class="sidebar-footer">
+                <div class="profile-widget">
+                    <div class="avatar">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <div class="profile-info">
+                        <h4>Admin 1</h4>
+                        <p>Administrator</p>
+                    </div>
+                </div>
+                <a href="#" class="nav-item" id="logoutBtn" style="color:#ef4444;">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
         </div>
-        
+
+        <!-- MAIN CONTENT -->
         <div class="main-content">
             <h1>🚪 Konfirmasi Keluar Asrama</h1>
             <p class="subtitle">Kelola masa hunian dan konfirmasi pengeluaran mahasiswa dari asrama.</p>
-            
-            <div id="contentContainer">
-                <p>Memuat data...</p>
+
+            <!-- Info Banner -->
+            <div class="info-banner">
+                <span class="info-banner-icon">⚠️</span>
+                <div class="info-banner-text">
+                    <p><strong>Perhatian:</strong> Penghuni dengan masa tinggal <strong>minimal 2 tahun</strong> dapat dikonfirmasi keluar. Setelah dikonfirmasi, <strong>NIM mahasiswa akan otomatis diblokir</strong> dari sistem pendaftaran asrama.</p>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table class="visily-data-table">
+                    <thead>
+                        <tr>
+                            <th>Penghuni</th>
+                            <th>Tanggal Masuk</th>
+                            <th>Masa Tinggal</th>
+                            <th>Status Hunian</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="penghuniList">
+                        <tr><td colspan="5" style="text-align:center; padding:24px; color:#64748b;">Memuat data...</td></tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 
+    <!-- Modal Konfirmasi -->
     <div id="confirmModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -371,13 +621,12 @@
 
     <script src="../js/main.js"></script>
     <script>
-        // Dummy Data jika tidak ada koneksi backend
-        // Tgl masuk dibuat bervariasi agar simulasi validasi "2 tahun" berjalan
+        // DATA DUMMY (fallback jika database tidak terhubung)
         let penghuniData = [
-            { id_pendaftar: 1, nim: '1202204123', nama_lengkap: 'Maria Angelina', tanggal_masuk_asrama: '2021-08-15', status_keluar: 'aktif', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=100&auto=format&fit=crop' },
-            { id_pendaftar: 2, nim: '1202204556', nama_lengkap: 'Budi Santoso', tanggal_masuk_asrama: '2023-09-10', status_keluar: 'aktif', avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=100&auto=format&fit=crop' },
-            { id_pendaftar: 3, nim: '1202204998', nama_lengkap: 'Siti Rahmawati', tanggal_masuk_asrama: '2020-07-20', status_keluar: 'aktif', avatar: 'https://images.unsplash.com/photo-1521119989659-a83eee488004?q=80&w=100&auto=format&fit=crop' },
-            { id_pendaftar: 4, nim: '1202203112', nama_lengkap: 'Ahmad Fauzi', tanggal_masuk_asrama: '2024-01-05', status_keluar: 'aktif', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=100&auto=format&fit=crop' }
+            { id_pendaftar: 1, nim: '1202204123', nama_lengkap: 'Maria Angelina', tanggal_masuk_asrama: '2021-08-15', status_keluar: 'aktif' },
+            { id_pendaftar: 2, nim: '1202204556', nama_lengkap: 'Budi Santoso', tanggal_masuk_asrama: '2023-09-10', status_keluar: 'aktif' },
+            { id_pendaftar: 3, nim: '1202204998', nama_lengkap: 'Siti Rahmawati', tanggal_masuk_asrama: '2020-07-20', status_keluar: 'aktif' },
+            { id_pendaftar: 4, nim: '1202203112', nama_lengkap: 'Ahmad Fauzi', tanggal_masuk_asrama: '2024-01-05', status_keluar: 'aktif' }
         ];
 
         let currentPenghuniId = null;
@@ -409,10 +658,8 @@
                 bulan += 12;
             }
             
-            // Logika bisnis: Minimal 2 tahun (24 bulan)
             const bisaKeluar = tahun >= 2;
             let teks = '';
-            
             if (tahun > 0) teks += `${tahun} Tahun `;
             if (bulan > 0) teks += `${bulan} Bulan`;
             if (tahun === 0 && bulan === 0) teks = 'Kurang dari 1 bulan';
@@ -426,27 +673,25 @@
                     const response = await fetch(BASE_URL + 'get_penghuni.php');
                     const result = await response.json();
                     if (result.success && result.data) {
-                        // Hanya ambil yang statusnya masih aktif
                         penghuniData = result.data.filter(p => p.status_keluar === 'aktif');
                     }
                 }
             } catch (error) {
                 console.log('Menggunakan data dummy lokal (API tidak terhubung).');
             }
-            
             renderPenghuniList();
         }
         
         function renderPenghuniList() {
             const tbody = document.getElementById('penghuniList');
-            if (penghuniData.length === 0) {
+            if (!penghuniData || penghuniData.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:24px; color:#64748b;">Tidak ada penghuni aktif asrama saat ini.</td></tr>';
                 return;
             }
             
             tbody.innerHTML = penghuniData.map(p => {
                 const masa = hitungMasaHunian(p.tanggal_masuk_asrama || p.tanggal_masuk);
-                const avatarUrl = p.avatar ? p.avatar : `https://ui-avatars.com/api/?name=${encodeURIComponent(p.nama_lengkap)}&background=random&color=fff&rounded=true`;
+                const avatarUrl = p.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(p.nama_lengkap)}&background=random&color=fff&rounded=true`;
                 
                 const masaHunianBadge = masa.bisaKeluar 
                     ? `<span class="badge badge-success">✓ Memenuhi Syarat</span>` 
@@ -456,7 +701,6 @@
                     ? `<button onclick="openConfirmModal(${p.id_pendaftar}, '${p.nama_lengkap}', '${p.nim}')" class="btn-action btn-confirm">Konfirmasi Keluar</button>`
                     : `<button class="btn-action btn-disabled" disabled>Belum Waktunya</button>`;
                 
-                // Format tanggal untuk tampilan UI
                 let displayDate = '-';
                 if (p.tanggal_masuk_asrama || p.tanggal_masuk) {
                     const d = new Date(p.tanggal_masuk_asrama || p.tanggal_masuk);
@@ -479,7 +723,7 @@
                             <div style="margin-bottom: 4px;"><strong>${masa.teks}</strong></div>
                             ${masaHunianBadge}
                         </td>
-                        <td><span class="badge badge-success">● Sedang Menempati</span></td>
+                        <td><span class="badge badge-aktif">● Sedang Menempati</span></td>
                         <td>${actionBtn}</td>
                     </tr>
                 `;
@@ -529,21 +773,19 @@
                 console.log('API tidak tersedia, melakukan simulasi penghapusan lokal.');
             }
 
-            // Simulasi Lokal jika tidak ada backend
+            // Simulasi Lokal
             penghuniData = penghuniData.filter(p => p.id_pendaftar !== currentPenghuniId);
             showAlertLocal(`Berhasil! Mahasiswa telah dikeluarkan dan NIM ${currentPenghuniNim} diblokir dari sistem.`, 'success');
             renderPenghuniList();
             closeConfirmModal();
         }
         
-        // Load data inisial
-        loadPenghuniFromDB();
-        
-        // Logika Logout
         document.getElementById('logoutBtn').addEventListener('click', function(e) {
             e.preventDefault();
             window.location.href = '../index.html';
         });
+        
+        loadPenghuniFromDB();
     </script>
 </body>
 </html>

@@ -1,0 +1,1026 @@
+/* ============================================================
+   RESPONSIVE.CSS - MOBILE RESPONSIVE UNTUK SEMUA HALAMAN
+   ============================================================ */
+
+/* ============ SIDEBAR MOBILE ============ */
+@media (max-width: 768px) {
+    .sidebar {
+        display: none !important;
+    }
+    
+    .main-content {
+        margin-left: 0 !important;
+        width: 100% !important;
+        padding: 16px !important;
+        box-sizing: border-box !important;
+    }
+
+    /* ============ HEADER ============ */
+    .page-header,
+    .content-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 12px !important;
+    }
+
+    .page-header h1,
+    .page-header h2,
+    .content-header h1,
+    .page-title h2 {
+        font-size: 22px !important;
+        line-height: 1.3 !important;
+    }
+
+    .page-title p,
+    .page-header p,
+    .content-header p {
+        font-size: 13px !important;
+    }
+
+    .header-right {
+        width: 100% !important;
+        justify-content: space-between !important;
+        flex-wrap: wrap !important;
+        gap: 8px !important;
+    }
+
+    .session-card {
+        width: 100% !important;
+        padding: 10px 14px !important;
+    }
+
+    .session-box {
+        border-left: none !important;
+        padding-left: 0 !important;
+        text-align: left !important;
+        width: 100% !important;
+    }
+
+    .session-box h4 {
+        font-size: 15px !important;
+    }
+
+    /* ============ STATS GRID ============ */
+    .stats-grid,
+    .stats-grid-visily {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 12px !important;
+    }
+
+    .stat-card,
+    .stat-card-visily {
+        padding: 14px !important;
+    }
+
+    .stat-value {
+        font-size: 28px !important;
+    }
+
+    .stat-info .value {
+        font-size: 20px !important;
+    }
+
+    .stat-card .number {
+        font-size: 28px !important;
+    }
+
+    /* ============ GRID 2 KOLOM ============ */
+    .dashboard-row,
+    .mid-grid,
+    .payment-wrapper,
+    .confirm-layout,
+    .status-layout,
+    .filter-grid,
+    .search-filters,
+    .form-grid,
+    .family-grid,
+    .room-grid,
+    .filter-bar,
+    .toolbar,
+    .filter-card {
+        grid-template-columns: 1fr !important;
+        flex-direction: column !important;
+    }
+
+    /* ============ FILTER ============ */
+    .filter-bar,
+    .toolbar,
+    .filter-card {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        padding: 16px !important;
+        gap: 12px !important;
+    }
+
+    .filter-group {
+        min-width: 100% !important;
+        flex: 1 !important;
+    }
+
+    .search-box {
+        min-width: 100% !important;
+    }
+
+    .search-box input {
+        height: 44px !important;
+        font-size: 14px !important;
+    }
+
+    .btn-search,
+    .btn-filter,
+    .btn-green,
+    .btn-upload,
+    .btn-submit,
+    .btn-add,
+    .btn-stat,
+    .btn-outline {
+        width: 100% !important;
+        justify-content: center !important;
+        height: 44px !important;
+        font-size: 14px !important;
+    }
+
+    .btn-visily-filter {
+        width: 100% !important;
+    }
+
+    /* ============ TABLE ============ */
+    .table-container,
+    .table-wrapper {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+
+    .data-table,
+    .visily-data-table {
+        font-size: 12px !important;
+        min-width: 600px !important;
+        width: 100% !important;
+    }
+
+    .data-table th,
+    .visily-data-table th,
+    .data-table td,
+    .visily-data-table td {
+        padding: 8px 10px !important;
+        font-size: 12px !important;
+    }
+
+    .data-table td:last-child,
+    .visily-data-table td:last-child {
+        padding-right: 12px !important;
+    }
+
+    /* ============ CARD ============ */
+    .stat-card,
+    .payment-card,
+    .booking-card,
+    .info-card,
+    .upload-card,
+    .detail-card {
+        padding: 16px !important;
+        border-radius: 14px !important;
+    }
+
+    .card-title h3 {
+        font-size: 17px !important;
+    }
+
+    .card-title p {
+        font-size: 13px !important;
+    }
+
+    /* ============ FORM ============ */
+    .form-grid {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+    }
+
+    .form-row-2 {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+    }
+
+    .form-group {
+        margin-bottom: 12px !important;
+    }
+
+    .form-label {
+        font-size: 13px !important;
+    }
+
+    .form-input,
+    .form-select,
+    .form-textarea {
+        height: 42px !important;
+        font-size: 14px !important;
+        padding: 0 12px !important;
+    }
+
+    .form-textarea {
+        height: 80px !important;
+        padding: 10px 12px !important;
+    }
+
+    .form-actions,
+    .form-actions-right {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 12px !important;
+    }
+
+    /* ============ BUTTON ============ */
+    .btn-primary,
+    .btn-secondary,
+    .btn-action,
+    .btn-verifikasi,
+    .btn-confirm,
+    .btn-back {
+        width: 100% !important;
+        justify-content: center !important;
+    }
+
+    /* ============ TIMELINE ============ */
+    .timeline-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 8px !important;
+    }
+
+    .timeline-header small {
+        font-size: 10px !important;
+    }
+
+    .timeline-item {
+        gap: 12px !important;
+    }
+
+    .timeline-icon {
+        width: 28px !important;
+        height: 28px !important;
+        min-width: 28px !important;
+    }
+
+    .timeline-title {
+        font-size: 13px !important;
+    }
+
+    .timeline-status {
+        font-size: 10px !important;
+        padding: 3px 10px !important;
+    }
+
+    /* ============ STATUS CARD ============ */
+    .status-top {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 6px !important;
+    }
+
+    .status-content h3 {
+        font-size: 16px !important;
+    }
+
+    /* ============ MODAL ============ */
+    .modal-content {
+        width: 95% !important;
+        margin: 10px !important;
+        padding: 20px !important;
+        max-height: 90vh !important;
+    }
+
+    .modal-header h3 {
+        font-size: 18px !important;
+    }
+
+    .modal-body {
+        padding: 16px !important;
+    }
+
+    .modal-footer {
+        flex-direction: column !important;
+        gap: 10px !important;
+    }
+
+    /* ============ UPLOAD ============ */
+    .upload-area {
+        padding: 20px !important;
+    }
+
+    .upload-area i {
+        font-size: 36px !important;
+    }
+
+    .upload-area p {
+        font-size: 13px !important;
+    }
+
+    .upload-preview img {
+        height: 150px !important;
+    }
+
+    /* ============ PAYMENT ============ */
+    .va-number {
+        font-size: 16px !important;
+        letter-spacing: 2px !important;
+    }
+
+    .payment-amount {
+        font-size: 20px !important;
+    }
+
+    .va-box {
+        padding: 14px !important;
+    }
+
+    .va-row {
+        flex-wrap: wrap !important;
+        gap: 8px !important;
+    }
+
+    /* ============ KAMAR ============ */
+    .room-grid {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 12px !important;
+    }
+
+    .room-card {
+        padding: 16px !important;
+    }
+
+    .room-title {
+        font-size: 16px !important;
+    }
+
+    /* ============ BOOKING ============ */
+    .booking-progress {
+        padding: 16px !important;
+    }
+
+    .booking-progress-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 4px !important;
+    }
+
+    .room-box {
+        max-width: 100% !important;
+    }
+
+    .timer {
+        font-size: 24px !important;
+    }
+
+    .timer span {
+        font-size: 13px !important;
+    }
+
+    /* ============ CONFIRMATION CARD ============ */
+    .confirmation-card {
+        padding: 24px !important;
+        margin: 0 8px !important;
+    }
+
+    .confirmation-card h2 {
+        font-size: 20px !important;
+    }
+
+    .success-icon {
+        font-size: 48px !important;
+    }
+
+    .action-buttons {
+        flex-direction: column !important;
+        gap: 10px !important;
+    }
+
+    /* ============ ALERT ============ */
+    .alert-fixed {
+        top: 10px !important;
+        right: 10px !important;
+        left: 10px !important;
+        width: auto !important;
+        font-size: 13px !important;
+        padding: 12px 16px !important;
+        border-radius: 10px !important;
+    }
+
+    /* ============ LOADING ============ */
+    .loading {
+        padding: 40px 20px !important;
+        font-size: 14px !important;
+    }
+
+    /* ============ PROGRESS ============ */
+    .progress-item {
+        gap: 12px !important;
+    }
+
+    .progress-dot {
+        width: 28px !important;
+        height: 28px !important;
+    }
+
+    .progress-title {
+        font-size: 13px !important;
+    }
+
+    .progress-status {
+        font-size: 11px !important;
+        padding: 4px 12px !important;
+    }
+
+    /* ============ BADGE ============ */
+    .badge,
+    .status-badge,
+    .status-badge-pill {
+        font-size: 11px !important;
+        padding: 4px 10px !important;
+    }
+
+    /* ============ INFO BOX ============ */
+    .info-box {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 12px !important;
+        padding: 16px !important;
+    }
+
+    .info-icon {
+        width: 36px !important;
+        height: 36px !important;
+        font-size: 18px !important;
+    }
+
+    .info-content h3 {
+        font-size: 16px !important;
+    }
+
+    .info-content p {
+        font-size: 13px !important;
+    }
+
+    /* ============ PAGINATION ============ */
+    .pagination,
+    .pagination-footer,
+    .visily-pagination {
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 12px !important;
+        padding: 16px !important;
+    }
+
+    .pagination-buttons {
+        justify-content: center !important;
+        flex-wrap: wrap !important;
+    }
+
+    .page-btn,
+    .btn-visily-page,
+    .btn-visily-prev,
+    .btn-visily-next {
+        padding: 6px 12px !important;
+        font-size: 12px !important;
+        min-width: 32px !important;
+        height: 32px !important;
+    }
+
+    .pagination-info {
+        text-align: center !important;
+        font-size: 12px !important;
+    }
+
+    /* ============ ACTION BUTTONS ============ */
+    .action-buttons-icon,
+    .action-cell {
+        gap: 6px !important;
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+    }
+
+    .action-icon {
+        font-size: 16px !important;
+    }
+
+    .btn-icon-table {
+        font-size: 16px !important;
+        padding: 4px 6px !important;
+    }
+
+    /* ============ STEPPER ============ */
+    .stepper {
+        width: 100% !important;
+        justify-content: center !important;
+        height: 40px !important;
+        padding: 0 12px !important;
+        border-radius: 20px !important;
+    }
+
+    .step {
+        font-size: 11px !important;
+        gap: 4px !important;
+    }
+
+    .step span {
+        display: none !important;
+    }
+
+    .step-icon {
+        width: 24px !important;
+        height: 24px !important;
+        font-size: 11px !important;
+    }
+
+    .step-line {
+        margin: 0 6px !important;
+        min-width: 8px !important;
+    }
+
+    /* ============ CHECKBOX ============ */
+    .checkbox-row {
+        align-items: flex-start !important;
+        gap: 10px !important;
+    }
+
+    .checkbox-row label {
+        font-size: 12px !important;
+    }
+
+    .agree-box {
+        padding: 16px !important;
+    }
+
+    /* ============ SIDEBAR TOGGLE (Opsional) ============ */
+    .sidebar-toggle {
+        display: flex !important;
+        position: fixed !important;
+        top: 12px !important;
+        left: 12px !important;
+        z-index: 1000 !important;
+        background: #6BCB3D !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 8px !important;
+        padding: 10px 14px !important;
+        font-size: 20px !important;
+        cursor: pointer !important;
+    }
+
+    .sidebar.open {
+        display: flex !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 280px !important;
+        height: 100vh !important;
+        z-index: 999 !important;
+        box-shadow: 0 0 20px rgba(0,0,0,0.2) !important;
+    }
+
+    .sidebar-backdrop {
+        display: none !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        background: rgba(0,0,0,0.4) !important;
+        z-index: 998 !important;
+    }
+
+    .sidebar-backdrop.show {
+        display: block !important;
+    }
+}
+
+/* ============ TABLET (Medium) ============ */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .stats-grid,
+    .stats-grid-visily {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 16px !important;
+    }
+
+    .dashboard-row,
+    .mid-grid,
+    .payment-wrapper,
+    .confirm-layout,
+    .status-layout {
+        grid-template-columns: 1fr !important;
+    }
+
+    .room-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+    }
+
+    .sidebar {
+        width: 220px !important;
+        min-width: 220px !important;
+    }
+
+    .main-content {
+        margin-left: 220px !important;
+        width: calc(100% - 220px) !important;
+        padding: 24px !important;
+    }
+
+    .logo-text {
+        font-size: 17px !important;
+    }
+
+    .nav-item {
+        font-size: 13px !important;
+        padding: 10px 12px !important;
+    }
+
+    .filter-bar,
+    .toolbar {
+        flex-wrap: wrap !important;
+    }
+
+    .filter-group {
+        min-width: 150px !important;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr 1fr !important;
+    }
+}
+
+/* ============ SIDEBAR TOGGLE BUTTON (Untuk Mobile) ============ */
+@media (max-width: 768px) {
+    .sidebar-toggle {
+        display: flex !important;
+    }
+}
+
+.sidebar-toggle {
+    display: none;
+    background: #6BCB3D;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 20px;
+    cursor: pointer;
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 1000;
+}
+
+/* ============ SIDEBAR BACKDROP ============ */
+.sidebar-backdrop {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.4);
+    z-index: 998;
+}
+
+.sidebar-backdrop.show {
+    display: block;
+}
+
+/* ============ SIDEBAR OPEN STATE ============ */
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 280px !important;
+        height: 100vh !important;
+        z-index: 999 !important;
+        box-shadow: 0 0 20px rgba(0,0,0,0.2) !important;
+    }
+
+    .sidebar.open {
+        transform: translateX(0) !important;
+    }
+
+    .sidebar-backdrop.show {
+        display: block !important;
+    }
+}
+
+/* ============ RESPONSIVE TABLE SCROLL ============ */
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 16px;
+}
+
+.table-responsive table {
+    min-width: 600px;
+    width: 100%;
+}
+
+/* ============ RESPONSIVE FORM ============ */
+.form-responsive {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.form-responsive .form-group {
+    width: 100%;
+}
+
+/* ============ UTILITY ============ */
+.text-center-mobile {
+    text-align: center !important;
+}
+
+.hide-mobile {
+    display: none !important;
+}
+
+.show-mobile {
+    display: block !important;
+}
+
+.mt-2-mobile {
+    margin-top: 16px !important;
+}
+
+.mb-2-mobile {
+    margin-bottom: 16px !important;
+}
+
+/* ============ MEDIA QUERY UNTUK SANGAT KECIL ============ */
+@media (max-width: 480px) {
+    .stats-grid,
+    .stats-grid-visily {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 8px !important;
+    }
+
+    .stat-card,
+    .stat-card-visily {
+        padding: 12px !important;
+    }
+
+    .stat-value {
+        font-size: 22px !important;
+    }
+
+    .stat-info .value {
+        font-size: 18px !important;
+    }
+
+    .stat-card h3 {
+        font-size: 11px !important;
+    }
+
+    .stat-info .label {
+        font-size: 10px !important;
+    }
+
+    .room-grid {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 8px !important;
+    }
+
+    .room-card {
+        padding: 12px !important;
+    }
+
+    .room-title {
+        font-size: 14px !important;
+    }
+
+    .room-icon {
+        width: 40px !important;
+        height: 40px !important;
+        font-size: 16px !important;
+    }
+
+    .status-badge {
+        font-size: 10px !important;
+        padding: 3px 8px !important;
+    }
+
+    .page-title h2 {
+        font-size: 18px !important;
+    }
+
+    .page-title p {
+        font-size: 12px !important;
+    }
+
+    .booking-progress {
+        padding: 12px !important;
+    }
+
+    .booking-progress-header h3 {
+        font-size: 15px !important;
+    }
+
+    .timer {
+        font-size: 20px !important;
+    }
+
+    .timer span {
+        font-size: 11px !important;
+    }
+
+    .va-number {
+        font-size: 14px !important;
+        letter-spacing: 1px !important;
+    }
+
+    .payment-amount {
+        font-size: 18px !important;
+    }
+
+    .btn-green,
+    .btn-red,
+    .btn-primary,
+    .btn-secondary {
+        font-size: 13px !important;
+        padding: 12px !important;
+    }
+
+    .modal-content {
+        padding: 16px !important;
+    }
+
+    .modal-header h3 {
+        font-size: 16px !important;
+    }
+
+    .detail-grid {
+        grid-template-columns: 1fr !important;
+    }
+/* ============================================================
+   SIDEBAR TOGGLE - MOBILE
+   ============================================================ */
+
+/* Tombol hamburger */
+.sidebar-toggle {
+    display: none;
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    z-index: 1001;
+    background: #6BCB3D;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(107, 203, 61, 0.3);
+    transition: all 0.2s ease;
+}
+
+.sidebar-toggle:hover {
+    background: #1a5d3a;
+    transform: scale(1.05);
+}
+
+.sidebar-toggle i {
+    font-size: 20px;
+}
+
+/* Backdrop gelap */
+.sidebar-backdrop {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 998;
+}
+
+.sidebar-backdrop.show {
+    display: block !important;
+}
+
+/* Mobile: tampilkan toggle, sidebar jadi sliding */
+@media (max-width: 768px) {
+    .sidebar-toggle {
+        display: block !important;
+    }
+
+    .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 280px !important;
+        height: 100vh !important;
+        z-index: 999 !important;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.2) !important;
+    }
+
+    .sidebar.open {
+        transform: translateX(0) !important;
+    }
+
+    .sidebar-backdrop.show {
+        display: block !important;
+    }
+
+    .main-content {
+        margin-left: 0 !important;
+        width: 100% !important;
+        padding-top: 70px !important;
+        padding-left: 16px !important;
+        padding-right: 16px !important;
+    }
+}
+
+/* Tablet: sidebar tetap terlihat */
+@media (min-width: 769px) {
+    .sidebar-toggle {
+        display: none !important;
+    }
+    .sidebar-backdrop {
+        display: none !important;
+    }
+}
+}
+/* ============================================================
+   SIDEBAR TOGGLE - MOBILE
+   ============================================================ */
+
+/* Tombol hamburger */
+.sidebar-toggle {
+    display: none;
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    z-index: 1001;
+    background: #6BCB3D;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(107, 203, 61, 0.3);
+}
+
+.sidebar-toggle:hover {
+    background: #1a5d3a;
+}
+
+.sidebar-backdrop {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 998;
+}
+
+.sidebar-backdrop.show {
+    display: block !important;
+}
+
+/* Tampilkan toggle di mobile */
+@media (max-width: 768px) {
+    .sidebar-toggle {
+        display: block !important;
+    }
+
+    .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 280px !important;
+        height: 100vh !important;
+        z-index: 999 !important;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.2) !important;
+        background: #fff !important;
+    }
+
+    .sidebar.open {
+        transform: translateX(0) !important;
+    }
+
+    .sidebar-backdrop.show {
+        display: block !important;
+    }
+
+    .main-content {
+        margin-left: 0 !important;
+        width: 100% !important;
+        padding-top: 70px !important;
+        padding-left: 16px !important;
+        padding-right: 16px !important;
+    }
+}

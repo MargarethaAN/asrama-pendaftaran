@@ -5,22 +5,185 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - Status Selesai (Nonaktif)</title>
     <link rel="stylesheet" href="../css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="../css/responsive.css">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+        body {
+            background: #F8FAFC;
+            display: flex;
+            color: #1E293B;
+            overflow-x: hidden;
+        }
+
+        /* ============ SIDEBAR ============ */
+        .sidebar {
+            width: 260px;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: #fff;
+            border-right: 1px solid #EDF2F7;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 2px 0 12px rgba(0,0,0,.03);
+            z-index: 999;
+        }
+        .sidebar-top {
+            padding: 20px 15px;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            padding-left: 8px;
+        }
+        .logo-icon {
+            width: 34px;
+            height: 34px;
+            background: #6BCB3D;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            color: white;
+        }
+        .logo-text {
+            font-size: 23px;
+            font-weight: 800;
+            color: #6BCB3D;
+        }
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 12px;
+            color: #475569;
+            transition: .25s;
+        }
+        .nav-item:hover {
+            background: #F1F5F9;
+            color: #111827;
+        }
+        .nav-item.active {
+            background: #6BCB3D;
+            color: white;
+        }
+        .sidebar-footer {
+            padding: 18px 15px;
+            border-top: 1px solid #EEF2F7;
+        }
+        .profile-widget {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            background: #F8FAFC;
+            border-radius: 12px;
+            margin-bottom: 15px;
+        }
+        .avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: #E2E8F0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        .profile-info h4 {
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+        .profile-info p {
+            font-size: 12px;
+            color: #64748B;
+        }
+        .nav-item i {
+            width: 22px;
+            font-size: 17px;
+            text-align: center;
+        }
+
+        /* ============ MAIN CONTENT ============ */
+        .main-content {
+            margin-left: 260px;
+            width: calc(100% - 260px);
+            padding: 30px;
+            background-color: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .main-content h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #69C33B;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        /* ============ SUCCESS CARD ============ */
         .success-card {
             background: white;
             border-radius: 24px;
-            padding: 32px;
+            padding: 40px;
             text-align: center;
-            max-width: 500px;
-            margin: 0 auto;
+            max-width: 520px;
+            width: 100%;
             box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
             border: 1px solid #e2e8f0;
         }
+
         .success-icon {
-            font-size: 64px;
+            font-size: 72px;
             margin-bottom: 16px;
+            background: #DCFCE7;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
         }
+
+        .success-card h2 {
+            color: #15803D;
+            margin-bottom: 8px;
+            font-size: 22px;
+        }
+
+        .success-card .subtitle {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        /* ============ INFO LIST ============ */
         .info-list {
             text-align: left;
             background: #f8fafc;
@@ -28,35 +191,98 @@
             padding: 20px;
             margin: 20px 0;
         }
+
         .info-row {
             display: flex;
-            padding: 8px 0;
+            padding: 10px 0;
             border-bottom: 1px solid #e2e8f0;
         }
+
         .info-row:last-child {
             border-bottom: none;
         }
+
         .info-label {
             width: 120px;
             font-weight: 500;
             color: #64748b;
+            font-size: 13px;
         }
+
         .info-value {
             flex: 1;
             color: #1a2e3a;
             font-weight: 500;
+            font-size: 14px;
         }
+
+        /* ============ STATUS BADGE ============ */
         .status-badge {
             display: inline-block;
             padding: 6px 16px;
             border-radius: 30px;
             font-size: 13px;
-            font-weight: 500;
+            font-weight: 600;
         }
         .status-danger {
             background: #fee2e2;
             color: #991b1b;
         }
+        .status-success {
+            background: #DCFCE7;
+            color: #15803D;
+        }
+
+        /* ============ BUTTONS ============ */
+        .btn-primary {
+            background: #6BCB3D;
+            color: white;
+            padding: 12px 28px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+            font-size: 14px;
+        }
+
+        .btn-primary:hover {
+            background: #1a5d3a;
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #1e293b;
+            padding: 12px 28px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+            font-size: 14px;
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e1;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        /* ============ ALERT ============ */
         .alert-fixed {
             position: fixed;
             top: 20px;
@@ -69,103 +295,241 @@
             animation: slideIn 0.3s ease;
             box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
         }
+
         @keyframes slideIn {
             from { transform: translateX(100%); opacity: 0; }
             to { transform: translateX(0); opacity: 1; }
         }
+
         .alert-success {
             background: #d1fae5;
             color: #065f46;
             border-left: 4px solid #10b981;
         }
-        .btn-primary {
-            background: #2c7a4d;
-            color: white;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: 600;
-            text-decoration: none;
-            display: inline-block;
+
+        /* ============ RESPONSIVE ============ */
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 20px;
+            }
+            .success-card {
+                padding: 24px;
+            }
+            .success-icon {
+                width: 72px;
+                height: 72px;
+                font-size: 48px;
+            }
+            .info-row {
+                flex-direction: column;
+                gap: 4px;
+            }
+            .info-label {
+                width: 100%;
+            }
+            .button-group {
+                flex-direction: column;
+            }
+            .btn-primary,
+            .btn-secondary {
+                width: 100%;
+                justify-content: center;
+            }
+            .main-content h1 {
+                font-size: 22px;
+            }
         }
-        .btn-primary:hover {
-            background: #1e5a3a;
-        }
+
+        /* ============ FIX SIDEBAR SCROLL & LOGOUT ============ */
+.sidebar {
+    height: 100vh !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.sidebar-top {
+    flex: 1 !important;
+    overflow-y: auto !important;
+    padding-bottom: 8px !important;
+}
+
+.sidebar-top::-webkit-scrollbar {
+    width: 4px !important;
+}
+
+.sidebar-top::-webkit-scrollbar-thumb {
+    background: #CBD5E1 !important;
+    border-radius: 4px !important;
+}
+
+.sidebar-footer {
+    flex-shrink: 0 !important;
+    border-top: 1px solid #EDF2F7 !important;
+    padding: 12px 14px 16px !important;
+    background: #ffffff !important;
+    position: relative !important;
+    z-index: 5 !important;
+}
+
+/* Pastikan logout selalu terlihat */
+.sidebar-footer .nav-item {
+    margin-top: 2px !important;
+}
+
+/* Untuk mobile - sidebar tetap full height */
+@media (max-width: 768px) {
+    .sidebar {
+        height: 100vh !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 280px !important;
+        z-index: 999 !important;
+    }
+}
     </style>
 </head>
 <body>
-    <div class="sidebar-layout">
-        <div class="sidebar">
-            <div class="logo">🏡 Admin Asrama</div>
-            <nav>
-                <a href="admin-dashboard.html">📊 Dashboard</a>
-                <a href="admin-verifikasi-pendaftaran.html">📝 Verifikasi Pendaftaran</a>
-                <a href="admin-verifikasi-pembayaran.html">💰 Verifikasi Pembayaran</a>
-                <a href="admin-manajemen-kamar.html">🛏️ Manajemen Kamar</a>
-                <a href="admin-data-penghuni.html">👥 Data Penghuni</a>
-                <a href="admin-konfirmasi-keluar.html">🚪 Konfirmasi Keluar</a>
-                <a href="admin-laporan.html">📄 Laporan & Rekap</a>
-                <a href="admin-syarat-ketentuan.html">📜 Syarat & Ketentuan</a>
-                <a href="admin-pencarian.html">🔍 Pencarian Data</a>
-                <a href="#" id="logoutBtn">🚪 Logout</a>
+
+    <button class="sidebar-toggle" onclick="toggleSidebar()">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+    <div class="sidebar-backdrop" onclick="toggleSidebar()"></div>
+    <!-- ==================== SIDEBAR ==================== -->
+    <div class="sidebar">
+        <div class="sidebar-top">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fa-regular fa-building"></i>
+                </div>
+                <div class="logo-text">DormyAdmin</div>
+            </div>
+            <nav class="nav-menu">
+                <a href="admin-dashboard.html" class="nav-item">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="admin-verifikasi-pendaftaran.html" class="nav-item">
+                    <i class="fa-regular fa-circle-check"></i>
+                    <span>Verifikasi Pendaftaran</span>
+                </a>
+                <a href="admin-verifikasi-pembayaran.html" class="nav-item">
+                    <i class="fa-regular fa-credit-card"></i>
+                    <span>Verifikasi Pembayaran</span>
+                </a>
+                <a href="admin-manajemen-kamar.html" class="nav-item">
+                    <i class="fa-solid fa-bed"></i>
+                    <span>Manajemen Kamar</span>
+                </a>
+                <a href="admin-data-penghuni.html" class="nav-item">
+                    <i class="fa-solid fa-user"></i>
+                    <span>Data Penghuni</span>
+                </a>
+                <a href="admin-konfirmasi-keluar.html" class="nav-item">
+                    <i class="fa-solid fa-door-open"></i>
+                    <span>Konfirmasi Keluar</span>
+                </a>
+                <a href="admin-laporan.html" class="nav-item">
+                    <i class="fa-regular fa-file-lines"></i>
+                    <span>Laporan & Rekap</span>
+                </a>
+                <a href="admin-syarat-ketentuan.html" class="nav-item">
+                    <i class="fa-regular fa-file"></i>
+                    <span>Syarat & Ketentuan</span>
+                </a>
+                <a href="admin-pencarian.html" class="nav-item">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <span>Pencarian Data</span>
+                </a>
             </nav>
         </div>
-        
-        <div class="main-content">
-            <h1>Status Penghuni - Selesai (Nonaktif)</h1>
-            
-            <div class="success-card">
-                <div class="success-icon">✅</div>
-                <h2 style="color: #22543d; margin-bottom: 8px;">Konfirmasi Keluar Asrama Berhasil!</h2>
-                
-                <div class="info-list">
-                    <div class="info-row">
-                        <span class="info-label">Nama Lengkap</span>
-                        <span class="info-value" id="infoNama">-</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">NIM</span>
-                        <span class="info-value" id="infoNim">-</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Status Akun</span>
-                        <span class="info-value"><span class="status-badge status-danger">Nonaktif / Diblokir</span></span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Tanggal Keluar</span>
-                        <span class="info-value" id="infoTanggal">-</span>
-                    </div>
+        <div class="sidebar-footer">
+            <div class="profile-widget">
+                <div class="avatar">
+                    <i class="fa-solid fa-user"></i>
                 </div>
-                
-                <p style="color: #64748b; margin-bottom: 20px;">Akun penghuni tidak dapat lagi digunakan untuk login ke sistem.</p>
-                
-                <button onclick="location.href='admin-data-penghuni.html'" class="btn-primary">← Kembali ke Data Penghuni</button>
+                <div class="profile-info">
+                    <h4>Admin 1</h4>
+                    <p>Administrator</p>
+                </div>
             </div>
+            <a href="#" class="nav-item" id="logoutBtn" style="color:#ef4444;">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Logout</span>
+            </a>
         </div>
     </div>
 
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <div class="main-content">
+
+        <h1>✅ Status Penghuni - Selesai (Nonaktif)</h1>
+
+        <div class="success-card">
+            <div class="success-icon">
+                <i class="fa-regular fa-circle-check" style="color: #15803D; font-size: 48px;"></i>
+            </div>
+            <h2>Konfirmasi Keluar Asrama Berhasil!</h2>
+            <p class="subtitle">Mahasiswa telah berhasil dikonfirmasi keluar dari asrama.</p>
+
+            <div class="info-list">
+                <div class="info-row">
+                    <span class="info-label">Nama Lengkap</span>
+                    <span class="info-value" id="infoNama">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">NIM</span>
+                    <span class="info-value" id="infoNim">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Status Akun</span>
+                    <span class="info-value"><span class="status-badge status-danger">🔒 Nonaktif / Diblokir</span></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Tanggal Keluar</span>
+                    <span class="info-value" id="infoTanggal">-</span>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button onclick="location.href='admin-data-penghuni.html'" class="btn-primary">
+                    <i class="fa-solid fa-arrow-left"></i> Kembali ke Data Penghuni
+                </button>
+                <button onclick="window.print()" class="btn-secondary">
+                    <i class="fa-solid fa-print"></i> Cetak
+                </button>
+            </div>
+        </div>
+
+    </div>
+
     <script>
-        // Ambil data dari URL parameter atau sessionStorage
+        // ============ AMBIL DATA DARI URL PARAMETER ============
         const urlParams = new URLSearchParams(window.location.search);
         const nama = urlParams.get('nama') || sessionStorage.getItem('lastKonfirmasiNama') || 'Brigitta';
         const nim = urlParams.get('nim') || sessionStorage.getItem('lastKonfirmasiNim') || '23K10001';
-        const tanggal = urlParams.get('tanggal') || sessionStorage.getItem('lastKonfirmasiTanggal') || new Date().toLocaleDateString('id-ID');
-        
+        const tanggal = urlParams.get('tanggal') || sessionStorage.getItem('lastKonfirmasiTanggal') || new Date().toLocaleDateString('id-ID', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+        });
+
         document.getElementById('infoNama').innerText = nama;
         document.getElementById('infoNim').innerText = nim;
         document.getElementById('infoTanggal').innerText = tanggal;
-        
-        // Hapus data setelah ditampilkan (opsional)
-        // sessionStorage.removeItem('lastKonfirmasiNama');
-        // sessionStorage.removeItem('lastKonfirmasiNim');
-        // sessionStorage.removeItem('lastKonfirmasiTanggal');
-        
+
+        // ============ LOGOUT ============
         document.getElementById('logoutBtn').addEventListener('click', function(e) {
             e.preventDefault();
             window.location.href = '../index.html';
         });
     </script>
-    <script src="../js/main.js"></script>
+
 </body>
 </html>

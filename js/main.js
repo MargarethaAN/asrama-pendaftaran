@@ -194,13 +194,11 @@ window.demoData = {
     ]
 };
 
-// TAMBAHKAN KODE INI KE BAWAH MAIN.JS
-
+// ==================== TAMBAH KAMAR ====================
 async function tambahKamar() {
     const nomor = document.getElementById('newNomor').value;
     const lantai = document.getElementById('newLantai').value;
     
-    // Pastikan API 'tambah_kamar.php' sudah ada di backend
     const result = await apiCall('tambah_kamar.php', 'POST', { 
         nomor_kamar: nomor, 
         lantai: lantai, 
@@ -221,4 +219,26 @@ async function loadKamar() {
     if (result.success && typeof renderRooms === 'function') {
         renderRooms(result.data);
     }
+} 
+
+// ============ TOGGLE SIDEBAR MOBILE ============
+function toggleSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    const backdrop = document.querySelector('.sidebar-backdrop');
+    if (sidebar) {
+        sidebar.classList.toggle('open');
+    }
+    if (backdrop) {
+        backdrop.classList.toggle('show');
+    }
 }
+
+// Tutup sidebar saat resize ke desktop
+window.addEventListener('resize', function() {
+    if (window.innerWidth > 768) {
+        const sidebar = document.querySelector('.sidebar');
+        const backdrop = document.querySelector('.sidebar-backdrop');
+        if (sidebar) sidebar.classList.remove('open');
+        if (backdrop) backdrop.classList.remove('show');
+    }
+});

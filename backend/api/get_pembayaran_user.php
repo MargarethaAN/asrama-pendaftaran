@@ -1,4 +1,6 @@
 <?php
+error_reporting(0);
+ini_set('display_errors', 0);
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 
@@ -13,32 +15,40 @@ if (!isset($_SESSION['id_pengguna'])) {
 
 $id_pengguna = $_SESSION['id_pengguna'];
 
-// Dapatkan id_pendaftar dan id_hunian
-$query = "SELECT p.id_pendaftar, h.id_hunian 
-          FROM pendaftar p 
-          LEFT JOIN hunian h ON p.id_pendaftar = h.id_pendaftar 
-          WHERE p.id_pengguna = $id_pengguna 
-          ORDER BY h.id_hunian DESC LIMIT 1";
+// Query melalui relasi: pengguna -> pendaftar -> pendaftaran -> hunian -> pembayaran
+$query = "SELECT 
+            p.id_pembayaran,
+            p.nomor_va,
+            p.bank,
+            p.jumlah_tagihan,
+            p.bukti_pembayaran,
+            p.status_pembayaran,
+            p.tanggal_bayar,
+            p.tanggal_batas_bayar,
+            pf.nama_lengkap,
+            pf.nim
+          FROM pembayaran p
+          JOIN hunian h ON p.id_hunian = h.id_hunian
+          JOIN pendaftaran pd ON h.id_pendaftaran = pd.id_pendaftaran
+          JOIN pendaftar pf ON pd.id_pendaftar = pf.id_pendaftar
+          JOIN pengguna pg ON pf.id_pengguna = pg.id_pengguna
+          WHERE pg.id_pengguna = $id_pengguna
+          ORDER BY p.id_pembayaran DESC
+          LIMIT 1";
+
 $result = mysqli_query($conn, $query);
 
+if (!$result) {
+    echo json_encode(['success' => false, 'message' => 'Query error: ' . mysqli_error($conn)]);
+    exit;
+}
+
 if (mysqli_num_rows($result) > 0) {
-    $row = mysqli_fetch_assoc($result);
-    $id_hunian = $row['id_hunian'];
-    
-    if ($id_hunian) {
-        $queryPembayaran = "SELECT * FROM pembayaran WHERE id_hunian = $id_hunian ORDER BY id_pembayaran DESC LIMIT 1";
-        $resultPembayaran = mysqli_query($conn, $queryPembayaran);
-        
-        if (mysqli_num_rows($resultPembayaran) > 0) {
-            $data = mysqli_fetch_assoc($resultPembayaran);
-            echo json_encode(['success' => true, 'data' => $data]);
-        } else {
-            echo json_encode(['success' => true, 'data' => null]);
-        }
-    } else {
-        echo json_encode(['success' => true, 'data' => null]);
-    }
+    $data = mysqli_fetch_assoc($result);
+    echo json_encode(['success' => true, 'data' => $data]);
 } else {
     echo json_encode(['success' => true, 'data' => null]);
 }
+
+mysqli_close($conn);
 ?>

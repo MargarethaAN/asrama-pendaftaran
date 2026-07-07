@@ -602,4 +602,11 @@ a{
         gap:16px;
     }
 
+    .sidebar-footer {
+    position: sticky !important;
+    bottom: 0 !important;
+    background: white !important;
+    z-index: 10 !important;
+    border-top: 1px solid #EDF2F7 !important;
+}
 }

@@ -5,481 +5,713 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manajemen Kamar - Admin</title>
     <link rel="stylesheet" href="../css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="../css/responsive.css">
     <style>
-        /* CSS tetap sesuai permintaan */
-.main-content { padding: 32px; background: #f8fafc; min-height: 100vh; }
-.page-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:flex-start;
-    margin-bottom:30px;
-}
+        /* ============ SEMUA CSS TETAP SAMA ============ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+        body {
+            background: #F8FAFC;
+            display: flex;
+            color: #1E293B;
+            overflow-x: hidden;
+        }
 
-.page-header h1{
-    font-size:28px;
-    font-weight:700;
-    color:#1f2937;
-}
+        /* ============ SIDEBAR ============ */
+        .sidebar {
+            width: 260px;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: #fff;
+            border-right: 1px solid #EDF2F7;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 2px 0 12px rgba(0,0,0,.03);
+            z-index: 999;
+        }
+        .sidebar-top {
+            padding: 20px 15px;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            padding-left: 8px;
+        }
+        .logo-icon {
+            width: 34px;
+            height: 34px;
+            background: #6BCB3D;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            color: white;
+        }
+        .logo-text {
+            font-size: 23px;
+            font-weight: 800;
+            color: #6BCB3D;
+        }
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 12px;
+            color: #475569;
+            transition: .25s;
+        }
+        .nav-item:hover {
+            background: #F1F5F9;
+            color: #111827;
+        }
+        .nav-item.active {
+            background: #6BCB3D;
+            color: white;
+        }
+        .sidebar-footer {
+            padding: 18px 15px;
+            border-top: 1px solid #EEF2F7;
+        }
+        .profile-widget {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            background: #F8FAFC;
+            border-radius: 12px;
+            margin-bottom: 15px;
+        }
+        .avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: #E2E8F0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        .profile-info h4 {
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+        .profile-info p {
+            font-size: 12px;
+            color: #64748B;
+        }
+        .nav-item i {
+            width: 22px;
+            font-size: 17px;
+            text-align: center;
+        }
 
-.page-header p{
-    margin-top:6px;
-    color:#6b7280;
-    font-size:16px;
-}
+        /* ============ MAIN CONTENT ============ */
+        .main-content {
+            margin-left: 260px;
+            width: calc(100% - 260px);
+            padding: 30px;
+            background: #f8fafc;
+            min-height: 100vh;
+        }
 
-.header-right{
-    display:flex;
-    align-items:center;
-    gap:22px;
-}
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .page-header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #69C33B;
+            margin: 0;
+        }
+        .page-header p {
+            margin-top: 6px;
+            color: #6b7280;
+            font-size: 14px;
+        }
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+            flex-wrap: wrap;
+        }
+        .notification-box {
+            width: 62px;
+            height: 62px;
+            border: 1px solid #E5E7EB;
+            border-radius: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            background: #fff;
+        }
+        .notification-box i {
+            font-size: 28px;
+            color: #4B5563;
+        }
+        .notification-box .badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 24px;
+            height: 24px;
+            background: #EF4444;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 13px;
+        }
+        .header-divider {
+            width: 1px;
+            height: 60px;
+            background: #E5E7EB;
+        }
+        .date-info {
+            text-align: right;
+        }
+        .date-info h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1f2937;
+        }
+        .date-info p {
+            color: #6B7280;
+            font-size: 14px;
+        }
 
-.notification-box{
-    width:62px;
-    height:62px;
-    border:1px solid #E5E7EB;
-    border-radius:16px;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    position:relative;
-    background:#fff;
-}
+        /* ============ STATS ============ */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 22px;
+            margin: 30px 0;
+        }
+        .stat-card {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 6px 18px rgba(0,0,0,.06);
+            overflow: hidden;
+            border: 1px solid #ECECEC;
+        }
+        .top-line {
+            height: 4px;
+        }
+        .green {
+            background: #6BCB3D;
+        }
+        .red {
+            background: #EF4444;
+        }
+        .gray {
+            background: #CBD5E1;
+        }
+        .stat-content {
+            padding: 20px 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .stat-content span {
+            font-size: 14px;
+            color: #B5B5B5;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .stat-content h2 {
+            margin-top: 10px;
+            font-size: 34px;
+            font-weight: 700;
+            color: #404040;
+        }
+        .stat-content i {
+            font-size: 34px;
+            color: #D8D8D8;
+        }
 
-.notification-box i{
-    font-size:28px;
-    color:#4B5563;
-}
+        /* ============ TABLE TOOLBAR ============ */
+        .table-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 28px 0;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .toolbar-left,
+        .toolbar-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .btn-add {
+            background: #6BCB3D;
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: .2s;
+        }
+        .btn-add:hover {
+            background: #1a5d3a;
+        }
+        .btn-stat {
+            background: #fff;
+            border: 1px solid #dbe2ea;
+            color: #64748b;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .filter-select {
+            height: 48px;
+            padding: 0 16px;
+            border: 1px solid #dbe2ea;
+            border-radius: 12px;
+            background: #fff;
+            font-size: 14px;
+        }
+        .filter-select:focus {
+            border-color: #6BCB3D;
+            outline: none;
+        }
 
-.notification-box .badge{
-    position:absolute;
-    top:-8px;
-    right:-8px;
-    width:24px;
-    height:24px;
-    background:#EF4444;
-    color:white;
-    border-radius:50%;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    font-size:13px;
-}
+        /* ============ TABLE ============ */
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th {
+            background: #f8fafc;
+            padding: 16px;
+            color: #64748b;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 13px;
+        }
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: middle;
+            font-size: 14px;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        .badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .status-terisi {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        .status-tersedia {
+            background: #dcfce7;
+            color: #166534;
+        }
+        .status-perbaikan {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        .btn-icon {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #64748b;
+            font-size: 18px;
+            margin: 0 5px;
+            transition: 0.2s;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+        .btn-icon:hover {
+            background: #f1f5f9;
+        }
+        .btn-icon-add {
+            color: #6BCB3D;
+        }
+        .btn-icon-delete {
+            color: #EF4444;
+        }
 
-.header-divider{
-    width:1px;
-    height:60px;
-    background:#E5E7EB;
-}
+        /* ============ MODAL ============ */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 24px;
+            padding: 32px;
+            max-width: 520px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modern-modal {
+            border-radius: 22px;
+            overflow: hidden;
+            padding: 0;
+            background: #fff;
+        }
+        .modal-header-custom {
+            background: #6BCB3D;
+            color: #fff;
+            padding: 24px 28px;
+        }
+        .modal-header-custom h2 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+        }
+        .modal-header-custom p {
+            margin-top: 6px;
+            opacity: .9;
+            font-size: 15px;
+        }
+        .modal-body-custom {
+            padding: 28px;
+        }
+        .modal-footer-custom {
+            padding: 20px 28px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 14px;
+            border-top: 1px solid #ececec;
+        }
+        .btn-save {
+            background: #6BCB3D;
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .btn-save:hover {
+            background: #1a5d3a;
+        }
+        .btn-cancel {
+            background: #fff;
+            border: 1px solid #dbe2ea;
+            color: #64748b;
+            padding: 12px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+        .btn-cancel:hover {
+            background: #f7f7f7;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+        }
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            height: 48px;
+            padding: 0 16px;
+            border: 1px solid #D1D5DB;
+            border-radius: 12px;
+            font-size: 14px;
+            outline: none;
+            box-sizing: border-box;
+        }
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #6BCB3D;
+        }
 
-.date-info{
-    text-align:right;
-}
+        /* ============ PLACE MODAL ============ */
+        .place-modal {
+            max-width: 560px;
+        }
+        .place-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 22px 24px;
+            border-bottom: 1px solid #ececec;
+        }
+        .place-title {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .place-title i {
+            color: #6BCB3D;
+            font-size: 22px;
+        }
+        .place-title h3 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 700;
+            color: #2f3542;
+        }
+        .close-modal {
+            font-size: 30px;
+            color: #777;
+            cursor: pointer;
+            transition: .2s;
+        }
+        .close-modal:hover {
+            color: #111;
+        }
+        .search-box {
+            margin: 22px;
+            position: relative;
+        }
+        .search-box i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+        }
+        .search-box input {
+            width: 100%;
+            height: 54px;
+            border: 1px solid #dbe2ea;
+            border-radius: 14px;
+            padding-left: 48px;
+            font-size: 15px;
+            outline: none;
+        }
+        .student-list {
+            padding: 0 22px 24px;
+        }
+        .student-card {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 14px;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: .2s;
+            margin-bottom: 12px;
+        }
+        .student-card:hover {
+            border-color: #6BCB3D;
+        }
+        .student-card img {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .student-card strong {
+            font-size: 16px;
+        }
+        .student-card small {
+            color: #64748b;
+            font-size: 13px;
+        }
+        .student-card.selected {
+            border: 2px solid #6BCB3D;
+            background: #F3FFF0;
+        }
 
-.date-info h3{
-    font-size:18px;
-    font-weight:700;
-}
+        /* ============ RESPONSIVE ============ */
+        @media (max-width: 1200px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 20px;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .page-header {
+                flex-direction: column;
+            }
+            .header-right {
+                width: 100%;
+                justify-content: space-between;
+            }
+            .table-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .toolbar-left,
+            .toolbar-right {
+                flex-wrap: wrap;
+            }
+            .date-info {
+                text-align: left;
+            }
+        }
 
-.date-info p{
-    color:#6B7280;
-    font-size:14px;
-}
-        .stats-grid{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:22px;
-    margin:30px 0;
-}
+        /* ============ FIX SIDEBAR SCROLL & LOGOUT ============ */
+        .sidebar {
+            height: 100vh !important;
+            overflow: hidden !important;
+            display: flex !important;
+            flex-direction: column !important;
+        }
 
-.stat-card{
-    background:#fff;
-    border-radius:18px;
-    box-shadow:0 6px 18px rgba(0,0,0,.06);
-    overflow:hidden;
-    border:1px solid #ECECEC;
-}
+        .sidebar-top {
+            flex: 1 !important;
+            overflow-y: auto !important;
+            padding-bottom: 8px !important;
+        }
 
-.top-line{
-    height:4px;
-}
+        .sidebar-top::-webkit-scrollbar {
+            width: 4px !important;
+        }
 
-.green{
-    background:#8BD65B;
-}
+        .sidebar-top::-webkit-scrollbar-thumb {
+            background: #CBD5E1 !important;
+            border-radius: 4px !important;
+        }
 
-.red{
-    background:#F8B8B8;
-}
+        .sidebar-footer {
+            flex-shrink: 0 !important;
+            border-top: 1px solid #EDF2F7 !important;
+            padding: 12px 14px 16px !important;
+            background: #ffffff !important;
+            position: relative !important;
+            z-index: 5 !important;
+        }
 
-.gray{
-    background:#ECECEC;
-}
+        .sidebar-footer .nav-item {
+            margin-top: 2px !important;
+        }
 
-.stat-content{
-    padding:20px 22px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-}
-
-.stat-content span{
-    font-size:14px;
-    color:#B5B5B5;
-    font-weight:700;
-    letter-spacing:1px;
-}
-
-.stat-content h2{
-    margin-top:10px;
-    font-size:34px;
-    font-weight:700;
-    color:#404040;
-}
-
-.stat-content i{
-    font-size:34px;
-    color:#D8D8D8;
-}
-.table-toolbar{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin:28px 0;
-    gap:20px;
-}
-.toolbar-left,
-.toolbar-right{
-    display:flex;
-    align-items:center;
-    gap:16px;
-}
-.btn-add{
-    background:#66D13D;
-    color:#fff;
-    border:none;
-    padding:14px 26px;
-    border-radius:14px;
-    font-size:17px;
-    font-weight:600;
-    cursor:pointer;
-    transition:.2s;
-}
-
-.btn-add:hover{
-    background:#59bf33;
-}
-
-.btn-stat{
-    background:#fff;
-    border:1px solid #dbe2ea;
-    color:#64748b;
-    padding:14px 22px;
-    border-radius:14px;
-    font-size:17px;
-    cursor:pointer;
-}
-.filter-select{
-    height:52px;
-    padding:0 18px;
-    border:1px solid #dbe2ea;
-    border-radius:12px;
-    background:#fff;
-    font-size:16px;
-}
-select {
-    padding: 10px 16px;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    background: white;
-    cursor: pointer;
-}
-.btn-secondary {
-    background: #64748b;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-}
-        .table-container { background: white; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden; }
-        table { width: 100%; border-collapse: collapse; }
-        th { background: #f8fafc; padding: 16px; color: #64748b; text-align: left; font-weight: 600; border-bottom: 1px solid #e2e8f0; }
-        td { padding: 16px; border-bottom: 1px solid #e2e8f0; vertical-align: middle; }
-        .badge { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 500; }
-        .status-terisi { background: #fee2e2; color: #991b1b; }
-        .status-tersedia { background: #dcfce7; color: #166534; }
-        .status-perbaikan { background: #fef3c7; color: #92400e; }
-        .btn-icon { background: none; border: none; cursor: pointer; color: #64748b; font-size: 18px; margin: 0 5px; }
-        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); align-items:center; justify-content:center; z-index:1000; }
-        .modal-content { background: white; border-radius: 24px; padding: 32px; width: 400px; }
-        /* ===== Modern Modal ===== */
-
-.modern-modal{
-    width:520px;
-    border-radius:22px;
-    overflow:hidden;
-    padding:0;
-    background:#fff;
-}
-
-.modal-header-custom{
-    background:#66D13D;
-    color:#fff;
-    padding:24px 28px;
-}
-
-.modal-header-custom h2{
-    margin:0;
-    font-size:24px;
-    font-weight:700;
-}
-
-.modal-header-custom p{
-    margin-top:6px;
-    opacity:.9;
-    font-size:15px;
-}
-
-.modal-body-custom{
-    padding:28px;
-}
-
-.modal-footer-custom{
-    padding:20px 28px;
-    display:flex;
-    justify-content:flex-end;
-    gap:14px;
-    border-top:1px solid #ececec;
-}
-.btn-save{
-    background:#66D13D;
-    color:#fff;
-    border:none;
-    padding:12px 24px;
-    border-radius:12px;
-    font-weight:600;
-    cursor:pointer;
-}
-
-.btn-save:hover{
-    background:#57bc31;
-}
-
-.btn-cancel{
-    background:#fff;
-    border:1px solid #dbe2ea;
-    color:#64748b;
-    padding:12px 24px;
-    border-radius:12px;
-    cursor:pointer;
-}
-
-.btn-cancel:hover{
-    background:#f7f7f7;
-}
-/* ===============================
-   Modal Tempatkan Penghuni
-=================================*/
-
-.place-modal{
-    width:560px;
-    border-radius:22px;
-    background:#fff;
-    padding:0;
-    overflow:hidden;
-}
-
-.place-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:22px 24px;
-    border-bottom:1px solid #ececec;
-}
-
-.place-title{
-    display:flex;
-    align-items:center;
-    gap:14px;
-}
-
-.place-title i{
-    color:#66D13D;
-    font-size:22px;
-}
-
-.place-title h3{
-    margin:0;
-    font-size:24px;
-    font-weight:700;
-    color:#2f3542;
-}
-
-.place-title span{
-    color:#111827;
-}
-
-.close-modal{
-    font-size:30px;
-    color:#777;
-    cursor:pointer;
-    transition:.2s;
-}
-
-.close-modal:hover{
-    color:#111;
-}
-.search-box{
-    margin:22px;
-    position:relative;
-}
-
-.search-box i{
-    position:absolute;
-    left:18px;
-    top:50%;
-    transform:translateY(-50%);
-    color:#9ca3af;
-}
-
-.search-box input{
-    width:100%;
-    height:54px;
-    border:1px solid #dbe2ea;
-    border-radius:14px;
-    padding-left:48px;
-    font-size:15px;
-    outline:none;
-}
-.student-list{
-    padding:0 22px 24px;
-}
-
-.student-card{
-    display:flex;
-    align-items:center;
-    gap:15px;
-    padding:14px;
-    border:1px solid #e5e7eb;
-    border-radius:14px;
-    cursor:pointer;
-    transition:.2s;
-    margin-bottom:12px;
-}
-.student-card img{
-    width:48px;
-    height:48px;
-    border-radius:50%;
-    object-fit:cover;
-}
-
-.student-card strong{
-    font-size:17px;
-}
-
-.student-card small{
-    color:#64748b;
-    font-size:14px;
-}
-.student-card.selected{
-    border:2px solid #66D13D;
-    background:#F3FFF0;
-}
-
-.student-card{
-    cursor:pointer;
-}
-
-.form-group { 
-    margin-bottom: 20px; 
-}
-.form-group label{
-    display:block;
-    margin-bottom:8px;
-    font-size:15px;
-    font-weight:600;
-    color:#374151;
-}
-
-.form-group input,
-.form-group select{
-    width:100%;
-    height:50px;
-    padding:0 16px;
-    border:1px solid #D1D5DB;
-    border-radius:12px;
-    font-size:15px;
-    outline:none;
-    box-sizing:border-box;
-}
-
-.form-group input:focus,
-.form-group select:focus{
-    border-color:#66D13D;
-}
+        @media (max-width: 768px) {
+            .sidebar {
+                height: 100vh !important;
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 280px !important;
+                z-index: 999 !important;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="sidebar-layout">
 
-<div class="sidebar">
+    <!-- ============ TOGGLE SIDEBAR ============ -->
+    <button class="sidebar-toggle" onclick="toggleSidebar()">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+    <div class="sidebar-backdrop" onclick="toggleSidebar()"></div>
+
+    <!-- ============ SIDEBAR ============ -->
+    <div class="sidebar">
         <div class="sidebar-top">
             <div class="logo">
                 <div class="logo-icon">
                     <i class="fa-regular fa-building"></i>
                 </div>
-                <div class="logo-text">
-                    DormyAdmin</div>
+                <div class="logo-text">DormyAdmin</div>
             </div>
-
             <nav class="nav-menu">
                 <a href="admin-dashboard.html" class="nav-item">
                     <i class="fa-solid fa-chart-line"></i>
                     <span>Dashboard</span>
                 </a>
-
                 <a href="admin-verifikasi-pendaftaran.html" class="nav-item">
                     <i class="fa-regular fa-circle-check"></i>
                     <span>Verifikasi Pendaftaran</span>
                 </a>
-
                 <a href="admin-verifikasi-pembayaran.html" class="nav-item">
                     <i class="fa-regular fa-credit-card"></i>
                     <span>Verifikasi Pembayaran</span>
                 </a>
-
                 <a href="admin-manajemen-kamar.html" class="nav-item active">
-                    <i class="fa-solid fa-users"></i>
+                    <i class="fa-solid fa-bed"></i>
                     <span>Manajemen Kamar</span>
                 </a>
-
                 <a href="admin-data-penghuni.html" class="nav-item">
                     <i class="fa-solid fa-user"></i>
                     <span>Data Penghuni</span>
                 </a>
-
+                <a href="admin-konfirmasi-keluar.html" class="nav-item">
+                    <i class="fa-solid fa-door-open"></i>
+                    <span>Konfirmasi Keluar</span>
+                </a>
                 <a href="admin-laporan.html" class="nav-item">
                     <i class="fa-regular fa-file-lines"></i>
                     <span>Laporan & Rekap</span>
                 </a>
-
                 <a href="admin-syarat-ketentuan.html" class="nav-item">
                     <i class="fa-regular fa-file"></i>
-                    <span>Syarat & Ketentuan (S&K)</span>
+                    <span>Syarat & Ketentuan</span>
                 </a>
-
                 <a href="admin-pencarian.html" class="nav-item">
                     <i class="fa-solid fa-magnifying-glass"></i>
                     <span>Pencarian Data</span>
                 </a>
-            </nav>  
+            </nav>
         </div>
-
         <div class="sidebar-footer">
-
             <div class="profile-widget">
                 <div class="avatar">
                     <i class="fa-solid fa-user"></i>
@@ -489,152 +721,141 @@ select {
                     <p>Administrator</p>
                 </div>
             </div>
-                <a href="#" class="nav-item" id="logoutBtn" style="color:#ef4444;">
-                    <i class="fa-solid fa-right-from-bracket"></i>
-                    <span>Logout</span>
-                </a>
-            </div>
-        </div>
-        
-        <div class="main-content">
-            <div class="page-header">
-                <div>
-                    <h1>Manajemen Kamar</h1>
-                    <p>Kelola dan tempatkan kamar pendaftaran</p>
-                </div>
-
-                <div class="header-right">
-
-                    <div class="notification-box">
-                        <i class="fa-regular fa-clock"></i>
-                        <span class="badge">3</span>
-                    </div>
-
-                    <div class="header-divider"></div>
-
-                    <div class="date-info">
-                        <h3>Kamis, 16 Juni 2025</h3>
-                        <p>Sesi Aktif: 04:20:15</p>
-                    </div>
-
-                </div>
-            </div>
-
-            <div class="stats-grid">
-                <div class="stat-card total-card">
-                    <div class="top-line green"></div>
-                    <div class="stat-content">
-                        <div>
-                            <span>TOTAL KAMAR</span>
-                            <h2 id="totalKamar">60</h2>
-                        </div>
-                        <i class="fa-regular fa-building"></i>
-                    </div>
-
-                </div>
-
-                <div class="stat-card filled-card">
-                    <div class="top-line red"></div>
-                    <div class="stat-content">
-                        <div>
-                            <span>TERISI</span>
-                            <h2 id="totalTerisi">45</h2>
-                        </div>
-                        <i class="fa-solid fa-users"></i>
-                    </div>
-
-                </div>
-
-                <div class="stat-card empty-card">
-                    <div class="top-line gray"></div>
-                    <div class="stat-content">
-                        <div>
-                            <span>KOSONG</span>
-                            <h2 id="totalTersedia">12</h2>
-                        </div>
-                        <i class="fa-solid fa-bed"></i>
-                    </div>
-                </div>
-
-                <div class="stat-card repair-card">
-                    <div class="top-line gray"></div>
-                    <div class="stat-content">
-                        <div>
-                            <span>PERBAIKAN</span>
-                            <h2 id="totalPerbaikan">3</h2>
-                        </div>
-                        <i class="fa-solid fa-gear"></i>
-                    </div>
-                </div>
-            </div>
-
-            <div class="table-toolbar">
-                <div class="toolbar-left">
-                    <button onclick="openTambahKamar()" class="btn-add">
-                        <i class="fa-solid fa-plus"></i>
-                        Tambah Kamar Baru
-                    </button>
-                    <button class="btn-stat">
-                        <i class="fa-solid fa-chart-column"></i>
-                        Lihat Statistik Kamar
-                    </button>
-                </div>
-
-                <div class="toolbar-right">
-                    <label>Lantai:</label>
-                    <select id="filterLantai" class="filter-select" onchange="renderTable()">
-                        <option value="semua">Semua Lantai</option>
-                    </select>
-                    <label>Status:</label>
-                    <select id="filterStatus" class="filter-select" onchange="renderTable()">
-                        <option value="semua">Semua Status</option>
-                        <option value="tersedia">Tersedia</option>
-                        <option value="terisi">Terisi</option>
-                        <option value="perbaikan">Perbaikan</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Nomor Kamar</th>
-                            <th>Lantai</th>
-                            <th>Status</th>
-                            <th>Penghuni</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="roomTableBody">
-                        <tr><td colspan="6" style="text-align:center;">Memuat data...</td></tr>
-                    </tbody>
-                </table>
-            </div>
+            <a href="#" class="nav-item" id="logoutBtn" style="color:#ef4444;">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Logout</span>
+            </a>
         </div>
     </div>
 
+    <!-- ============ MAIN CONTENT ============ -->
+    <div class="main-content">
+
+        <!-- ============ HEADER ============ -->
+        <div class="page-header">
+            <div>
+                <h1>🛏️ Manajemen Kamar</h1>
+                <p>Kelola dan tempatkan kamar pendaftaran</p>
+            </div>
+            <div class="header-right">
+                <div class="notification-box">
+                    <i class="fa-regular fa-clock"></i>
+                    <span class="badge">3</span>
+                </div>
+                <div class="header-divider"></div>
+                <div class="date-info">
+                    <h3 id="dateText">Kamis, 16 Juni 2025</h3>
+                    <p id="timeText">Sesi Aktif: 04:20:15</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============ STATS ============ -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="top-line green"></div>
+                <div class="stat-content">
+                    <div>
+                        <span>TOTAL KAMAR</span>
+                        <h2 id="totalKamar">60</h2>
+                    </div>
+                    <i class="fa-regular fa-building"></i>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="top-line red"></div>
+                <div class="stat-content">
+                    <div>
+                        <span>TERISI</span>
+                        <h2 id="totalTerisi">45</h2>
+                    </div>
+                    <i class="fa-solid fa-users"></i>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="top-line gray"></div>
+                <div class="stat-content">
+                    <div>
+                        <span>KOSONG</span>
+                        <h2 id="totalTersedia">12</h2>
+                    </div>
+                    <i class="fa-solid fa-bed"></i>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="top-line gray"></div>
+                <div class="stat-content">
+                    <div>
+                        <span>PERBAIKAN</span>
+                        <h2 id="totalPerbaikan">3</h2>
+                    </div>
+                    <i class="fa-solid fa-gear"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============ TOOLBAR ============ -->
+        <div class="table-toolbar">
+            <div class="toolbar-left">
+                <button onclick="openTambahKamar()" class="btn-add">
+                    <i class="fa-solid fa-plus"></i> Tambah Kamar Baru
+                </button>
+                <button class="btn-stat">
+                    <i class="fa-solid fa-chart-simple"></i> Lihat Statistik
+                </button>
+            </div>
+            <div class="toolbar-right">
+                <label style="font-weight:600; font-size:14px;">Lantai:</label>
+                <select id="filterLantai" class="filter-select" onchange="renderTable()">
+                    <option value="semua">Semua Lantai</option>
+                </select>
+                <label style="font-weight:600; font-size:14px;">Status:</label>
+                <select id="filterStatus" class="filter-select" onchange="renderTable()">
+                    <option value="semua">Semua Status</option>
+                    <option value="tersedia">Tersedia</option>
+                    <option value="terisi">Terisi</option>
+                    <option value="perbaikan">Perbaikan</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- ============ TABLE ============ -->
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Nomor Kamar</th>
+                        <th>Lantai</th>
+                        <th>Status</th>
+                        <th>Penghuni</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="roomTableBody">
+                    <tr><td colspan="6" style="text-align:center; padding:30px; color:#94a3b8;">Memuat data...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <!-- ============ MODAL TAMBAH KAMAR ============ -->
     <div id="tambahModal" class="modal">
         <div class="modal-content modern-modal">
-
             <div class="modal-header-custom">
                 <h2>Tambah Kamar Baru</h2>
                 <p>Masukkan informasi kamar baru.</p>
             </div>
-
             <div class="modal-body-custom">
-
                 <div class="form-group">
                     <label>Nomor Kamar</label>
                     <input type="text" id="newNomor" placeholder="Contoh: 101">
                 </div>
-
                 <div class="form-group">
                     <label>Lantai</label>
                     <input type="number" id="newLantai" placeholder="Contoh: 1">
                 </div>
-
                 <div class="form-group">
                     <label>Status Awal</label>
                     <select id="newStatus">
@@ -643,139 +864,132 @@ select {
                         <option value="perbaikan">Perbaikan</option>
                     </select>
                 </div>
-
-        </div>
-
-        <div class="modal-footer-custom">
-            <button onclick="closeModal('tambahModal')" class="btn-cancel">
-                Batal
-            </button>
-
-            <button onclick="simpanKamar()" class="btn-save">
-                Simpan
-            </button>
+            </div>
+            <div class="modal-footer-custom">
+                <button onclick="closeModal('tambahModal')" class="btn-cancel">Batal</button>
+                <button onclick="simpanKamar()" class="btn-save">Simpan</button>
+            </div>
         </div>
     </div>
-</div>
 
+    <!-- ============ MODAL TEMPATKAN PENGHUNI ============ -->
     <div id="editKamarModal" class="modal">
-
-    <div class="modal-content place-modal">
-
-        <div class="place-header">
-
-            <div class="place-title">
-                <i class="fa-solid fa-user-plus"></i>
-                <h3>
-                    Tempatkan Penghuni ke Kamar
-                    <span id="editNomorKamarText">101</span>
-                </h3>
+        <div class="modal-content place-modal">
+            <div class="place-header">
+                <div class="place-title">
+                    <i class="fa-solid fa-user-plus"></i>
+                    <h3>Tempatkan Penghuni ke Kamar <span id="editNomorKamarText">101</span></h3>
+                </div>
+                <span class="close-modal" onclick="closeModal('editKamarModal')">&times;</span>
             </div>
-
-            <span class="close-modal"
-                onclick="closeModal('editKamarModal')">
-                &times;
-            </span>
-
-        </div>
-        <div class="search-box">
-
-            <i class="fa-solid fa-magnifying-glass"></i>
-
-            <input
-                type="text"
-                placeholder="Cari Pendaftar/Penghuni berdasarkan Nama atau NIM..."
-            >
-        </div>
-
-        <div class="student-list">
-            <div class="student-card"onclick="pilihMahasiswa(this,'Mia')">
-                <img src="https://i.pravatar.cc/60?img=12">
-                <div class="student-info">
-                    <strong>Mia</strong>
-                    <small>1202210045 • Informatika</small>
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" placeholder="Cari Pendaftar/Penghuni berdasarkan Nama atau NIM...">
+            </div>
+            <div class="student-list">
+                <div class="student-card" onclick="pilihMahasiswa(this,'Mia Amelia')">
+                    <img src="https://i.pravatar.cc/60?img=12" alt="Avatar">
+                    <div>
+                        <strong>Mia Amelia</strong>
+                        <br>
+                        <small>1202210045 • Informatika</small>
+                    </div>
+                </div>
+                <div class="student-card" onclick="pilihMahasiswa(this, 'Siti Aminah')">
+                    <img src="https://i.pravatar.cc/60?img=32" alt="Avatar">
+                    <div>
+                        <strong>Siti Aminah</strong>
+                        <br>
+                        <small>1202213401 • Sistem Informasi</small>
+                    </div>
+                </div>
+                <div class="student-card" onclick="pilihMahasiswa(this, 'Angelina Putri')">
+                    <img src="https://i.pravatar.cc/60?img=25" alt="Avatar">
+                    <div>
+                        <strong>Angelina Putri</strong>
+                        <br>
+                        <small>1202216789 • Teknik Informatika</small>
+                    </div>
                 </div>
             </div>
-
-            <div class="student-card" onclick="pilihMahasiswa(this, 'Siti Aminah')">
-                <img src="https://i.pravatar.cc/45?img=32">
-                <div class="student-info">
-                    <strong>Siti Aminah</strong><br>
-                    <small>1202213401 • Sistem Informasi</small>
-                </div>
+            <div class="modal-footer-custom">
+                <button onclick="closeModal('editKamarModal')" class="btn-cancel">Batal</button>
+                <button onclick="simpanEditKamar()" class="btn-save">Simpan Penempatan</button>
             </div>
         </div>
-
-        <div class="modal-footer-custom">
-
-            <button
-                class="btn-cancel"
-                onclick="closeModal('editKamarModal')">
-
-                Batal
-
-            </button>
-
-            <button
-                class="btn-save"
-                onclick="simpanEditKamar()">
-
-                Simpan Penempatan
-
-            </button>
-
-        </div>
-
     </div>
 
-</div>
-
+    <!-- ============ MODAL HAPUS PENGHUNI ============ -->
     <div id="hapusPenghuniModal" class="modal">
-        <div class="modal-content">
-            <h3>Keluarkan Penghuni - Kamar <span id="hapusNomorKamarText" style="color: #dc2626;"></span></h3>
-            <p style="color: #64748b; font-size: 14px; margin-bottom: 15px;">Pilih nama mahasiswa yang ingin dihapus dari kamar ini:</p>
-            <div class="form-group" id="containerListPenghuni">
+        <div class="modal-content modern-modal">
+            <div class="modal-header-custom" style="background: #EF4444;">
+                <h2>Keluarkan Penghuni</h2>
+                <p>Kamar <span id="hapusNomorKamarText" style="font-weight:700;">101</span></p>
+            </div>
+            <div class="modal-body-custom">
+                <p style="color: #64748b; font-size: 14px; margin-bottom: 15px;">Pilih nama mahasiswa yang ingin dikeluarkan dari kamar ini:</p>
+                <div id="containerListPenghuni">
+                    <!-- Daftar penghuni akan diisi JavaScript -->
                 </div>
-            <div style="display:flex; gap:12px; margin-top:20px;">
-                <button onclick="konfirmasiHapusPenghuni()" class="btn-primary" style="background: #dc2626;">Hapus Penghuni</button>
-                <button onclick="closeModal('hapusPenghuniModal')" class="btn-secondary">Batal</button>
+            </div>
+            <div class="modal-footer-custom">
+                <button onclick="closeModal('hapusPenghuniModal')" class="btn-cancel">Batal</button>
+                <button onclick="konfirmasiHapusPenghuni()" class="btn-save" style="background: #EF4444;">Hapus Penghuni</button>
             </div>
         </div>
     </div>
 
+    <script src="../js/main.js"></script>
     <script>
-        const BASE_URL = window.location.origin + '/asrama-pendaftaran/backend/api/';
+        // ============ REAL-TIME CLOCK ============
+        function updateDateTime() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const dateString = now.toLocaleDateString('id-ID', options);
+            const timeString = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+            const dateEl = document.getElementById('dateText');
+            const timeEl = document.getElementById('timeText');
+            if (dateEl) dateEl.textContent = dateString;
+            if (timeEl) timeEl.textContent = '⏱️ ' + timeString;
+        }
+        setInterval(updateDateTime, 1000);
+        updateDateTime();
+
+        // ============ DATA ============
+        // ✅ BASE_URL SUDAH ADA DI main.js, JANGAN DEKLARASI ULANG!
         let kamarData = [];
-        let currentKamarId = null; // Menyimpan ID Kamar yang sedang diklik oleh Admin
+        let currentKamarId = null;
         let mahasiswaTerpilih = null;
 
-        // Fungsi fetch data
+        // ============ LOAD DATA ============
         async function loadKamar() {
             try {
                 const response = await fetch(BASE_URL + 'get_kamar.php');
                 const result = await response.json();
                 if (result.success) {
                     kamarData = result.data;
-                    populateFilters();
-                    renderTable();
+                } else {
+                    kamarData = [];
                 }
-            } catch (e) { 
-                console.error("Error loading data:", e);
-                // DUMMY DATA UNTUK TESTING (Jika API belum siap, bisa dicoba langsung)
+            } catch (e) {
+                console.warn('API tidak tersedia, menggunakan data dummy');
                 kamarData = [
                     { id_kamar: 1, nomor_kamar: "101", lantai: "1", status_kamar: "terisi", penghuni_list: ["Budi Santoso", "Andi Wijaya"] },
                     { id_kamar: 2, nomor_kamar: "102", lantai: "1", status_kamar: "tersedia", penghuni_list: [] },
-                    { id_kamar: 3, nomor_kamar: "201", lantai: "2", status_kamar: "perbaikan", penghuni_list: [] }
+                    { id_kamar: 3, nomor_kamar: "103", lantai: "1", status_kamar: "tersedia", penghuni_list: [] },
+                    { id_kamar: 4, nomor_kamar: "201", lantai: "2", status_kamar: "perbaikan", penghuni_list: [] },
+                    { id_kamar: 5, nomor_kamar: "202", lantai: "2", status_kamar: "terisi", penghuni_list: ["Siti Aminah"] }
                 ];
-                populateFilters();
-                renderTable();
             }
+            populateFilters();
+            renderTable();
         }
 
-        // Setup Dropdown Filter secara otomatis
+        // ============ FILTER ============
         function populateFilters() {
             const select = document.getElementById('filterLantai');
-            select.innerHTML = '<option value="semua">Semua Lantai</option>'; // reset
+            select.innerHTML = '<option value="semua">Semua Lantai</option>';
             const lantaiList = [...new Set(kamarData.map(k => k.lantai))];
             lantaiList.forEach(l => {
                 const opt = document.createElement('option');
@@ -785,7 +999,7 @@ select {
             });
         }
 
-        // Render Tabel dengan Filter
+        // ============ RENDER TABLE ============
         function renderTable() {
             const filterLantai = document.getElementById('filterLantai').value;
             const filterStatus = document.getElementById('filterStatus').value;
@@ -797,24 +1011,32 @@ select {
             });
 
             const tbody = document.getElementById('roomTableBody');
-            tbody.innerHTML = filteredData.map((k, index) => {
-                let statusClass = `status-${k.status_kamar}`;
-                let penghuniList = k.penghuni_list && k.penghuni_list.length > 0 ? k.penghuni_list.join(', ') : '-';
-                return `
-                    <tr>
-                        <td>${index + 1}</td>
-                        <td><strong>${k.nomor_kamar}</strong></td>
-                        <td>Lantai ${k.lantai}</td>
-                        <td><span class="badge ${statusClass}">${k.status_kamar}</span></td>
-                        <td>${penghuniList}</td>
-                        <td>
-                            <button class="btn-icon" onclick="openEditKamar(${k.id_kamar})" title="Kelola Status & Tambah Penghuni">➕</button>
-                            <button class="btn-icon" onclick="openHapusPenghuniModal(${k.id_kamar})" title="Keluarkan/Hapus Penghuni">🗑️</button>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-            
+            if (filteredData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:30px; color:#94a3b8;">Tidak ada data ditemukan</td></tr>';
+            } else {
+                tbody.innerHTML = filteredData.map((k, index) => {
+                    let statusClass = `status-${k.status_kamar}`;
+                    let penghuniList = k.penghuni_list && k.penghuni_list.length > 0 ? k.penghuni_list.join(', ') : '-';
+                    return `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td><strong>${k.nomor_kamar}</strong></td>
+                            <td>Lantai ${k.lantai}</td>
+                            <td><span class="badge ${statusClass}">${k.status_kamar}</span></td>
+                            <td>${penghuniList}</td>
+                            <td>
+                                <button class="btn-icon btn-icon-add" onclick="openEditKamar(${k.id_kamar})" title="Tempatkan Penghuni">
+                                    <i class="fa-solid fa-user-plus"></i>
+                                </button>
+                                <button class="btn-icon btn-icon-delete" onclick="openHapusPenghuniModal(${k.id_kamar})" title="Keluarkan Penghuni">
+                                    <i class="fa-solid fa-user-minus"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+
             // Update Stats
             document.getElementById('totalKamar').innerText = kamarData.length;
             document.getElementById('totalTerisi').innerText = kamarData.filter(k => k.status_kamar === 'terisi').length;
@@ -822,98 +1044,104 @@ select {
             document.getElementById('totalPerbaikan').innerText = kamarData.filter(k => k.status_kamar === 'perbaikan').length;
         }
 
-        // ==================== LOGIKA FITUR BARU (TOMBOL ➕ BARIS) ====================
-        
-        // 1. Membuka Modal Ubah Status & Tambah Penghuni
-        window.openEditKamar = function(id) {
+        // ============ MODAL TAMBAH KAMAR ============
+        function openTambahKamar() {
+            document.getElementById('tambahModal').style.display = 'flex';
+        }
+
+        function simpanKamar() {
+            const nomor = document.getElementById('newNomor').value;
+            const lantai = document.getElementById('newLantai').value;
+            const status = document.getElementById('newStatus').value;
+
+            if (!nomor || !lantai) {
+                alert('Nomor kamar dan lantai harus diisi!');
+                return;
+            }
+
+            kamarData.push({
+                id_kamar: Date.now(),
+                nomor_kamar: nomor,
+                lantai: lantai,
+                status_kamar: status,
+                penghuni_list: []
+            });
+
+            renderTable();
+            closeModal('tambahModal');
+            document.getElementById('newNomor').value = '';
+            document.getElementById('newLantai').value = '';
+        }
+
+        // ============ MODAL TEMPATKAN PENGHUNI ============
+        function openEditKamar(id) {
             currentKamarId = id;
             const kamar = kamarData.find(k => k.id_kamar == id);
             if (kamar) {
                 document.getElementById('editNomorKamarText').innerText = kamar.nomor_kamar;
                 document.getElementById('editKamarModal').style.display = 'flex';
+                mahasiswaTerpilih = null;
+                document.querySelectorAll('.student-card').forEach(c => c.classList.remove('selected'));
             }
-        };
+        }
 
-        // 2. Menyimpan Hasil Ubah Status & Tambah Penghuni
-        window.simpanEditKamar = function() {
+        function pilihMahasiswa(card, nama) {
+            document.querySelectorAll('.student-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            mahasiswaTerpilih = nama;
+        }
 
-            if (mahasiswaTerpilih == null) {
-                alert("Silakan pilih mahasiswa terlebih dahulu!");
+        function simpanEditKamar() {
+            if (!mahasiswaTerpilih) {
+                alert('Silakan pilih mahasiswa terlebih dahulu!');
                 return;
             }
 
-            const kamarIndex = kamarData.findIndex(
-                k => k.id_kamar == currentKamarId
-            );
-
+            const kamarIndex = kamarData.findIndex(k => k.id_kamar == currentKamarId);
             if (kamarIndex !== -1) {
-
-                // Jika penghuni_list belum ada
                 if (!kamarData[kamarIndex].penghuni_list) {
                     kamarData[kamarIndex].penghuni_list = [];
                 }
-
-                // Cegah mahasiswa yang sama masuk dua kali
                 if (!kamarData[kamarIndex].penghuni_list.includes(mahasiswaTerpilih)) {
-
                     kamarData[kamarIndex].penghuni_list.push(mahasiswaTerpilih);
-
                 }
-
-                // Otomatis ubah status kamar
-                kamarData[kamarIndex].status_kamar = "terisi";
-
-                // Refresh tabel
+                kamarData[kamarIndex].status_kamar = 'terisi';
                 renderTable();
-
-                alert("Penghuni berhasil ditempatkan!");
-
-                // Reset pilihan
+                alert('Penghuni berhasil ditempatkan!');
+                closeModal('editKamarModal');
                 mahasiswaTerpilih = null;
-
-                // Hilangkan warna hijau pada card
-                document.querySelectorAll(".student-card").forEach(card=>{
-                    card.classList.remove("selected");
-                });
-
-                closeModal("editKamarModal");
             }
-        };
+        }
 
-        // ==================== LOGIKA FITUR BARU (TOMBOL 🗑️ BARIS) ====================
-
-        // 1. Membuka Modal List Penghuni untuk memilih siapa yang ingin dihapus
-        window.openHapusPenghuniModal = function(id) {
+        // ============ MODAL HAPUS PENGHUNI ============
+        function openHapusPenghuniModal(id) {
             currentKamarId = id;
             const kamar = kamarData.find(k => k.id_kamar == id);
             if (kamar) {
                 document.getElementById('hapusNomorKamarText').innerText = kamar.nomor_kamar;
                 const container = document.getElementById('containerListPenghuni');
-                container.innerHTML = ""; // Bersihkan list sebelumnya
+                container.innerHTML = '';
 
-                // Cek jika kamar ada penghuninya
                 if (kamar.penghuni_list && kamar.penghuni_list.length > 0) {
                     kamar.penghuni_list.forEach((nama, idx) => {
                         container.innerHTML += `
-                            <div style="margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
-                                <input type="radio" id="mhs_${idx}" name="hapusPenghuniRadio" value="${nama}" style="width: auto; margin: 0;">
+                            <div style="margin-bottom: 10px; display: flex; align-items: center; gap: 8px; padding: 8px; border-radius: 8px; background: #f8fafc;">
+                                <input type="radio" id="mhs_${idx}" name="hapusPenghuniRadio" value="${nama}" style="width: auto; margin: 0; accent-color: #EF4444;">
                                 <label for="mhs_${idx}" style="cursor: pointer; font-weight: 500;">${nama}</label>
                             </div>
                         `;
                     });
                 } else {
-                    container.innerHTML = `<p style="color: #dc2626; font-style: italic;">Tidak ada penghuni di kamar ini.</p>`;
+                    container.innerHTML = `<p style="color: #94a3b8; font-style: italic;">Tidak ada penghuni di kamar ini.</p>`;
                 }
                 document.getElementById('hapusPenghuniModal').style.display = 'flex';
             }
-        };
+        }
 
-        // 2. Eksekusi Hapus nama penghuni terpilih
-        window.konfirmasiHapusPenghuni = function() {
+        function konfirmasiHapusPenghuni() {
             const pilihan = document.querySelector('input[name="hapusPenghuniRadio"]:checked');
-            
             if (!pilihan) {
-                alert("Silakan pilih salah satu nama penghuni yang ingin dikeluarkan!");
+                alert('Silakan pilih nama penghuni yang ingin dikeluarkan!');
                 return;
             }
 
@@ -921,70 +1149,38 @@ select {
             const kamarIndex = kamarData.findIndex(k => k.id_kamar == currentKamarId);
 
             if (kamarIndex !== -1) {
-                kamarData[kamarIndex].penghuni_list = 
-                    kamarData[kamarIndex].penghuni_list.filter(nama => nama !== namaTerpilih);
-
+                kamarData[kamarIndex].penghuni_list = kamarData[kamarIndex].penghuni_list.filter(n => n !== namaTerpilih);
                 if (kamarData[kamarIndex].penghuni_list.length === 0) {
                     kamarData[kamarIndex].status_kamar = 'tersedia';
                 }
-
                 renderTable();
-
-                alert(`Berhasil menghapus ${namaTerpilih} dari kamar.`);
+                alert(`Berhasil mengeluarkan ${namaTerpilih} dari kamar.`);
                 closeModal('hapusPenghuniModal');
             }
-        };
-        function pilihMahasiswa(card, nama) {
-            document.querySelectorAll(".student-card").forEach(c => {
-                c.classList.remove("selected");
-            });
-            card.classList.add("selected");
-            mahasiswaTerpilih = nama;
         }
-        window.openTambahKamar = function() {
-            document.getElementById('tambahModal').style.display = 'flex';
-        };
 
-        // =============================================================================
+        // ============ MODAL UTILITY ============
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
 
-        // Fungsi Global bawaan kode Anda
-        window.openTambahKamar = function() { 
-            document.getElementById('tambahModal').style.display = 'flex'; 
-        };
+        // ============ LOGOUT ============
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = '../index.html';
+        });
 
-        window.closeModal = function(id) { 
-            document.getElementById(id).style.display = 'none'; 
-        };
-
-        window.simpanKamar = function() {
-            const nomor=document.getElementById("newNomor").value;
-
-            const lantai=document.getElementById("newLantai").value;
-
-            const status=document.getElementById("newStatus").value;
-
-            kamarData.push({
-
-            id_kamar:Date.now(),
-
-            nomor_kamar:nomor,
-
-            lantai:lantai,
-
-            status_kamar:status,
-
-            penghuni_list:[]
-
-            });
-
-            renderTable();
-
-            closeModal("tambahModal");
-
-        };
-
-        // Inisialisasi awal saat load halaman
+        // ============ LOAD ============
         loadKamar();
+
+        // Click outside modal to close
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.style.display = 'none';
+                }
+            });
+        });
     </script>
 </body>
 </html>
